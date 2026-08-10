@@ -1,0 +1,16 @@
+{
+  "name": "ต้นทุนกาแฟ เม่อะ เต เต",
+  "short_name": "เม่อะ เต เต",
+  "description": "บันทึกกะลา สารเขียว เมล็ดคั่ว วัสดุ และการขาย พร้อมสรุปต้นทุน-กำไรต่อซอง ต่อวัน ต่อเดือน ต่อปี",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F2F8",
+  "theme_color": "#F4F2F8",
+  "lang": "th",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

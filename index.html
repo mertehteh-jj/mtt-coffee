@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F2F8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="เม่อะ เต เต">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>ต้นทุนกาแฟ เม่อะ เต เต</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F2F8; --card:#FFF; --ink:#453D52; --ink2:#665E76; --muted:#9A93A8; --line:#E7E3EF;
+  --s1:#F5E5C2; --s1d:#9C7C3E;
+  --s2:#CFE7CB; --s2d:#4F8449;
+  --s3:#F7D8C3; --s3d:#B86F44;
+  --s4:#D8DBF4; --s4d:#5F68B0;
+  --s5:#F8D4E0; --s5d:#B85A80;
+  --s6:#E5DAF2; --s6d:#75609E;
+  --ok:#4F8449; --bad:#C25A5A; --warn:#B08829;
+  --r:16px;
+  --f:'IBM Plex Sans Thai',system-ui,sans-serif;
+  --m:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:var(--f);background:var(--paper);color:var(--ink);font-size:15px;line-height:1.55;
+     padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+.num{font-family:var(--m);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+h2,h3{margin:0;font-weight:600;letter-spacing:-.01em}
+.wrap{padding:14px}
+.screen{display:none}.screen.on{display:block}
+.eyebrow{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+.top{padding:calc(16px + env(safe-area-inset-top)) 16px 6px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.top h2{font-size:21px}
+.back{border:0;background:#fff;border:1px solid var(--line);border-radius:99px;width:34px;height:34px;
+      font-size:19px;line-height:1;color:var(--ink2);cursor:pointer;flex:0 0 auto}
+.link{color:var(--s6d);font-size:12.5px;font-weight:600;background:none;border:0;padding:0;cursor:pointer;font-family:var(--f)}
+
+/* hero */
+.hero{margin:0 14px;background:linear-gradient(140deg,#E5DAF2,#D8DBF4 55%,#CFE7CB);
+      border-radius:20px;padding:18px 18px 16px;margin-top:8px}
+.hero .big{font-family:var(--m);font-size:34px;font-weight:600;line-height:1.1;letter-spacing:-.03em;margin-top:2px}
+.hero .sub{font-size:12px;color:var(--ink2);margin-top:3px}
+.hrow{display:flex;gap:9px;margin-top:14px}
+.hcell{flex:1;background:rgba(255,255,255,.62);border-radius:13px;padding:9px 11px}
+.hcell .k{font-size:10.5px;color:var(--ink2)}
+.hcell .v{font-family:var(--m);font-size:16px;font-weight:600;margin-top:1px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:11px}
+.card h3{font-size:15px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pill{font-size:10.5px;font-weight:600;padding:2.5px 9px;border-radius:99px;background:var(--paper);color:var(--muted)}
+.pill.w{background:#FBF0D6;color:#8A6510}.pill.b{background:#FADDDD;color:#9A3A3A}.pill.g{background:#DCEEDA;color:#3C6C37}
+.empty{color:var(--muted);font-size:12.5px;padding:12px 0;text-align:center}
+.hint{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:5px}
+
+/* step cards */
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);
+      border-radius:var(--r);padding:13px 14px;cursor:pointer;text-align:left;width:100%;font-family:var(--f)}
+.step .no{flex:0 0 40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;
+          font-family:var(--m);font-size:17px;font-weight:600}
+.step .tx{flex:1;min-width:0}
+.step .tx b{display:block;font-size:15px;font-weight:600}
+.step .tx small{display:block;font-size:11.5px;color:var(--muted);line-height:1.4}
+.step .ar{color:var(--muted);font-size:19px}
+
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .t{font-weight:500;font-size:13.5px}
+.row .s{font-size:11px;color:var(--muted)}
+.row .r{text-align:right;font-family:var(--m);font-size:13.5px;font-weight:600;white-space:nowrap}
+.pos{color:var(--ok)}.neg{color:var(--bad)}.amb{color:var(--warn)}
+
+.life{height:6px;border-radius:4px;background:#EDEAF3;margin-top:7px;overflow:hidden}
+.life span{display:block;height:100%;border-radius:4px}
+.life-lab{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-top:3px}
+
+label{display:block;font-size:12px;font-weight:500;color:var(--ink2);margin:11px 0 4px}
+input,select,textarea,button{font-family:var(--f);font-size:15px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;
+                      background:#FCFBFE;color:var(--ink);appearance:none}
+input[type=number]{font-family:var(--m)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--s6d);outline-offset:1px;border-color:transparent;background:#fff}
+input:disabled{background:#F2F0F6;color:var(--muted)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 9px}
+.g3{display:grid;grid-template-columns:1fr 1fr auto;gap:0 8px;align-items:end}
+.btn{width:100%;padding:14px;border:0;border-radius:14px;font-weight:600;font-size:15.5px;margin-top:17px;cursor:pointer;font-family:var(--f)}
+.b1{background:var(--s1);color:var(--s1d)}.b2{background:var(--s2);color:var(--s2d)}
+.b3{background:var(--s3);color:var(--s3d)}.b4{background:var(--s4);color:var(--s4d)}
+.b5{background:var(--s5);color:var(--s5d)}.b6{background:var(--s6);color:var(--s6d)}
+.btn.ghost{background:#fff;color:var(--ink2);border:1px solid var(--line);margin-top:9px;font-weight:500}
+.btn.sm{padding:11px 15px;font-size:13.5px;margin:0;width:auto}
+
+.prev{background:#FAF9FC;border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:15px;font-size:12.5px}
+.pr{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.pr b{font-family:var(--m);white-space:nowrap}
+.pr.hi{border-top:1px solid var(--line);margin-top:6px;padding-top:7px}
+
+/* roast level rows */
+.lv{border:1px solid var(--line);border-radius:13px;padding:10px 11px;margin-top:9px;background:#FCFBFE}
+.lv .h{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;font-weight:600}
+.lv .y{font-family:var(--m);font-size:12px;font-weight:600}
+.lv label{margin:7px 0 3px}
+
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:rgba(255,255,255,.94);
+    backdrop-filter:blur(10px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:30}
+nav button{flex:1;border:0;background:none;padding:9px 2px 10px;color:var(--muted);font-size:10.5px;font-weight:500;
+           cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--f)}
+nav button.on{color:var(--s6d)}
+nav svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+.seg{display:flex;gap:6px;background:#EEEBF4;border-radius:12px;padding:4px}
+.seg button{flex:1;border:0;background:none;border-radius:9px;padding:8px 4px;font-size:13px;font-weight:500;
+            color:var(--ink2);cursor:pointer;font-family:var(--f)}
+.seg button.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(69,61,82,.09)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:10px}
+.chips button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 13px;font-size:12.5px;
+              color:var(--ink2);white-space:nowrap;cursor:pointer;font-family:var(--f)}
+.chips button.on{background:var(--s6);color:var(--s6d);border-color:var(--s6);font-weight:600}
+.toast{position:fixed;left:14px;right:14px;bottom:calc(88px + env(safe-area-inset-bottom));background:var(--ink);color:#fff;
+       padding:13px 15px;border-radius:14px;font-size:13.5px;z-index:60;opacity:0;transform:translateY(8px);
+       transition:.24s;pointer-events:none;box-shadow:0 6px 20px rgba(69,61,82,.2)}
+.toast.show{opacity:1;transform:none}
+.toast.err{background:var(--bad)}.toast.warn{background:var(--warn)}
+.offline{background:var(--s1);color:var(--s1d);text-align:center;font-size:12px;padding:6px;font-weight:500}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:10.5px;color:var(--muted);font-weight:600;padding:6px 3px;border-bottom:1px solid var(--line)}
+td{padding:8px 3px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
+.doc{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.doc:last-child{border-bottom:0}
+.doc .dx{flex:1;min-width:0}
+.doc .dx b{display:block;font-size:13.5px;font-weight:500}
+.doc .dx small{display:block;font-size:11px;color:var(--muted)}
+.doc .da{font-family:var(--m);font-size:13px;font-weight:600;white-space:nowrap}
+.doc .ops{display:flex;gap:5px;flex:0 0 auto}
+.doc .op{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:#fff;
+         cursor:pointer;font-size:14px;line-height:1;color:var(--ink2);padding:0}
+.doc .op.del{color:var(--bad)}
+.doc.off{opacity:.5}
+.doc.off .dx b{text-decoration:line-through}
+.editbar{background:var(--s6);color:var(--s6d);border-radius:12px;padding:10px 12px;font-size:12.5px;
+         font-weight:500;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:9px}
+.editbar button{border:0;background:rgba(255,255,255,.7);color:var(--s6d);border-radius:8px;
+                padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--f)}
+.cart{border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-top:11px}
+.ci{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.ci:last-child{border-bottom:0}
+.x{border:0;background:none;color:var(--bad);font-size:20px;line-height:1;padding:0 3px;cursor:pointer}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="offBar" class="offline" style="display:none">ออฟไลน์ — รายการจะส่งเมื่อกลับมาออนไลน์</div>
+
+<!-- ══ หน้าหลัก ══ -->
+<section id="s-home" class="screen on">
+  <div class="top"><h2>เม่อะ เต เต</h2><button class="link" onclick="go('set')">ตั้งค่า</button></div>
+  <div class="hero">
+    <div class="eyebrow">มูลค่าสต๊อกทั้งหมด</div>
+    <div class="big num" id="hVal">—</div>
+    <div class="sub" id="hSub">กำลังโหลด…</div>
+    <div class="hrow">
+      <div class="hcell"><div class="k">รายได้เดือนนี้</div><div class="v num" id="hRev">—</div></div>
+      <div class="hcell"><div class="k">กำไรสุทธิ</div><div class="v num" id="hPro">—</div></div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="card">
+      <h3>เส้นทางน้ำหนักและต้นทุน <span class="pill" id="chTag">—</span></h3>
+      <div id="chain"></div>
+      <div class="hint" id="chHint"></div>
+    </div>
+    <div class="card"><h3>ล็อตใกล้หมดอายุ <span class="pill w" id="cExp">0</span></h3><div id="expList"></div></div>
+    <div class="card"><h3>ต่ำกว่าจุดสั่งซื้อ <span class="pill b" id="cLow">0</span></h3><div id="lowList"></div></div>
+    <div class="card"><h3>บันทึกล่าสุด</h3><div id="recList"></div></div>
+  </div>
+</section>
+
+<!-- ══ บันทึก ══ -->
+<section id="s-rec" class="screen">
+  <div class="top"><h2>บันทึกรายการ</h2></div>
+  <div class="wrap">
+    <div class="steps">
+      <button class="step" onclick="go('f1')"><span class="no" style="background:var(--s1);color:var(--s1d)">1</span>
+        <span class="tx"><b>ซื้อกาแฟกะลา</b><small>วันที่ · จำนวน · ราคา/kg · ค่าขนส่ง</small></span><span class="ar">›</span></button>
+      <button class="step" onclick="go('f2')"><span class="no" style="background:var(--s2);color:var(--s2d)">2</span>
+        <span class="tx"><b>ผลิตสารเขียว</b><small>ตัดเบิกกะลา → ได้สารเขียว · ค่าสี · ค่าส่ง</small></span><span class="ar">›</span></button>
+      <button class="step" onclick="go('f3')"><span class="no" style="background:var(--s3);color:var(--s3d)">3</span>
+        <span class="tx"><b>ผลิตเมล็ดคั่ว</b><small>ตัดเบิกสารเขียวยอดเดียว → แยกผลผลิตรายระดับ</small></span><span class="ar">›</span></button>
+      <button class="step" onclick="go('f4')"><span class="no" style="background:var(--s4);color:var(--s4d)">4</span>
+        <span class="tx"><b>ซื้อวัสดุอุปกรณ์</b><small>ซอง · สติ๊กเกอร์ · กล่อง · เทปกาว</small></span><span class="ar">›</span></button>
+      <button class="step" onclick="go('f5')"><span class="no" style="background:var(--s5);color:var(--s5d)">5</span>
+        <span class="tx"><b>ขายเมล็ดคั่ว</b><small>แยกระดับและขนาด 250 / 500 / 1000g</small></span><span class="ar">›</span></button>
+      <button class="step" onclick="go('sum')"><span class="no" style="background:var(--s6);color:var(--s6d)">6</span>
+        <span class="tx"><b>สรุปต้นทุน-กำไร</b><small>ต่อซอง · ต่อวัน · ต่อเดือน · ต่อปี</small></span><span class="ar">›</span></button>
+    </div>
+    <button class="btn ghost" onclick="openDocs('buyParchment')">ดู แก้ไข หรือลบรายการที่บันทึกไว้</button>
+    <button class="btn ghost" onclick="go('other')">ตัดจ่ายอื่นๆ และตรวจนับ</button>
+  </div>
+</section>
+
+<!-- ══ 1 ซื้อกะลา ══ -->
+<section id="s-f1" class="screen">
+  <div class="top"><button class="back" onclick="cancelEdit();go('rec')">‹</button><h2 style="flex:1">1 · ซื้อกาแฟกะลา</h2><button class="link" onclick="openDocs('buyParchment')">รายการที่บันทึก</button></div><div class="wrap" style="padding-bottom:0"><div class="editbar" id="eb_f1" style="display:none"><span id="ebt_f1"></span><button onclick="cancelEdit()">ยกเลิกการแก้ไข</button></div></div>
+  <div class="wrap"><div class="card">
+    <div class="g2">
+      <div><label for="a1Date">วันที่</label><input id="a1Date" type="date"></div>
+      <div><label for="a1Qty">จำนวน (kg)</label><input id="a1Qty" type="number" inputmode="decimal" step="any" oninput="p1()"></div>
+    </div>
+    <div class="g2">
+      <div><label for="a1Price">ราคา/kg</label><input id="a1Price" type="number" inputmode="decimal" step="any" oninput="p1()"></div>
+      <div><label for="a1Fr">ค่าขนส่ง</label><input id="a1Fr" type="number" inputmode="decimal" step="any" value="0" oninput="p1()"></div>
+    </div>
+    <label for="a1Sup">ผู้ขาย / เกษตรกร</label><input id="a1Sup">
+    <label for="a1Note">หมายเหตุ</label><input id="a1Note">
+    <div class="prev" id="v1">กรอกจำนวนและราคา</div>
+    <button class="btn b1" onclick="save1()">บันทึกซื้อกะลา</button>
+  </div></div>
+</section>
+
+<!-- ══ 2 ผลิตสารเขียว ══ -->
+<section id="s-f2" class="screen">
+  <div class="top"><button class="back" onclick="cancelEdit();go('rec')">‹</button><h2 style="flex:1">2 · ผลิตสารเขียว</h2><button class="link" onclick="openDocs('mill')">รายการที่บันทึก</button></div><div class="wrap" style="padding-bottom:0"><div class="editbar" id="eb_f2" style="display:none"><span id="ebt_f2"></span><button onclick="cancelEdit()">ยกเลิกการแก้ไข</button></div></div>
+  <div class="wrap"><div class="card">
+    <div class="hint">ระบบตัดกะลาออกจากสต๊อก แล้วรับสารเขียวเข้าที่ต้นทุน (ค่ากะลา + ค่าสี + ค่าส่ง) ÷ น้ำหนักที่ได้จริง</div>
+    <label for="a2Date">วันที่</label><input id="a2Date" type="date">
+    <div class="g2">
+      <div><label for="a2In">กะลาที่ตัดเบิก (kg)</label><input id="a2In" type="number" inputmode="decimal" step="any" oninput="p2()"></div>
+      <div><label for="a2Out">สารเขียวที่ได้ (kg)</label><input id="a2Out" type="number" inputmode="decimal" step="any" oninput="p2()"></div>
+    </div>
+    <div class="g2">
+      <div><label for="a2Rate">ค่าสี (บาท/kg กะลา)</label><input id="a2Rate" type="number" inputmode="decimal" step="any" oninput="p2()"></div>
+      <div><label for="a2Fr">ค่าส่งสารเขียว</label><input id="a2Fr" type="number" inputmode="decimal" step="any" value="0" oninput="p2()"></div>
+    </div>
+    <label for="a2Ven">โรงสี</label><input id="a2Ven">
+    <div class="prev" id="v2">กรอกน้ำหนักเข้าและออก</div>
+    <button class="btn b2" onclick="save2()">บันทึกผลิตสารเขียว</button>
+  </div></div>
+</section>
+
+<!-- ══ 3 ผลิตเมล็ดคั่ว ══ -->
+<section id="s-f3" class="screen">
+  <div class="top"><button class="back" onclick="cancelEdit();go('rec')">‹</button><h2 style="flex:1">3 · ผลิตเมล็ดคั่ว</h2><button class="link" onclick="openDocs('roast')">รายการที่บันทึก</button></div><div class="wrap" style="padding-bottom:0"><div class="editbar" id="eb_f3" style="display:none"><span id="ebt_f3"></span><button onclick="cancelEdit()">ยกเลิกการแก้ไข</button></div></div>
+  <div class="wrap"><div class="card">
+    <div class="hint">ใส่สารเขียวที่ตัดเบิกเป็นยอดเดียว แล้วกรอกเมล็ดคั่วที่ได้แยกตามระดับ · ระบบปันส่วนสารเขียวและต้นทุนให้แต่ละระดับตาม Yield มาตรฐาน (แก้ได้ในชีตตั้งค่า)</div>
+    <div class="g2">
+      <div><label for="a3Date">วันที่</label><input id="a3Date" type="date"></div>
+      <div><label for="a3In">สารเขียวที่ตัดเบิก (kg)</label><input id="a3In" type="number" inputmode="decimal" step="any" oninput="p3()"></div>
+    </div>
+    <div class="eyebrow" style="margin-top:14px">เมล็ดคั่วที่ได้แต่ละระดับ</div>
+    <div id="lvBox"></div>
+    <div class="g2">
+      <div><label for="a3Labor">ค่าแรงจ้างคั่ว (รวม)</label><input id="a3Labor" type="number" inputmode="decimal" step="any" value="0" oninput="p3()"></div>
+      <div><label for="a3Rent">ค่าเช่าเครื่องคั่ว (รวม)</label><input id="a3Rent" type="number" inputmode="decimal" step="any" value="0" oninput="p3()"></div>
+    </div>
+    <label for="a3Ven">ผู้คั่ว</label><input id="a3Ven">
+    <div class="prev" id="v3">กรอกน้ำหนักอย่างน้อยหนึ่งระดับ</div>
+    <button class="btn b3" onclick="save3()">บันทึกผลิตเมล็ดคั่ว</button>
+  </div></div>
+</section>
+
+<!-- ══ 4 ซื้อวัสดุ ══ -->
+<section id="s-f4" class="screen">
+  <div class="top"><button class="back" onclick="cancelEdit();go('rec')">‹</button><h2 style="flex:1">4 · ซื้อวัสดุอุปกรณ์</h2><button class="link" onclick="openDocs('buyMaterial')">รายการที่บันทึก</button></div><div class="wrap" style="padding-bottom:0"><div class="editbar" id="eb_f4" style="display:none"><span id="ebt_f4"></span><button onclick="cancelEdit()">ยกเลิกการแก้ไข</button></div></div>
+  <div class="wrap"><div class="card">
+    <label for="a4Code">วัสดุ</label><select id="a4Code" onchange="p4()"></select>
+    <div class="g2">
+      <div><label for="a4Qty">จำนวน</label><input id="a4Qty" type="number" inputmode="decimal" step="any" oninput="p4()"></div>
+      <div><label for="a4Price">ราคา/หน่วย</label><input id="a4Price" type="number" inputmode="decimal" step="any" oninput="p4()"></div>
+    </div>
+    <div class="g2">
+      <div><label for="a4Fr">ค่าขนส่ง</label><input id="a4Fr" type="number" inputmode="decimal" step="any" value="0" oninput="p4()"></div>
+      <div><label for="a4Date">วันที่</label><input id="a4Date" type="date"></div>
+    </div>
+    <label for="a4Sup">ผู้ขาย</label><input id="a4Sup">
+    <div class="prev" id="v4">เลือกวัสดุและกรอกจำนวน</div>
+    <button class="btn b4" onclick="save4()">บันทึกซื้อวัสดุ</button>
+    <button class="btn ghost" onclick="go('spec')">ตั้งค่าซองกับสติ๊กเกอร์ของแต่ละขนาด</button>
+  </div></div>
+</section>
+
+<!-- ══ 5 ขาย ══ -->
+<section id="s-f5" class="screen">
+  <div class="top"><button class="back" onclick="cancelEdit();go('rec')">‹</button><h2 style="flex:1">5 · ขาย</h2><button class="link" onclick="openDocs('sell')">รายการที่บันทึก</button></div><div class="wrap" style="padding-bottom:0"><div class="editbar" id="eb_f5" style="display:none"><span id="ebt_f5"></span><button onclick="cancelEdit()">ยกเลิกการแก้ไข</button></div></div>
+  <div class="wrap">
+    <div class="card">
+      <h3>เพิ่มรายการ</h3>
+      <div class="seg" style="margin-top:10px">
+        <button class="on" data-k="ซอง" onclick="kindTab('ซอง')">เมล็ดคั่ว (ซอง)</button>
+        <button data-k="kg" onclick="kindTab('kg')">สารเขียว (kg)</button>
+      </div>
+      <div id="kBag">
+        <label for="a5Roast">ระดับคั่ว</label><select id="a5Roast" onchange="fill5()"></select>
+        <label for="a5Size">ขนาด</label>
+        <div class="seg" id="sizeSeg" style="margin-top:2px"></div>
+      </div>
+      <div id="kKg" style="display:none">
+        <label for="a5Green">สินค้า</label><select id="a5Green" onchange="fill5()"></select>
+      </div>
+      <div class="g3">
+        <div><label for="a5Qty">จำนวน</label><input id="a5Qty" type="number" inputmode="decimal" step="any"></div>
+        <div><label for="a5Price">ราคา/หน่วย</label><input id="a5Price" type="number" inputmode="decimal" step="any"></div>
+        <button class="btn b5 sm" onclick="addLine()">เพิ่ม</button>
+      </div>
+      <div class="hint" id="a5Stock"></div>
+      <div class="cart" id="cart" style="display:none"></div>
+    </div>
+    <div class="card">
+      <h3>บรรจุส่งและค่าส่ง</h3>
+      <div class="g2">
+        <div><label for="a5BoxCode">ขนาดกล่องพัสดุ</label><select id="a5BoxCode" onchange="boxToggle();p5()"></select></div>
+        <div><label for="a5Box">จำนวนกล่อง (ใบ)</label><input id="a5Box" type="number" inputmode="numeric" step="1" value="1" oninput="p5()"></div>
+      </div>
+      <div class="g2">
+        <div><label for="a5Tape">เทปกาว (ม้วน)</label><input id="a5Tape" type="number" inputmode="decimal" step="any" value="0" oninput="p5()"></div>
+        <div><label>&nbsp;</label><button class="btn ghost" style="margin:0;padding:11px" onclick="go('new');prefillBox()">+ เพิ่มขนาดกล่อง</button></div>
+      </div>
+      <div class="g2">
+        <div><label for="a5ShipIn">ค่าส่งที่เก็บลูกค้า</label><input id="a5ShipIn" type="number" inputmode="decimal" step="any" value="0" oninput="p5()"></div>
+        <div><label for="a5ShipOut">ค่าส่งที่จ่ายจริง</label><input id="a5ShipOut" type="number" inputmode="decimal" step="any" value="0" oninput="p5()"></div>
+      </div>
+      <div class="g2">
+        <div><label for="a5Date">วันที่</label><input id="a5Date" type="date"></div>
+        <div><label for="a5Chan">ช่องทาง</label><select id="a5Chan" onchange="chanChange()"></select></div>
+      </div>
+      <label for="a5Cust">ลูกค้า</label><input id="a5Cust">
+      <div class="prev" id="v5">เพิ่มรายการสินค้าก่อน</div>
+      <button class="btn b5" onclick="save5()">บันทึกการขาย</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 6 สรุป ══ -->
+<section id="s-sum" class="screen">
+  <div class="top"><h2>สรุปต้นทุน-กำไร</h2></div>
+  <div class="wrap">
+    <div class="seg">
+      <button data-m="day" onclick="setMode('day')">รายวัน</button>
+      <button class="on" data-m="month" onclick="setMode('month')">รายเดือน</button>
+      <button data-m="year" onclick="setMode('year')">รายปี</button>
+    </div>
+    <div style="margin:11px 0"><input id="sumKey" type="month" onchange="loadSum()"></div>
+    <div class="card" id="sumMain"><div class="empty">กำลังโหลด…</div></div>
+    <div class="card"><h3>ต้นทุนต่อซอง <span class="pill" id="pbTag">—</span></h3>
+      <div class="hint">ไล่ตั้งแต่กาแฟกะลา ผ่านค่าสี ค่าคั่ว จนถึงซองและสติ๊กเกอร์ · คำนวณจากต้นทุนเฉลี่ยปัจจุบันและ yield จริง</div>
+      <div class="chips" id="pbChips" style="margin-top:10px"></div>
+      <div id="perBag"></div>
+    </div>
+    <div class="card"><h3>ยอดขายแยกระดับและขนาด</h3><div id="sumRows"></div></div>
+    <div class="card"><h3>ช่องทางขาย</h3><div id="sumChan"></div></div>
+  </div>
+</section>
+
+<!-- ══ สต๊อก ══ -->
+<section id="s-stock" class="screen">
+  <div class="top"><h2>สต๊อก</h2><button class="link" onclick="openNew()">+ เพิ่มสินค้า</button></div>
+  <div class="wrap">
+    <input id="pSearch" placeholder="ค้นหาชื่อหรือรหัส" oninput="renderProducts()" style="margin-bottom:11px">
+    <div class="chips" id="typeChips"></div>
+    <div id="pList"></div>
+  </div>
+</section>
+
+<!-- ══ รายละเอียดสินค้า ══ -->
+<section id="s-det" class="screen">
+  <div class="top"><button class="back" onclick="go('stock')">‹</button><h2 id="dName" style="flex:1">สินค้า</h2></div>
+  <div class="wrap">
+    <div class="card" id="dSum"></div>
+    <div class="card"><h3>ล็อตคงเหลือ</h3><div id="dLots"></div></div>
+    <div class="card">
+      <h3>ตรวจนับและปรับยอด</h3>
+      <div class="g2">
+        <div><label for="cQty">ยอดนับจริง</label><input id="cQty" type="number" inputmode="decimal" step="any"></div>
+        <div><label for="cWhy">เหตุผล</label><input id="cWhy" placeholder="เช่น ชั่งแล้วขาด"></div>
+      </div>
+      <button class="btn b6" onclick="saveCount()">บันทึกผลตรวจนับ</button>
+    </div>
+    <div class="card"><h3>ความเคลื่อนไหว</h3><div id="dMoves"></div></div>
+  </div>
+</section>
+
+<!-- ══ ตัดจ่ายอื่นๆ ══ -->
+<section id="s-other" class="screen">
+  <div class="top"><button class="back" onclick="cancelEdit();go('rec')">‹</button><h2 style="flex:1">ตัดจ่ายอื่นๆ</h2><button class="link" onclick="openDocs('issue')">รายการที่บันทึก</button></div>
+  <div class="wrap"><div class="card">
+    <div class="hint">ของเสีย ชิมทดสอบ แจกตัวอย่าง หรือคืนผู้ขาย — บันทึกที่นี่ ไม่ต้องบันทึกเป็นการขายราคา 0</div>
+    <label for="oType">ประเภท</label><select id="oType"></select>
+    <label for="oCode">สินค้า</label><select id="oCode" onchange="pOther()"></select>
+    <div class="g2">
+      <div><label for="oQty">จำนวน</label><input id="oQty" type="number" inputmode="decimal" step="any" oninput="pOther()"></div>
+      <div><label for="oDate">วันที่</label><input id="oDate" type="date"></div>
+    </div>
+    <label for="oNote">หมายเหตุ</label><input id="oNote">
+    <div class="prev" id="vOther">เลือกสินค้าและจำนวน</div>
+    <button class="btn b6" onclick="saveOther()">บันทึกตัดจ่าย</button>
+  </div></div>
+</section>
+
+<!-- ══ เพิ่มสินค้า ══ -->
+<section id="s-new" class="screen">
+  <div class="top"><button class="back" onclick="go('stock')">‹</button><h2 style="flex:1">เพิ่มสินค้า</h2></div>
+  <div class="wrap"><div class="card">
+    <div class="g2">
+      <div><label for="nCode">รหัสสินค้า</label><input id="nCode"></div>
+      <div><label for="nUnit">หน่วยนับ</label><input id="nUnit" placeholder="kg / ใบ / ดวง"></div>
+    </div>
+    <label for="nName">ชื่อสินค้า</label><input id="nName">
+    <div class="g2">
+      <div><label for="nType">ประเภท</label><select id="nType" onchange="nTypeChange()"></select></div>
+      <div><label for="nRoast">ระดับคั่ว</label><select id="nRoast"></select></div>
+    </div>
+    <div class="g2">
+      <div><label for="nPrice">ราคาขาย</label><input id="nPrice" type="number" inputmode="decimal" step="any"></div>
+      <div><label for="nReorder">จุดสั่งซื้อ</label><input id="nReorder" type="number" inputmode="decimal" step="any"></div>
+    </div>
+    <div class="g2">
+      <div><label for="nQty">ยอดยกมา</label><input id="nQty" type="number" inputmode="decimal" step="any" value="0"></div>
+      <div><label for="nCost">ต้นทุน/หน่วย</label><input id="nCost" type="number" inputmode="decimal" step="any" value="0"></div>
+    </div>
+    <button class="btn b6" onclick="saveProduct()">บันทึกสินค้า</button>
+  </div></div>
+</section>
+
+<!-- ══ สูตรซอง ══ -->
+<section id="s-spec" class="screen">
+  <div class="top"><button class="back" onclick="go('f4')">‹</button><h2 style="flex:1">สูตรซอง</h2></div>
+  <div class="wrap"><div class="card">
+    <div class="hint">กำหนดว่าขนาดนี้ใช้ซองแบบไหนและสติ๊กเกอร์กี่ดวง เวลาขายระบบจะตัดวัสดุตามนี้อัตโนมัติ</div>
+    <label for="spSize">ขนาด</label><select id="spSize" onchange="loadSpec()"></select>
+    <label for="spPouch">ซองที่ใช้</label><select id="spPouch"></select>
+    <label for="spStick">สติ๊กเกอร์ที่ใช้</label><select id="spStick"></select>
+    <div class="g2">
+      <div><label for="spPq">ซอง/หน่วย</label><input id="spPq" type="number" inputmode="decimal" step="any" value="1"></div>
+      <div><label for="spSq">สติ๊กเกอร์/หน่วย</label><input id="spSq" type="number" inputmode="decimal" step="any" value="1"></div>
+    </div>
+    <button class="btn b4" onclick="saveSpec()">บันทึกสูตร</button>
+  </div></div>
+</section>
+
+<!-- ══ รายการที่บันทึก ══ -->
+<section id="s-docs" class="screen">
+  <div class="top"><button class="back" onclick="backFromDocs()">‹</button><h2 id="docTitle" style="flex:1">รายการที่บันทึก</h2></div>
+  <div class="wrap">
+    <div class="chips" id="docKinds"></div>
+    <div class="card"><div id="docList"><div class="empty">กำลังโหลด…</div></div></div>
+    <div class="hint">การลบจะย้อนผลกระทบต่อสต๊อกให้อัตโนมัติ และทำเครื่องหมายยกเลิกไว้ในชีต ไม่ถูกนับในยอดสรุปอีก แต่ยังตรวจสอบย้อนหลังได้</div>
+  </div>
+</section>
+
+<!-- ══ ตั้งค่า ══ -->
+<section id="s-set" class="screen">
+  <div class="top"><button class="back" onclick="go('home')">‹</button><h2 style="flex:1">ตั้งค่า</h2></div>
+  <div class="wrap"><div class="card">
+    <label for="cUrl">URL ของ Apps Script Web App</label>
+    <textarea id="cUrl" rows="3" placeholder="https://script.google.com/macros/s/.../exec"></textarea>
+    <label for="cUser">ชื่อผู้บันทึก</label><input id="cUser">
+    <button class="btn b6" onclick="saveCfg()">บันทึกและเชื่อมต่อ</button>
+    <button class="btn ghost" onclick="refresh(true)">ดึงข้อมูลใหม่</button>
+    <div class="prev" id="cStat">ยังไม่ได้เชื่อมต่อ</div>
+    <div class="prev" id="qStat" style="display:none"></div>
+    <button class="btn ghost" onclick="copyCfg()">คัดลอก URL สำหรับย้ายไปโดเมนใหม่</button>
+  </div></div>
+</section>
+
+<nav>
+  <button class="on" data-t="home" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>หน้าหลัก</button>
+  <button data-t="rec" onclick="go('rec')"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>บันทึก</button>
+  <button data-t="stock" onclick="go('stock')"><svg viewBox="0 0 24 24"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg>สต๊อก</button>
+  <button data-t="sum" onclick="go('sum')"><svg viewBox="0 0 24 24"><path d="M4 20V10m5 10V4m5 16v-7m5 7V8"/></svg>สรุป</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var CFG=JSON.parse(localStorage.getItem('mttCfg')||'{}');
+var DATA=JSON.parse(localStorage.getItem('mttData')||'null');
+var BOX=JSON.parse(localStorage.getItem('mttBox')||'[]');
+var CART=[],CUR=null,TF='',MODE='month',KIND='ซอง',SIZE=250,PBROAST='';
+
+var $=function(i){return document.getElementById(i);};
+var f=function(n){return (Number(n)||0).toLocaleString('th-TH',{maximumFractionDigits:2});};
+var f4=function(n){return (Number(n)||0).toLocaleString('th-TH',{maximumFractionDigits:3});};
+var iso=function(){return new Date().toISOString().slice(0,10);};
+var esc=function(s){return String(s==null?'':s).replace(/[<>&"']/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];});};
+var P=function(c){return (DATA?DATA.products:[]).filter(function(x){return x.code===c;})[0];};
+var T=function(t){return (DATA?DATA.products:[]).filter(function(x){return x.active&&x.type===t;});};
+var pr=function(k,v,c){return '<div class="pr '+(c||'')+'"><span>'+k+'</span><b>'+v+'</b></div>';};
+var row=function(t,s,r,c){return '<div class="row"><div><div class="t">'+esc(t)+'</div><div class="s">'+esc(s)+'</div></div><div class="r '+(c||'')+'">'+r+'</div></div>';};
+
+/* ── api ── */
+function newId(){ return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9); }
+
+/* ยิงคำขอ 1 ครั้ง พร้อมกำหนดเวลารอสูงสุด */
+function once(a,p,reqId,ms){
+  var ctl = (typeof AbortController!=='undefined') ? new AbortController() : null;
+  var timer = ctl ? setTimeout(function(){ctl.abort();}, ms||60000) : null;
+  return fetch(CFG.url,{method:'POST',redirect:'follow',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    signal: ctl?ctl.signal:undefined,
+    body:JSON.stringify({action:a,payload:p||{},reqId:reqId})})
+    .then(function(r){
+      if(timer) clearTimeout(timer);
+      if(!r.ok) throw new Error('เซิร์ฟเวอร์ตอบกลับผิดปกติ ('+r.status+')');
+      return r.text();
+    })
+    .then(function(t){
+      var j;
+      try{ j=JSON.parse(t); }
+      catch(e){ throw new Error('เชื่อมต่อไม่สำเร็จ — ตรวจว่า URL ลงท้ายด้วย /exec และตั้งสิทธิ์เป็น "ทุกคน"'); }
+      if(!j.ok) throw new Error(j.error||'เกิดข้อผิดพลาดที่เซิร์ฟเวอร์');
+      return j.data;
+    })
+    .catch(function(e){
+      if(timer) clearTimeout(timer);
+      throw e;
+    });
+}
+
+/* ปัญหาเน็ตสะดุดเป็นเรื่องปกติบนมือถือ จึงลองใหม่ให้เองโดยใช้ reqId เดิม
+   ฝั่งเซิร์ฟเวอร์จะไม่บันทึกซ้ำแม้คำขอแรกจะบันทึกสำเร็จไปแล้ว        */
+function api(a,p,reqId){
+  if(!CFG.url) return Promise.reject(new Error('ยังไม่ได้ตั้งค่า URL ของ Apps Script'));
+  var id = reqId || newId();
+  var tries = 0, max = 3;
+  function attempt(){
+    tries++;
+    return once(a,p,id).catch(function(e){
+      var net = (e.name==='AbortError') || /Failed to fetch|NetworkError|Load failed|network/i.test(e.message||'');
+      if(net && tries<max){
+        if(tries===1) toast('เน็ตสะดุด กำลังลองใหม่…','warn');
+        return new Promise(function(r){setTimeout(r, tries*1800);}).then(attempt);
+      }
+      if(net) throw new Error('เชื่อมต่อไม่สำเร็จ — ตรวจรายการที่บันทึกก่อนบันทึกซ้ำ');
+      throw e;
+    });
+  }
+  return attempt();
+}
+function flush(){
+  if(!BOX.length||!navigator.onLine||!CFG.url) return Promise.resolve();
+  if(!BOX[0].reqId){ BOX[0].reqId=newId(); localStorage.setItem('mttBox',JSON.stringify(BOX)); }
+  return api(BOX[0].action,BOX[0].payload,BOX[0].reqId).then(function(){
+    BOX.shift(); localStorage.setItem('mttBox',JSON.stringify(BOX)); return flush();
+  }).catch(function(){});
+}
+function toast(m,c){
+  var t=$('toast'); t.textContent=m; t.className='toast show'+(c?' '+c:'');
+  clearTimeout(t._h); t._h=setTimeout(function(){t.className='toast';}, c==='warn'?5500:3200);
+}
+function send(a,p,ok,after){
+  if(!navigator.onLine){
+    BOX.push({action:a,payload:p,reqId:newId()}); localStorage.setItem('mttBox',JSON.stringify(BOX));
+    toast('ออฟไลน์ — เก็บไว้ส่งภายหลัง'); if(after) after(); return;
+  }
+  toast('กำลังบันทึก…');
+  var t0=Date.now();
+  api(a,p).then(function(r){
+    var sec=((Date.now()-t0)/1000).toFixed(1);
+    toast((r&&r.warn?r.warn:ok)+' · '+sec+' วิ', r&&r.warn?'warn':'');
+    if(after) after(r); refresh();
+  }).catch(function(e){ toast(e.message,'err'); });
+}
+
+/* ── nav ── */
+function go(t){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+  $('s-'+t).classList.add('on');
+  var mainTab={home:'home',rec:'rec',stock:'stock',sum:'sum'}[t] || (t.indexOf('f')===0||t==='other'?'rec':(t==='det'||t==='new'?'stock':(t==='spec'?'rec':'')));
+  document.querySelectorAll('nav button').forEach(function(b){b.classList.toggle('on',b.dataset.t===mainTab);});
+  window.scrollTo(0,0);
+  if(t==='sum') loadSum();
+  if(t==='spec') loadSpec();
+  if(t==='f3') renderLv();
+}
+
+/* ── home ── */
+function renderHome(){
+  if(!DATA) return;
+  var t=DATA.totals;
+  $('hVal').textContent=f(t.stockValue);
+  $('hSub').textContent=t.skuCount+' รายการ · '+t.monthOrders+' ออร์เดอร์เดือนนี้ · '+DATA.today;
+  $('hRev').textContent=f(t.monthRevenue);
+  $('hPro').textContent=f(t.monthProfit);
+  renderChain();
+
+  var days=DATA.settings.expiryDays;
+  $('cExp').textContent=DATA.expiring.length;
+  $('expList').innerHTML=DATA.expiring.length?DATA.expiring.map(function(l){
+    var left=dleft(l.expiry),pct=Math.max(5,Math.min(100,Math.round((1-left/days)*100)));
+    var col=left<=days/3?'var(--bad)':'var(--warn)';
+    return '<div style="padding:10px 0;border-bottom:1px solid var(--line)">'+
+      '<div style="display:flex;justify-content:space-between;gap:8px"><div><div class="t" style="font-weight:500;font-size:13.5px">'+esc(l.name)+'</div>'+
+      '<div class="s" style="font-size:11px;color:var(--muted)">ล็อต '+esc(l.lotNo)+' · '+esc(l.source||'')+'</div></div>'+
+      '<div class="num" style="font-weight:600">'+f4(l.qty)+'</div></div>'+
+      '<div class="life"><span style="width:'+pct+'%;background:'+col+'"></span></div>'+
+      '<div class="life-lab"><span>'+(left<0?'หมดอายุแล้ว '+Math.abs(left)+' วัน':'เหลือ '+left+' วัน ('+l.expiry+')')+'</span>'+
+      '<span>มูลค่า '+f(l.qty*l.cost)+'</span></div></div>';
+  }).join(''):'<div class="empty">ไม่มีล็อตใกล้หมดอายุภายใน '+days+' วัน</div>';
+
+  $('cLow').textContent=DATA.lowStock.length;
+  $('lowList').innerHTML=DATA.lowStock.length?DATA.lowStock.map(function(p){
+    return row(p.name,'จุดสั่งซื้อ '+f(p.reorder)+' '+(p.unit||''),f4(p.qty)+' '+(p.unit||''),'neg');
+  }).join(''):'<div class="empty">ทุกรายการอยู่เหนือจุดสั่งซื้อ</div>';
+
+  $('recList').innerHTML=DATA.recent.length?DATA.recent.slice(0,8).map(function(r){
+    var nm=['','ซื้อกะลา','ผลิตสารเขียว','ผลิตเมล็ดคั่ว','ซื้อวัสดุ','ขาย'][r.step];
+    var right=r.step===5?f(r.amt):f(r.amt);
+    return row(r.name, r.date+' · ขั้น '+r.step+' '+nm+' · '+r.doc+(r.yieldPct?' · yield '+f(r.yieldPct)+'%':''),
+      right, r.step===5?'pos':'');
+  }).join(''):'<div class="empty">ยังไม่มีรายการ</div>';
+}
+function dleft(d){return Math.round((new Date(d+'T00:00:00')-new Date(iso()+'T00:00:00'))/86400000);}
+
+function renderChain(){
+  var y=DATA.yields;
+  var pc=T('กาแฟกะลา')[0], gb=T('สารเขียว')[0];
+  var beans=T('เมล็ดคั่ว');
+  var bean=beans.filter(function(b){return b.avgCost>0;}).sort(function(a,b){return b.qty-a.qty;})[0]||beans[0];
+  var st=[
+    {n:'กาแฟกะลา',s:'ซื้อเข้า',w:1,c:pc?pc.avgCost:0,q:pc?pc.qty:0,col:'var(--s1)'},
+    {n:'สารเขียว',s:'หลังสี เหลือ '+f(y.mill)+'%',w:y.mill/100,c:gb?gb.avgCost:0,q:gb?gb.qty:0,col:'var(--s2)'},
+    {n:bean?bean.name:'เมล็ดคั่ว',s:'หลังคั่ว เหลือ '+f(y.roast)+'%',w:y.mill*y.roast/10000,c:bean?bean.avgCost:0,q:bean?bean.qty:0,col:'var(--s3)'}
+  ];
+  $('chain').innerHTML=st.map(function(x){
+    return '<div style="display:flex;align-items:center;gap:11px;padding:8px 0">'+
+      '<div style="flex:0 0 84px;height:28px;background:#EFEDF5;border-radius:7px;overflow:hidden">'+
+      '<div style="width:'+Math.max(9,Math.round(x.w*100))+'%;height:100%;background:'+x.col+';border-radius:7px"></div></div>'+
+      '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500">'+esc(x.n)+'</div>'+
+      '<div style="font-size:10.5px;color:var(--muted)">'+x.s+'</div></div>'+
+      '<div style="text-align:right;white-space:nowrap"><div class="num" style="font-size:13.5px;font-weight:600">'+(x.c>0?f(x.c):'—')+'</div>'+
+      '<div style="font-size:10px;color:var(--muted)">บาท/kg · เหลือ '+f4(x.q)+'</div></div></div>';
+  }).join('');
+  $('chTag').textContent=y.hasActual?'จาก '+y.batches+' รอบจริง':'ค่ามาตรฐาน';
+  $('chHint').textContent=y.parchmentPerRoastedKg>0?'ต้องใช้กาแฟกะลาราว '+f(y.parchmentPerRoastedKg)+' kg เพื่อให้ได้เมล็ดคั่ว 1 kg':'';
+}
+
+/* ── selects ── */
+function opt(l){return l.map(function(p){return '<option value="'+esc(p.code)+'">'+esc(p.name)+'</option>';}).join('');}
+function fillSel(){
+  if(!DATA) return;
+  var mats=T('วัสดุอุปกรณ์'), beans=T('เมล็ดคั่ว');
+  var set=function(id,l){var k=$(id).value;$(id).innerHTML=opt(l);if(k)$(id).value=k;};
+  set('a4Code',mats); set('a5Roast',beans); set('a5Green',T('สารเขียว'));
+  set('oCode',DATA.products.filter(function(p){return p.active;}));
+  set('spPouch',mats); set('spStick',mats);
+  if($('a5Roast')){
+    var kb=$('a5Roast').value;
+    $('a5Roast').innerHTML=T('เมล็ดคั่ว').map(function(b){
+      return '<option value="'+esc(b.code)+'">'+esc(b.name)+(b.roast?' · '+esc(b.roast):'')+'</option>';
+    }).join('');
+    if(kb) $('a5Roast').value=kb;
+  }
+  var boxes=boxList();
+  if($('a5BoxCode')){
+    var keep=$('a5BoxCode').value;
+    var noBox='<option value="">— ไม่ใช้กล่อง —</option>';
+    $('a5BoxCode').innerHTML=noBox+(boxes.length
+      ? boxes.map(function(p){
+          var lb=String(p.name).replace(/^กล่องพัสดุ\s*/,'');
+          return '<option value="'+esc(p.code)+'">'+esc(lb)+
+            (p.avgCost>0?' · '+f(p.avgCost)+' บ.':' · ยังไม่มีต้นทุน')+
+            ' · เหลือ '+f4(p.qty)+'</option>';
+        }).join('')
+      : '');
+    if(keep==='') $('a5BoxCode').value='';
+    else if(keep&&boxes.some(function(p){return p.code===keep;})) $('a5BoxCode').value=keep;
+    boxToggle();
+  }
+  $('a5Chan').innerHTML=DATA.settings.channels.map(function(c){return '<option>'+esc(c)+'</option>';}).join('');
+  $('oType').innerHTML=DATA.settings.issueTypes.map(function(c){return '<option>'+esc(c)+'</option>';}).join('');
+  $('nType').innerHTML=DATA.settings.types.map(function(c){return '<option>'+esc(c)+'</option>';}).join('');
+  $('nRoast').innerHTML='<option value=""></option>'+DATA.settings.roastLevels.map(function(c){return '<option>'+esc(c)+'</option>';}).join('');
+  $('spSize').innerHTML=(DATA.sizes||[250,500,1000]).map(function(s){return '<option value="'+s+'">'+s+'g</option>';}).join('');
+  $('sizeSeg').innerHTML=(DATA.sizes||[250,500,1000]).map(function(s){
+    return '<button class="'+(SIZE===s?'on':'')+'" onclick="SIZE='+s+';fill5();fillSel()">'+s+'g</button>';
+  }).join('');
+  ['a1Date','a2Date','a3Date','a4Date','a5Date','oDate'].forEach(function(i){if(!$(i).value)$(i).value=iso();});
+  renderLv();
+}
+
+
+/* ══════════ รายการที่บันทึก · แก้ไข · ลบ ══════════ */
+var DOCKIND='buyParchment', EDIT=null;
+var KINDLABEL={buyParchment:'1 ซื้อกะลา',mill:'2 ผลิตสารเขียว',roast:'3 ผลิตเมล็ดคั่ว',
+               buyMaterial:'4 ซื้อวัสดุ',sell:'5 ขาย',issue:'ตัดจ่าย'};
+var KINDFORM={buyParchment:'f1',mill:'f2',roast:'f3',buyMaterial:'f4',sell:'f5',issue:'other'};
+
+function openDocs(kind){ DOCKIND=kind||DOCKIND; go('docs'); loadDocs(); }
+function backFromDocs(){ go(EDIT?KINDFORM[EDIT.kind]:'rec'); }
+
+function loadDocs(){
+  $('docTitle').textContent='รายการ '+KINDLABEL[DOCKIND];
+  $('docKinds').innerHTML=Object.keys(KINDLABEL).map(function(k){
+    return '<button class="'+(DOCKIND===k?'on':'')+'" onclick="DOCKIND=\''+k+'\';loadDocs()">'+KINDLABEL[k]+'</button>';
+  }).join('');
+  $('docList').innerHTML='<div class="empty">กำลังโหลด…</div>';
+  api('listDocs',{kind:DOCKIND,limit:40}).then(function(r){
+    $('docList').innerHTML=r.docs.length?r.docs.map(function(d){
+      return '<div class="doc'+(d.cancelled?' off':'')+'">'+
+        '<div class="dx"><b>'+esc(d.title)+(d.cancelled?' <span class="pill b">ยกเลิกแล้ว</span>':'')+'</b>'+
+        '<small>'+d.date+' · '+esc(d.doc)+(d.sub?' · '+esc(d.sub):'')+'</small></div>'+
+        '<div class="da">'+f(d.amt)+'</div>'+
+        (d.cancelled?'':'<div class="ops">'+
+          '<button class="op" title="แก้ไข" onclick="startEdit(\''+esc(d.doc)+'\')">✎</button>'+
+          '<button class="op del" title="ลบ" onclick="askDelete(\''+esc(d.doc)+'\',\''+esc(d.title)+'\')">🗑</button>'+
+        '</div>')+'</div>';
+    }).join(''):'<div class="empty">ยังไม่มีรายการ</div>';
+  }).catch(function(e){ $('docList').innerHTML='<div class="empty">'+esc(e.message)+'</div>'; });
+}
+
+function askDelete(doc,title){
+  if(!confirm('ลบรายการ "'+title+'" ('+doc+')?\n\nระบบจะย้อนผลกระทบต่อสต๊อกให้อัตโนมัติ')) return;
+  toast('กำลังลบ…');
+  api('voidDoc',{kind:DOCKIND,docNo:doc}).then(function(){
+    toast('ลบรายการแล้ว'); loadDocs(); refresh();
+  }).catch(function(e){ toast(e.message,'err'); });
+}
+
+function startEdit(doc){
+  toast('กำลังโหลดรายการ…');
+  api('getDoc',{kind:DOCKIND,docNo:doc}).then(function(d){
+    EDIT={kind:DOCKIND,docNo:doc};
+    fillForm(DOCKIND,d);
+    var fid=KINDFORM[DOCKIND];
+    ['f1','f2','f3','f4','f5'].forEach(function(x){ if($('eb_'+x)) $('eb_'+x).style.display='none'; });
+    if($('eb_'+fid)){ $('eb_'+fid).style.display='flex'; $('ebt_'+fid).textContent='กำลังแก้ไข '+doc; }
+    go(fid);
+    toast('แก้ตัวเลขแล้วกดบันทึกได้เลย');
+  }).catch(function(e){ toast(e.message,'err'); });
+}
+
+function cancelEdit(){
+  if(!EDIT) return;
+  var fid=KINDFORM[EDIT.kind];
+  if($('eb_'+fid)) $('eb_'+fid).style.display='none';
+  EDIT=null;
+  toast('ยกเลิกการแก้ไขแล้ว');
+}
+
+function fillForm(kind,d){
+  if(kind==='buyParchment'){
+    $('a1Date').value=d.date; $('a1Qty').value=d.qty; $('a1Price').value=d.unitPrice;
+    $('a1Fr').value=d.freight; $('a1Sup').value=d.supplier||''; $('a1Note').value=d.note||'';
+    p1();
+  } else if(kind==='mill'){
+    $('a2Date').value=d.date; $('a2In').value=d.qtyIn; $('a2Out').value=d.qtyOut;
+    $('a2Rate').value=d.millRate; $('a2Fr').value=d.freight; $('a2Ven').value=d.vendor||'';
+    p2();
+  } else if(kind==='roast'){
+    $('a3Date').value=d.date; $('a3In').value=d.qtyIn;
+    $('a3Labor').value=d.laborTotal; $('a3Rent').value=d.rentTotal; $('a3Ven').value=d.vendor||'';
+    renderLv();
+    var LV=levelList();
+    LV.forEach(function(l,i){ if($('lo'+i)) $('lo'+i).value=''; });
+    (d.lines||[]).forEach(function(l){
+      LV.forEach(function(x,i){
+        if(($('lo'+i))&&((x.code&&x.code===l.code)||(x.roast||'').trim()===(l.roast||'').trim()))
+          $('lo'+i).value=l.qtyOut;
+      });
+    });
+    p3();
+  } else if(kind==='buyMaterial'){
+    fillSel();
+    $('a4Code').value=d.code; $('a4Qty').value=d.qty; $('a4Price').value=d.unitPrice;
+    $('a4Fr').value=d.freight; $('a4Date').value=d.date; $('a4Sup').value=d.supplier||'';
+    p4();
+  } else if(kind==='sell'){
+    $('a5Date').value=d.date; $('a5Cust').value=d.customer||'';
+    if(d.channel) $('a5Chan').value=d.channel;
+    $('a5ShipIn').value=d.shipCharged; $('a5ShipOut').value=d.shipPaid;
+    $('a5Box').value=0; $('a5Tape').value=0;
+    if($('a5BoxCode')) $('a5BoxCode').value='';
+    var tc=tapeProd();
+    (d.packItems||[]).forEach(function(it){
+      if(isBoxCode(it.code)){ $('a5BoxCode').value=it.code; $('a5Box').value=it.qty; }
+      else if(tc&&it.code===tc.code) $('a5Tape').value=it.qty;
+    });
+    boxToggle();
+    CART=(d.lines||[]).map(function(l){
+      var p=null;
+      if(l.kind==='ซอง'){ T('เมล็ดคั่ว').forEach(function(b){ if((b.roast||b.name)===l.roast) p=b; }); }
+      else p=T('สารเขียว')[0];
+      if(!p) p=T('เมล็ดคั่ว')[0];
+      return {code:p.code,kind:l.kind,size:l.size,
+              name:p.name+(l.kind==='ซอง'?' '+l.size+'g':''),
+              unit:l.kind==='ซอง'?'ซอง':'kg',qty:l.qty,price:l.price,cost:l.cost};
+    });
+    renderCart(); p5();
+  } else if(kind==='issue'){
+    fillSel();
+    $('oCode').value=d.code; $('oQty').value=d.qty; $('oDate').value=d.date;
+    if(d.type) $('oType').value=d.type;
+    $('oNote').value=d.note||'';
+    pOther();
+  }
+}
+
+/* ส่งงาน: ถ้ากำลังแก้ไขอยู่ ให้เรียก updateDoc แทนการสร้างใหม่ */
+function submit(kind,payload,ok,after){
+  if(EDIT && EDIT.kind===kind){
+    var doc=EDIT.docNo;
+    if(!navigator.onLine) return toast('การแก้ไขต้องออนไลน์','err');
+    toast('กำลังบันทึกการแก้ไข…');
+    api('updateDoc',{kind:kind,docNo:doc,payload:payload}).then(function(r){
+      cancelEdit();
+      toast(r&&r.warn?r.warn:'แก้ไข '+doc+' แล้ว', r&&r.warn?'warn':'');
+      if(after) after(r); refresh();
+    }).catch(function(e){ toast(e.message,'err'); });
+    return;
+  }
+  send(kind,payload,ok,after);
+}
+
+/* ── 1 ── */
+function p1(){
+  var q=+$('a1Qty').value||0, pz=+$('a1Price').value||0, fr=+$('a1Fr').value||0;
+  var pc=T('กาแฟกะลา')[0];
+  if(q<=0){$('v1').textContent='กรอกจำนวนและราคา';return;}
+  var tot=q*pz+fr;
+  var h=pr('ต้นทุนรวม',f(tot))+pr('ต้นทุนจริง/kg',f(tot/q));
+  if(pc){
+    h+=pr('ต้นทุนเฉลี่ยเดิม',f(pc.avgCost));
+    h+=pr('<b style="font-weight:600">ต้นทุนเฉลี่ยใหม่</b>','<b style="color:var(--s1d)">'+f((pc.qty*pc.avgCost+tot)/(pc.qty+q))+'</b>','hi');
+    h+=pr('คงเหลือหลังรับ',f4(pc.qty+q)+' kg');
+  }
+  $('v1').innerHTML=h;
+}
+function save1(){
+  var q=+$('a1Qty').value||0;
+  if(q<=0) return toast('กรอกจำนวน','err');
+  var pc=T('กาแฟกะลา')[0];
+  submit('buyParchment',{code:pc?pc.code:'',qty:q,unitPrice:+$('a1Price').value||0,freight:+$('a1Fr').value||0,
+    date:$('a1Date').value||iso(),supplier:$('a1Sup').value.trim(),note:$('a1Note').value.trim(),user:CFG.user||''},
+    'บันทึกซื้อกะลาแล้ว',function(){['a1Qty','a1Price','a1Note'].forEach(function(i){$(i).value='';});$('a1Fr').value='0';p1();});
+}
+
+/* ── 2 ── */
+function p2(){
+  var qi=+$('a2In').value||0, qo=+$('a2Out').value||0;
+  var pc=T('กาแฟกะลา')[0], gb=T('สารเขียว')[0];
+  if(!pc||qi<=0){$('v2').textContent='กรอกน้ำหนักเข้าและออก';return;}
+  var mat=pc.avgCost*qi, mill=(+$('a2Rate').value||0)*qi, fr=+$('a2Fr').value||0, tot=mat+mill+fr;
+  var h=pr('ต้นทุนกะลาที่ตัดเบิก',f(mat))+pr('ค่าสี',f(mill))+pr('ค่าส่ง',f(fr))+pr('ต้นทุนรวม',f(tot),'hi');
+  h+=pr('คงเหลือกะลาหลังตัด','<span style="color:'+(pc.qty-qi<0?'var(--bad)':'inherit')+'">'+f4(pc.qty-qi)+' kg</span>');
+  if(qo>0){
+    var y=qo/qi*100,std=DATA.yields.stdMill;
+    h+=pr('น้ำหนักหาย','<span class="neg">'+f4(qi-qo)+' kg</span>');
+    h+=pr('Yield','<span style="color:'+(Math.abs(y-std)>5?'var(--warn)':'var(--ok)')+'">'+f(y)+'% (มาตรฐาน '+f(std)+'%)</span>');
+    h+=pr('<b style="font-weight:600">ต้นทุนสารเขียว/kg</b>','<b style="color:var(--s2d)">'+f(tot/qo)+'</b>','hi');
+    if(gb) h+=pr('ต้นทุนเฉลี่ยใหม่',f((gb.qty*gb.avgCost+tot)/(gb.qty+qo)));
+  }
+  $('v2').innerHTML=h;
+}
+function save2(){
+  var qi=+$('a2In').value||0,qo=+$('a2Out').value||0;
+  if(qi<=0||qo<=0) return toast('กรอกน้ำหนักเข้าและออก','err');
+  submit('mill',{qtyIn:qi,qtyOut:qo,millRate:+$('a2Rate').value||0,freight:+$('a2Fr').value||0,
+    date:$('a2Date').value||iso(),vendor:$('a2Ven').value.trim(),user:CFG.user||''},
+    'บันทึกผลิตสารเขียวแล้ว',function(){$('a2In').value='';$('a2Out').value='';p2();});
+}
+
+/* ── 3 สารเขียวยอดเดียว แยกผลผลิตรายระดับ ── */
+function stdOf(name){
+  var y=DATA?DATA.yields:null;
+  if(!y) return 84;
+  return (y.stdLevels&&y.stdLevels[name])||y.stdFallback||y.stdRoast||84;
+}
+function levelList(){
+  /* แสดงครบทุกระดับจากชีตตั้งค่าเสมอ แม้ยังไม่เคยมีสินค้าของระดับนั้น */
+  var names=(DATA&&DATA.settings.roastLevels&&DATA.settings.roastLevels.length)
+    ? DATA.settings.roastLevels
+    : ['คั่วอ่อน','คั่วกลาง','คั่วกลางค่อนเข้ม','คั่วเข้ม'];
+  var beans=T('เมล็ดคั่ว');
+  return names.map(function(nm){
+    var p=beans.filter(function(b){return (b.roast||'').trim()===nm.trim();})[0]
+        ||beans.filter(function(b){return (b.name||'').indexOf(nm)>=0;})[0];
+    return {roast:nm, code:p?p.code:'', name:p?p.name:'', qty:p?p.qty:0, avgCost:p?p.avgCost:0, exists:!!p};
+  });
+}
+function renderLv(){
+  if(!DATA) return;
+  $('lvBox').innerHTML=levelList().map(function(l,i){
+    return '<div class="lv"><div class="h">'+
+      '<span>'+esc(l.name||l.roast)+' <span style="font-weight:400;color:var(--muted);font-size:12px">'+esc(l.roast)+'</span></span>'+
+      '<span class="y" id="y'+i+'"></span></div>'+
+      '<label for="lo'+i+'">เมล็ดคั่วที่ได้ (kg) · มาตรฐาน '+f(stdOf(l.roast))+'%'+
+      (l.exists?' · เหลือ '+f4(l.qty)+' kg':' · <span style="color:var(--warn)">จะสร้างรายการให้อัตโนมัติ</span>')+'</label>'+
+      '<input id="lo'+i+'" type="number" inputmode="decimal" step="any" placeholder="0" oninput="p3()">'+
+      '</div>';
+  }).join('');
+}
+function lvLines(){
+  var out=[];
+  levelList().forEach(function(l,i){
+    var qo=+(($('lo'+i)||{}).value)||0;
+    if(qo>0) out.push({code:l.code,roast:l.roast,qtyOut:qo,idx:i});
+  });
+  return out;
+}
+function p3(){
+  var qi=+$('a3In').value||0;
+  var L=lvLines(), gb=T('สารเขียว')[0];
+  T('เมล็ดคั่ว').forEach(function(b,i){ var e=$('y'+i); if(e){e.textContent='';} });
+  if(!gb||qi<=0){$('v3').textContent='กรอกสารเขียวที่ตัดเบิกและเมล็ดคั่วที่ได้';return;}
+
+  var to=0; L.forEach(function(l){to+=l.qtyOut;});
+  var lab=+$('a3Labor').value||0, rent=+$('a3Rent').value||0;
+  var mat=gb.avgCost*qi, tot=mat+lab+rent;
+
+  var h=pr('ต้นทุนสารเขียวที่ใช้',f(mat))+pr('ค่าแรงจ้างคั่ว',f(lab))+pr('ค่าเช่าเครื่องคั่ว',f(rent))+
+    pr('ต้นทุนรวมทั้งรอบ',f(tot),'hi');
+  h+=pr('คงเหลือสารเขียวหลังตัด','<span style="color:'+(gb.qty-qi<0?'var(--bad)':'inherit')+'">'+f4(gb.qty-qi)+' kg</span>');
+
+  if(!L.length){ $('v3').innerHTML=h+pr('เมล็ดคั่วที่ได้','ยังไม่ได้กรอก'); return; }
+
+  if(to>qi){
+    $('v3').innerHTML=h+'<div class="pr hi"><span style="color:var(--bad)">เมล็ดคั่วรวม '+f4(to)+' kg มากกว่าสารเขียว '+f4(qi)+' kg</span></div>';
+    return;
+  }
+
+  h+=pr('เมล็ดคั่วที่ได้รวม',f4(to)+' kg');
+  h+=pr('น้ำหนักหายรวม','<span class="neg">'+f4(qi-to)+' kg</span>');
+  h+=pr('Yield รวม',f(to/qi*100)+'%');
+
+  /* ปันส่วนสารเขียวตาม yield มาตรฐานของแต่ละระดับ */
+  var sumW=0, W=[];
+  L.forEach(function(l){ var w=l.qtyOut/(stdOf(l.roast)/100); W.push(w); sumW+=w; });
+  h+='<div class="pr hi"><span style="color:var(--muted);font-size:11.5px">ปันส่วนสารเขียวและต้นทุนรายระดับ</span></div>';
+  L.forEach(function(l,k){
+    var share=sumW>0?W[k]/sumW:1/L.length;
+    var g=qi*share;
+    var y=g>0?l.qtyOut/g*100:0;
+    var c=(gb.avgCost*g+lab*share+rent*share)/l.qtyOut;
+    var e=$('y'+l.idx);
+    if(e){ e.textContent=f(y)+'%'; e.style.color=Math.abs(y-stdOf(l.roast))>5?'var(--warn)':'var(--ok)'; }
+    h+=pr(esc(l.roast)+' · ใช้สารเขียว '+f4(g)+' kg',
+      '<span style="color:var(--s3d)">'+f(c)+' บาท/kg</span>');
+  });
+  $('v3').innerHTML=h;
+}
+function save3(){
+  var qi=+$('a3In').value||0;
+  var L=lvLines();
+  if(qi<=0) return toast('กรอกสารเขียวที่ตัดเบิก','err');
+  if(!L.length) return toast('กรอกเมล็ดคั่วอย่างน้อยหนึ่งระดับ','err');
+  var to=0; L.forEach(function(l){to+=l.qtyOut;});
+  if(to>qi) return toast('เมล็ดคั่วรวมมากกว่าสารเขียวที่ใช้','err');
+  submit('roast',{qtyIn:qi,lines:L.map(function(l){return {code:l.code,roast:l.roast,qtyOut:l.qtyOut};}),
+    laborTotal:+$('a3Labor').value||0,rentTotal:+$('a3Rent').value||0,
+    date:$('a3Date').value||iso(),vendor:$('a3Ven').value.trim(),user:CFG.user||''},
+    'บันทึกผลิตเมล็ดคั่วแล้ว',function(){
+      $('a3In').value='';
+      levelList().forEach(function(l,i){ if($('lo'+i)) $('lo'+i).value=''; });
+      $('a3Labor').value='0';$('a3Rent').value='0';p3();
+    });
+}
+
+/* ── 4 ── */
+function p4(){
+  var p=P($('a4Code').value), q=+$('a4Qty').value||0;
+  if(!p||q<=0){$('v4').textContent='เลือกวัสดุและกรอกจำนวน';return;}
+  var tot=q*(+$('a4Price').value||0)+(+$('a4Fr').value||0);
+  $('v4').innerHTML=pr('ต้นทุนรวม',f(tot))+pr('ต้นทุนจริง/'+(p.unit||'หน่วย'),f(tot/q))+
+    pr('ต้นทุนเฉลี่ยเดิม',f(p.avgCost))+
+    pr('<b style="font-weight:600">ต้นทุนเฉลี่ยใหม่</b>','<b style="color:var(--s4d)">'+f((p.qty*p.avgCost+tot)/(p.qty+q))+'</b>','hi')+
+    pr('คงเหลือหลังรับ',f4(p.qty+q)+' '+(p.unit||''));
+}
+function save4(){
+  var q=+$('a4Qty').value||0;
+  if(q<=0) return toast('กรอกจำนวน','err');
+  submit('buyMaterial',{code:$('a4Code').value,qty:q,unitPrice:+$('a4Price').value||0,freight:+$('a4Fr').value||0,
+    date:$('a4Date').value||iso(),supplier:$('a4Sup').value.trim(),user:CFG.user||''},
+    'บันทึกซื้อวัสดุแล้ว',function(){$('a4Qty').value='';$('a4Price').value='';$('a4Fr').value='0';p4();});
+}
+
+/* ── 5 ── */
+function kindTab(k){
+  KIND=k;
+  $('kBag').style.display=k==='ซอง'?'block':'none';
+  $('kKg').style.display=k==='kg'?'block':'none';
+  document.querySelectorAll('[data-k]').forEach(function(b){b.classList.toggle('on',b.dataset.k===k);});
+  fill5();
+}
+function fill5(){
+  fillSel();
+  var p= KIND==='ซอง' ? P($('a5Roast').value) : P($('a5Green').value);
+  if(!p) return;
+  if(KIND==='ซอง'){
+    var kg=SIZE/1000;
+    var spec=(DATA.packSpecs||[]).filter(function(s){return s.size===SIZE;})[0];
+    var po=spec&&spec.pouchCode?P(spec.pouchCode):null, sk=spec&&spec.stickerCode?P(spec.stickerCode):null;
+    var c=p.avgCost*kg+(po?po.avgCost*spec.pouchQty:0)+(sk?sk.avgCost*spec.stickerQty:0);
+    $('a5Stock').innerHTML='เหลือ '+f4(p.qty)+' kg (พอบรรจุ '+Math.floor(p.qty/kg)+' ซอง) · ต้นทุน/ซอง '+f(c)+
+      (po?'':' <span style="color:var(--bad)">ยังไม่ได้ตั้งซองของขนาดนี้</span>');
+    if(!$('a5Price').value) $('a5Price').value=p.price?p.price*kg:'';
+  } else {
+    $('a5Stock').textContent='เหลือ '+f4(p.qty)+' kg · ต้นทุน '+f(p.avgCost)+'/kg';
+    if(!$('a5Price').value) $('a5Price').value=p.price||'';
+  }
+}
+function addLine(){
+  var q=+$('a5Qty').value||0, price=+$('a5Price').value||0;
+  var p= KIND==='ซอง' ? P($('a5Roast').value) : P($('a5Green').value);
+  if(!p||q<=0) return toast('เลือกสินค้าและจำนวน','err');
+  var unitCost;
+  if(KIND==='ซอง'){
+    var kg=SIZE/1000;
+    var spec=(DATA.packSpecs||[]).filter(function(s){return s.size===SIZE;})[0];
+    var po=spec&&spec.pouchCode?P(spec.pouchCode):null, sk=spec&&spec.stickerCode?P(spec.stickerCode):null;
+    unitCost=p.avgCost*kg+(po?po.avgCost*spec.pouchQty:0)+(sk?sk.avgCost*spec.stickerQty:0);
+  } else unitCost=p.avgCost;
+  CART.push({code:p.code,kind:KIND,size:KIND==='ซอง'?SIZE:0,name:p.name+(KIND==='ซอง'?' '+SIZE+'g':''),
+    unit:KIND==='ซอง'?'ซอง':'kg',qty:q,price:price,cost:unitCost});
+  $('a5Qty').value=''; $('a5Price').value=''; renderCart(); p5();
+}
+function delLine(i){CART.splice(i,1);renderCart();p5();}
+function renderCart(){
+  var c=$('cart'); c.style.display=CART.length?'block':'none';
+  c.innerHTML=CART.map(function(l,i){
+    return '<div class="ci"><div><div style="font-weight:500;font-size:13.5px">'+esc(l.name)+'</div>'+
+      '<div style="font-size:11px;color:var(--muted)">'+f4(l.qty)+' '+esc(l.unit)+' × '+f(l.price)+' · ทุน '+f(l.cost)+'</div></div>'+
+      '<div style="display:flex;align-items:center;gap:8px"><span class="num" style="font-weight:600">'+f(l.qty*l.price)+'</span>'+
+      '<button class="x" onclick="delLine('+i+')">×</button></div></div>';
+  }).join('');
+}
+function boxList(){ return T('วัสดุอุปกรณ์').filter(function(p){return /กล่อง/.test(p.name);}); }
+function isBoxCode(c){ return boxList().some(function(p){return p.code===c;}); }
+function boxProd(){
+  var el=$('a5BoxCode');
+  if(el) return el.value?(P(el.value)||null):null;   /* ค่าว่าง = ไม่ใช้กล่อง */
+  return boxList()[0]||P('MT-BOX');
+}
+function boxToggle(){
+  var el=$('a5BoxCode'), q=$('a5Box');
+  if(!el||!q) return;
+  var none=!el.value;
+  q.disabled=none;
+  if(none) q.value=0;
+  else if(+q.value===0) q.value=1;
+}
+function chanChange(){
+  /* นัดรับ = รับของเอง ตั้งค่าเริ่มต้นเป็นไม่ใช้กล่องและไม่มีค่าส่ง ปรับเองได้ */
+  if($('a5Chan').value==='นัดรับ'){
+    $('a5BoxCode').value=''; $('a5Tape').value='0';
+    $('a5ShipIn').value='0'; $('a5ShipOut').value='0';
+  } else if(!$('a5BoxCode').value && boxList().length){
+    $('a5BoxCode').value=boxList()[0].code;
+  }
+  boxToggle(); p5();
+}
+function prefillBox(){ $('nType').value='วัสดุอุปกรณ์'; $('nUnit').value='ใบ'; $('nName').value='กล่องพัสดุ '; nTypeChange(); }
+function tapeProd(){ return P('MT-TAPE')||T('วัสดุอุปกรณ์').filter(function(p){return /เทป/.test(p.name);})[0]; }
+function p5(){
+  if(!CART.length){$('v5').textContent='เพิ่มรายการสินค้าก่อน';return;}
+  var goods=0,cogs=0;
+  CART.forEach(function(l){goods+=l.qty*l.price;cogs+=l.qty*l.cost;});
+  var box=boxProd(),tape=tapeProd();
+  var nb=+$('a5Box').value||0,nt=+$('a5Tape').value||0;
+  var bc=(box?box.avgCost*nb:0)+(tape?tape.avgCost*nt:0);
+  var si=+$('a5ShipIn').value||0,so=+$('a5ShipOut').value||0;
+  var rev=goods+si,cost=cogs+bc+so,pf=rev-cost;
+  /* เตือนเมื่อวัสดุมีจำนวนแต่ยังไม่มีต้นทุน (ยังไม่ได้บันทึกซื้อในขั้นที่ 4) */
+  var zero=[];
+  if(box&&nb>0&&box.avgCost<=0) zero.push(box.name+' ยังไม่มีต้นทุน');
+  if(nt>0){ if(!tape) zero.push('ไม่พบสินค้าเทปกาวในระบบ'); else if(tape.avgCost<=0) zero.push('เทปกาวยังไม่มีต้นทุน'); }
+  var boxLine=pr('กล่อง + เทปกาว', f(bc));
+  if(zero.length) boxLine=pr('กล่อง + เทปกาว','<span style="color:var(--warn)">'+f(bc)+' ⚠</span>');
+  $('v5').innerHTML=pr('มูลค่าสินค้า',f(goods))+pr('ต้นทุนสินค้า (เมล็ด+ซอง+สติ๊กเกอร์)',f(cogs))+
+    boxLine+
+    (box&&nb>0
+      ? pr(esc(box.name)+' × '+f(nb),(box.avgCost>0?f(box.avgCost)+' /ใบ · เหลือ '+f4(box.qty)+' ใบ':'ยังไม่มีต้นทุน'))
+      : pr('กล่องพัสดุ','<span style="color:var(--muted)">ไม่ใช้กล่อง</span>'))+
+    pr('ค่าส่ง เก็บ '+f(si)+' / จ่าย '+f(so),'<span style="color:'+(si-so<0?'var(--bad)':'var(--ok)')+'">'+(si-so>=0?'+':'')+f(si-so)+'</span>')+
+    pr('รายได้รวม',f(rev),'hi')+pr('ต้นทุนรวม',f(cost))+
+    pr('<b style="font-weight:600">กำไรสุทธิ</b>','<b style="color:'+(pf>=0?'var(--ok)':'var(--bad)')+'">'+f(pf)+' ('+(rev>0?f(pf/rev*100):0)+'%)</b>')+
+    (zero.length?'<div class="pr hi"><span style="color:var(--warn);font-size:11.5px">⚠ '+zero.join(' · ')+' — บันทึกซื้อในขั้นที่ 4 ก่อน กล่อง/เทปจึงจะเข้าต้นทุน</span></div>':'');
+}
+function save5(){
+  if(!CART.length) return toast('ยังไม่มีรายการ','err');
+  var box=boxProd(),tape=tapeProd();
+  var nb=+$('a5Box').value||0, nt=+$('a5Tape').value||0;
+  if((box&&nb>0&&box.avgCost<=0) || (nt>0&&tape&&tape.avgCost<=0)){
+    if(!confirm((box&&box.avgCost<=0?box.name:'เทปกาว')+' ยังไม่มีต้นทุน (ยังไม่ได้บันทึกซื้อในขั้นที่ 4)\n\nบันทึกต่อโดยคิดเป็น 0 บาทหรือไม่?')) return;
+  }
+  var items=[];
+  if(nb>0&&box) items.push({code:box.code,qty:nb});
+  if(nt>0&&tape) items.push({code:tape.code,qty:nt});
+  submit('sell',{lines:CART.map(function(l){return {code:l.code,kind:l.kind,size:l.size,qty:l.qty,price:l.price};}),
+    packItems:items,shipCharged:+$('a5ShipIn').value||0,shipPaid:+$('a5ShipOut').value||0,
+    customer:$('a5Cust').value.trim(),channel:$('a5Chan').value,date:$('a5Date').value||iso(),user:CFG.user||''},
+    'บันทึกการขายแล้ว',function(){
+      CART=[];renderCart();$('a5Cust').value='';$('a5ShipIn').value='0';$('a5ShipOut').value='0';p5();
+    });
+}
+
+/* ── 6 สรุป ── */
+function setMode(m){
+  MODE=m;
+  document.querySelectorAll('[data-m]').forEach(function(b){b.classList.toggle('on',b.dataset.m===m);});
+  var i=$('sumKey');
+  if(m==='day'){i.type='date';i.value=iso();}
+  else if(m==='month'){i.type='month';i.value=iso().slice(0,7);}
+  else {i.type='number';i.value=iso().slice(0,4);}
+  loadSum();
+}
+function loadSum(){
+  var k=$('sumKey').value||iso().slice(0,MODE==='day'?10:(MODE==='month'?7:4));
+  $('sumMain').innerHTML='<div class="empty">กำลังโหลด…</div>';
+  api('summary',{mode:MODE,key:String(k)}).then(function(r){
+    var s=r.summary, lab={day:'วันที่',month:'เดือน',year:'ปี'}[MODE];
+    var h='<h3>สรุป'+lab+' '+r.key+'</h3>'+
+      pr('มูลค่าสินค้า',f(s.goods))+pr('ค่าส่งที่เก็บลูกค้า',f(s.shipCharged))+
+      pr('รายได้รวม',f(s.revenue),'hi')+
+      pr('ต้นทุนเมล็ด',f(s.beanCost))+pr('ซอง + สติ๊กเกอร์',f(s.pouchCost))+
+      pr('กล่อง + เทปกาว',f(s.boxCost))+pr('ค่าส่งที่จ่ายจริง',f(s.shipPaid))+
+      pr('ต้นทุนรวม',f(s.cogs))+
+      pr('<b style="font-weight:600">กำไรขั้นต้น</b>','<b style="color:'+(s.profit>=0?'var(--ok)':'var(--bad)')+'">'+f(s.profit)+' ('+f(s.margin)+'%)</b>','hi');
+    if(s.fixed>0) h+=pr('ค่าใช้จ่ายคงที่',f(s.fixed))+
+      pr('<b style="font-weight:600">กำไรสุทธิ</b>','<b style="color:'+(s.netProfit>=0?'var(--ok)':'var(--bad)')+'">'+f(s.netProfit)+'</b>');
+    h+=pr('ส่วนต่างค่าส่ง','<span style="color:'+(s.shipGap<0?'var(--bad)':'var(--ok)')+'">'+(s.shipGap>=0?'+':'')+f(s.shipGap)+'</span>')+
+      pr('ออร์เดอร์ / เฉลี่ยต่อบิล',s.orders+' / '+f(s.avgOrder))+
+      pr('ซื้อกะลา',f4(s.buyParchmentKg)+' kg · '+f(s.buyParchment))+
+      pr('ซื้อวัสดุ',f(s.buyMaterial))+
+      pr('ค่าสี + ค่าส่งสารเขียว',f(s.millFee))+
+      pr('ค่าแรง + ค่าเช่าเครื่องคั่ว',f(s.roastFee))+
+      pr('มูลค่าตัดจ่าย/ของเสีย','<span class="neg">'+f(s.lossValue)+'</span>');
+    if(s.millIn>0) h+=pr('สี '+f4(s.millIn)+' → '+f4(s.millOut)+' kg','หาย '+f4(s.millLost)+' · '+f(s.millYield)+'%','hi');
+    if(s.roastIn>0) h+=pr('คั่ว '+f4(s.roastIn)+' → '+f4(s.roastOut)+' kg','หาย '+f4(s.roastLost)+' · '+f(s.roastYield)+'%');
+    $('sumMain').innerHTML=h;
+
+    $('sumRows').innerHTML=r.rows.length?
+      '<table><tr><th>รายการ</th><th style="text-align:right">จำนวน</th><th style="text-align:right">ขาย</th><th style="text-align:right">กำไร</th><th style="text-align:right">%</th></tr>'+
+      r.rows.map(function(x){
+        return '<tr><td>'+esc(x.roast)+(x.size?' '+x.size+'g':'')+'<div style="font-size:10.5px;color:var(--muted)">ทุน/หน่วย '+f(x.perUnit)+'</div></td>'+
+          '<td class="n">'+f4(x.qty)+'</td><td class="n">'+f(x.sales)+'</td>'+
+          '<td class="n '+(x.profit>=0?'pos':'neg')+'">'+f(x.profit)+'</td><td class="n">'+f(x.margin)+'</td></tr>';
+      }).join('')+'</table>':'<div class="empty">ไม่มีการขายในช่วงนี้</div>';
+
+    $('sumChan').innerHTML=r.channels.length?r.channels.map(function(c){
+      return row(c.channel,c.orders+' ออร์เดอร์ · รายได้ '+f(c.revenue),f(c.profit),c.profit>=0?'pos':'neg');
+    }).join(''):'<div class="empty">ไม่มีข้อมูล</div>';
+
+    renderPerBag(r.perBag);
+  }).catch(function(e){$('sumMain').innerHTML='<div class="empty">'+esc(e.message)+'</div>';});
+}
+function renderPerBag(pb){
+  if(!pb||!pb.rows.length){$('perBag').innerHTML='<div class="empty">ยังไม่มีข้อมูลต้นทุน</div>';return;}
+  var roasts=[];
+  pb.rows.forEach(function(r){if(roasts.indexOf(r.roast)<0)roasts.push(r.roast);});
+  if(!PBROAST||roasts.indexOf(PBROAST)<0) PBROAST=roasts[0];
+  $('pbTag').textContent='yield '+f(pb.yieldMill)+'% / '+f(pb.yieldRoast)+'%';
+  $('pbChips').innerHTML=roasts.map(function(r){
+    return '<button class="'+(PBROAST===r?'on':'')+'" onclick="PBROAST=\''+esc(r)+'\';renderPerBag(LASTPB)">'+esc(r)+'</button>';
+  }).join('');
+  LASTPB=pb;
+  var rows=pb.rows.filter(function(r){return r.roast===PBROAST;});
+  $('perBag').innerHTML='<table><tr><th>ส่วนประกอบ</th>'+
+    rows.map(function(r){return '<th style="text-align:right">'+r.size+'g</th>';}).join('')+'</tr>'+
+    [['กาแฟกะลา','parch'],['ค่าสี + ค่าส่ง','mill'],['ค่าแรง + ค่าเช่าคั่ว','roastFee'],['ซองกาแฟ','pouch'],['สติ๊กเกอร์','sticker']]
+      .map(function(k){
+        return '<tr><td>'+k[0]+'</td>'+rows.map(function(r){return '<td class="n">'+f(r[k[1]])+'</td>';}).join('')+'</tr>';
+      }).join('')+
+    '<tr><td><b>ต้นทุนรวม/ซอง</b></td>'+rows.map(function(r){return '<td class="n"><b>'+f(r.total)+'</b></td>';}).join('')+'</tr>'+
+    '<tr><td>ราคาแนะนำ ('+f(pb.target)+'%)</td>'+rows.map(function(r){return '<td class="n" style="color:var(--s6d)">'+f(r.suggest)+'</td>';}).join('')+'</tr>'+
+    '<tr><td>ใช้กะลา (kg)</td>'+rows.map(function(r){return '<td class="n">'+f4(r.parchKg)+'</td>';}).join('')+'</tr>'+
+    '</table>';
+}
+var LASTPB=null;
+
+/* ── สต๊อก ── */
+function renderProducts(){
+  if(!DATA) return;
+  var q=($('pSearch').value||'').toLowerCase();
+  var types=[''].concat(DATA.settings.types);
+  $('typeChips').innerHTML=types.map(function(c){
+    return '<button class="'+(TF===c?'on':'')+'" onclick="TF=\''+esc(c)+'\';renderProducts()">'+(c||'ทั้งหมด')+'</button>';
+  }).join('');
+  var list=DATA.products.filter(function(p){
+    if(TF&&p.type!==TF) return false;
+    if(!q) return true;
+    return (p.name+' '+p.code).toLowerCase().indexOf(q)>=0;
+  });
+  $('pList').innerHTML=list.length?list.map(function(p){
+    var low=p.reorder>0&&p.qty<=p.reorder;
+    return '<div class="card" style="padding:12px" onclick="openDet(\''+esc(p.code)+'\')">'+
+      '<div class="row" style="padding:0;border:0"><div><div class="t">'+esc(p.name)+(low?' <span class="pill b">ต่ำ</span>':'')+'</div>'+
+      '<div class="s">'+esc(p.type)+' · ทุน '+f(p.avgCost)+(p.price>0?' · ขาย '+f(p.price):'')+'</div></div>'+
+      '<div class="r '+(low?'neg':'')+'">'+f4(p.qty)+'<div class="s" style="font-family:var(--f);font-weight:400">'+esc(p.unit||'')+'</div></div></div></div>';
+  }).join(''):'<div class="empty">ไม่พบสินค้า</div>';
+}
+function openDet(code){
+  CUR=code; var p=P(code); if(!p) return;
+  $('dName').textContent=p.name;
+  var h=pr('ประเภท',esc(p.type))+pr('คงเหลือ',f4(p.qty)+' '+(p.unit||''))+
+    pr('ต้นทุนเฉลี่ย/'+(p.unit||'หน่วย'),f(p.avgCost))+pr('มูลค่าคงคลัง',f(p.value))+pr('จุดสั่งซื้อ',f(p.reorder));
+  $('dSum').innerHTML=h; $('cQty').value=p.qty;
+  var lots=(DATA.lots||[]).filter(function(l){return l.code===code;});
+  $('dLots').innerHTML=lots.length?lots.map(function(l){
+    return row(l.lotNo,'รับ '+l.received+(l.expiry?' · หมดอายุ '+l.expiry:'')+' · '+(l.source||'')+' · ทุน '+f(l.cost),f4(l.qty));
+  }).join(''):'<div class="empty">ไม่มีล็อตคงเหลือ</div>';
+  $('dMoves').innerHTML='<div class="empty">กำลังโหลด…</div>';
+  go('det');
+  api('productDetail',{code:code}).then(function(d){
+    $('dMoves').innerHTML=d.moves.length?d.moves.map(function(m){
+      return row(m.label,m.date+' · '+m.doc+(m.unit?' · @'+f(m.unit):''),(m.kind==='in'?'+':'−')+f4(m.qty),m.kind==='in'?'pos':'neg');
+    }).join(''):'<div class="empty">ยังไม่มีรายการ</div>';
+  }).catch(function(){$('dMoves').innerHTML='<div class="empty">ดึงข้อมูลไม่สำเร็จ</div>';});
+}
+function saveCount(){
+  if($('cQty').value==='') return toast('กรอกยอดนับจริง','err');
+  send('count',{code:CUR,countedQty:+$('cQty').value,reason:$('cWhy').value.trim(),date:iso(),user:CFG.user||''},
+    'บันทึกผลตรวจนับแล้ว',function(){$('cWhy').value='';go('stock');});
+}
+function pOther(){
+  var p=P($('oCode').value),q=+$('oQty').value||0;
+  if(!p){$('vOther').textContent='เลือกสินค้าและจำนวน';return;}
+  $('vOther').innerHTML=pr('คงเหลือ',f4(p.qty)+' '+(p.unit||''))+pr('ต้นทุน/หน่วย',f(p.avgCost))+
+    pr('มูลค่าที่ตัดออก','<span class="neg">'+f(p.avgCost*q)+'</span>','hi')+pr('คงเหลือหลังตัด',f4(p.qty-q));
+}
+function saveOther(){
+  var q=+$('oQty').value||0;
+  if(q<=0) return toast('กรอกจำนวน','err');
+  submit('issue',{code:$('oCode').value,qty:q,type:$('oType').value,date:$('oDate').value||iso(),
+    note:$('oNote').value.trim(),user:CFG.user||''},'บันทึกตัดจ่ายแล้ว',function(){$('oQty').value='';$('oNote').value='';pOther();});
+}
+function nTypeChange(){ $('nRoast').disabled=$('nType').value!=='เมล็ดคั่ว'; }
+function openNew(){
+  ['nCode','nName','nUnit','nPrice','nReorder'].forEach(function(i){$(i).value='';});
+  $('nQty').value='0';$('nCost').value='0';nTypeChange();go('new');
+}
+function saveProduct(){
+  if(!$('nCode').value.trim()) return toast('กรอกรหัสสินค้า','err');
+  if(!$('nName').value.trim()) return toast('กรอกชื่อสินค้า','err');
+  send('saveProduct',{code:$('nCode').value.trim(),name:$('nName').value.trim(),type:$('nType').value,
+    roast:$('nRoast').value,unit:$('nUnit').value.trim(),price:+$('nPrice').value||0,
+    reorder:+$('nReorder').value||0,openingQty:+$('nQty').value||0,openingCost:+$('nCost').value||0},
+    'บันทึกสินค้าแล้ว',function(){go('stock');});
+}
+function loadSpec(){
+  var s=(DATA?DATA.packSpecs:[]||[]).filter(function(x){return x.size===+$('spSize').value;})[0];
+  if(s){ if(s.pouchCode)$('spPouch').value=s.pouchCode; if(s.stickerCode)$('spStick').value=s.stickerCode;
+    $('spPq').value=s.pouchQty; $('spSq').value=s.stickerQty; }
+}
+function saveSpec(){
+  send('savePackSpec',{size:+$('spSize').value,pouchCode:$('spPouch').value,pouchQty:+$('spPq').value||1,
+    stickerCode:$('spStick').value,stickerQty:+$('spSq').value||1},'บันทึกสูตรแล้ว',function(){go('f4');});
+}
+
+/* ── config ── */
+function saveCfg(){
+  CFG.url=$('cUrl').value.trim();CFG.user=$('cUser').value.trim();
+  localStorage.setItem('mttCfg',JSON.stringify(CFG));refresh(true);
+}
+function refresh(loud){
+  if(!CFG.url){ if(loud) toast('ใส่ URL ของ Apps Script ก่อน','err'); return; }
+  flush().then(function(){return api('bootstrap');}).then(function(d){
+    DATA=d; localStorage.setItem('mttData',JSON.stringify(d));
+    renderHome();fillSel();renderProducts();
+    $('cStat').textContent='เชื่อมต่อสำเร็จ · '+d.products.length+' รายการ · อัปเดต '+new Date().toLocaleTimeString('th-TH');
+    queueStat();
+    if(loud) toast('ดึงข้อมูลเรียบร้อย');
+  }).catch(function(e){
+    _busy=false;
+    $('cStat').textContent='เชื่อมต่อไม่สำเร็จ: '+e.message;
+    if(loud) toast(e.message,'err');
+  });
+}
+function queueStat(){
+  var e=$('qStat'); if(!e) return;
+  if(!BOX.length){ e.style.display='none'; return; }
+  e.style.display='block';
+  e.innerHTML='<span style="color:var(--warn)">⚠ มี '+BOX.length+' รายการที่ยังไม่ได้ส่งขึ้นชีต</span>'+
+    '<div style="font-size:11.5px;color:var(--muted);margin-top:4px">'+
+    'รายการเหล่านี้เก็บอยู่ในเครื่องเฉพาะโดเมนนี้ ถ้าย้ายไปโดเมนใหม่ก่อนส่งจะหายไป '+
+    'ให้ต่อเน็ตแล้วกด “ดึงข้อมูลใหม่” จนตัวเลขนี้เป็น 0 ก่อนย้าย</div>';
+}
+function copyCfg(){
+  var t=CFG.url||'';
+  if(!t) return toast('ยังไม่มี URL ให้คัดลอก','err');
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){toast('คัดลอกแล้ว นำไปวางในแอปที่โดเมนใหม่ได้เลย');})
+      .catch(function(){ prompt('คัดลอกข้อความนี้',t); });
+  } else prompt('คัดลอกข้อความนี้',t);
+}
+function online(){ $('offBar').style.display=navigator.onLine?'none':'block'; queueStat(); if(navigator.onLine) flush(); }
+window.addEventListener('online',online);window.addEventListener('offline',online);
+
+(function init(){
+  $('cUrl').value=CFG.url||'';$('cUser').value=CFG.user||'';
+  ['a1Date','a2Date','a3Date','a4Date','a5Date','oDate'].forEach(function(i){$(i).value=iso();});
+  $('sumKey').value=iso().slice(0,7);
+  online();
+  if(DATA){renderHome();fillSel();renderProducts();}
+  if(CFG.url) refresh(); else go('set');
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+})();
+</script>
+</body>
+</html>
