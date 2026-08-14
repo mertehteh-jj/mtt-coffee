@@ -321,9 +321,10 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
         <div><label for="a5Box">จำนวนกล่อง (ใบ)</label><input id="a5Box" type="number" inputmode="numeric" step="1" value="1" oninput="p5()"></div>
       </div>
       <div class="g2">
+        <div><label for="a5Bubble">บับเบิ้ลกันกระแทก (เมตร)</label><input id="a5Bubble" type="number" inputmode="decimal" step="any" value="0" oninput="p5()"></div>
         <div><label for="a5Tape">เทปกาว (ม้วน)</label><input id="a5Tape" type="number" inputmode="decimal" step="any" value="0" oninput="p5()"></div>
-        <div><label>&nbsp;</label><button class="btn ghost" style="margin:0;padding:11px" onclick="go('new');prefillBox()">+ เพิ่มขนาดกล่อง</button></div>
       </div>
+      <button class="btn ghost" style="margin-top:9px" onclick="go('new');prefillBox()">+ เพิ่มขนาดกล่อง</button>
       <div class="g2">
         <div><label for="a5ShipIn">ค่าส่งที่เก็บลูกค้า</label><input id="a5ShipIn" type="number" inputmode="decimal" step="any" value="0" oninput="p5()"></div>
         <div><label for="a5ShipOut">ค่าส่งที่จ่ายจริง</label><input id="a5ShipOut" type="number" inputmode="decimal" step="any" value="0" oninput="p5()"></div>
@@ -777,12 +778,13 @@ function fillForm(kind,d){
     $('a5Date').value=d.date; $('a5Cust').value=d.customer||'';
     if(d.channel) $('a5Chan').value=d.channel;
     $('a5ShipIn').value=d.shipCharged; $('a5ShipOut').value=d.shipPaid;
-    $('a5Box').value=0; $('a5Tape').value=0;
+    $('a5Box').value=0; $('a5Tape').value=0; $('a5Bubble').value=0;
     if($('a5BoxCode')) $('a5BoxCode').value='';
-    var tc=tapeProd();
+    var tc=tapeProd(), uc=bubbleProd();
     (d.packItems||[]).forEach(function(it){
       if(isBoxCode(it.code)){ $('a5BoxCode').value=it.code; $('a5Box').value=it.qty; }
       else if(tc&&it.code===tc.code) $('a5Tape').value=it.qty;
+      else if(uc&&it.code===uc.code) $('a5Bubble').value=it.qty;
     });
     boxToggle();
     CART=(d.lines||[]).map(function(l){
@@ -1050,7 +1052,7 @@ function boxToggle(){
 function chanChange(){
   /* นัดรับ = รับของเอง ตั้งค่าเริ่มต้นเป็นไม่ใช้กล่องและไม่มีค่าส่ง ปรับเองได้ */
   if($('a5Chan').value==='นัดรับ'){
-    $('a5BoxCode').value=''; $('a5Tape').value='0';
+    $('a5BoxCode').value=''; $('a5Tape').value='0'; $('a5Bubble').value='0';
     $('a5ShipIn').value='0'; $('a5ShipOut').value='0';
   } else if(!$('a5BoxCode').value && boxList().length){
     $('a5BoxCode').value=boxList()[0].code;
@@ -1059,26 +1061,29 @@ function chanChange(){
 }
 function prefillBox(){ $('nType').value='วัสดุอุปกรณ์'; $('nUnit').value='ใบ'; $('nName').value='กล่องพัสดุ '; nTypeChange(); }
 function tapeProd(){ return P('MT-TAPE')||T('วัสดุอุปกรณ์').filter(function(p){return /เทป/.test(p.name);})[0]; }
+function bubbleProd(){ return P('MT-BUBBLE')||T('วัสดุอุปกรณ์').filter(function(p){return /บับเบิ|กันกระแทก/.test(p.name);})[0]; }
 function p5(){
   if(!CART.length){$('v5').textContent='เพิ่มรายการสินค้าก่อน';return;}
   var goods=0,cogs=0;
   CART.forEach(function(l){goods+=l.qty*l.price;cogs+=l.qty*l.cost;});
-  var box=boxProd(),tape=tapeProd();
-  var nb=+$('a5Box').value||0,nt=+$('a5Tape').value||0;
-  var bc=(box?box.avgCost*nb:0)+(tape?tape.avgCost*nt:0);
+  var box=boxProd(),tape=tapeProd(),bub=bubbleProd();
+  var nb=+$('a5Box').value||0,nt=+$('a5Tape').value||0,nu=+$('a5Bubble').value||0;
+  var bc=(box?box.avgCost*nb:0)+(tape?tape.avgCost*nt:0)+(bub?bub.avgCost*nu:0);
   var si=+$('a5ShipIn').value||0,so=+$('a5ShipOut').value||0;
   var rev=goods+si,cost=cogs+bc+so,pf=rev-cost;
   /* เตือนเมื่อวัสดุมีจำนวนแต่ยังไม่มีต้นทุน (ยังไม่ได้บันทึกซื้อในขั้นที่ 4) */
   var zero=[];
   if(box&&nb>0&&box.avgCost<=0) zero.push(box.name+' ยังไม่มีต้นทุน');
   if(nt>0){ if(!tape) zero.push('ไม่พบสินค้าเทปกาวในระบบ'); else if(tape.avgCost<=0) zero.push('เทปกาวยังไม่มีต้นทุน'); }
-  var boxLine=pr('กล่อง + เทปกาว', f(bc));
-  if(zero.length) boxLine=pr('กล่อง + เทปกาว','<span style="color:var(--warn)">'+f(bc)+' ⚠</span>');
+  if(nu>0){ if(!bub) zero.push('ไม่พบบับเบิ้ลกันกระแทกในระบบ'); else if(bub.avgCost<=0) zero.push('บับเบิ้ลกันกระแทกยังไม่มีต้นทุน'); }
+  var boxLine=pr('กล่อง + บับเบิ้ล + เทป', f(bc));
+  if(zero.length) boxLine=pr('กล่อง + บับเบิ้ล + เทป','<span style="color:var(--warn)">'+f(bc)+' ⚠</span>');
   $('v5').innerHTML=pr('มูลค่าสินค้า',f(goods))+pr('ต้นทุนสินค้า (เมล็ด+ซอง+สติ๊กเกอร์)',f(cogs))+
     boxLine+
     (box&&nb>0
       ? pr(esc(box.name)+' × '+f(nb),(box.avgCost>0?f(box.avgCost)+' /ใบ · เหลือ '+f4(box.qty)+' ใบ':'ยังไม่มีต้นทุน'))
       : pr('กล่องพัสดุ','<span style="color:var(--muted)">ไม่ใช้กล่อง</span>'))+
+    (bub&&nu>0?pr('บับเบิ้ล '+f(nu)+' เมตร',(bub.avgCost>0?f(bub.avgCost*nu)+' · '+f(bub.avgCost)+'/ม. · เหลือ '+f4(bub.qty):'ยังไม่มีต้นทุน')):'')+
     pr('ค่าส่ง เก็บ '+f(si)+' / จ่าย '+f(so),'<span style="color:'+(si-so<0?'var(--bad)':'var(--ok)')+'">'+(si-so>=0?'+':'')+f(si-so)+'</span>')+
     pr('รายได้รวม',f(rev),'hi')+pr('ต้นทุนรวม',f(cost))+
     pr('<b style="font-weight:600">กำไรสุทธิ</b>','<b style="color:'+(pf>=0?'var(--ok)':'var(--bad)')+'">'+f(pf)+' ('+(rev>0?f(pf/rev*100):0)+'%)</b>')+
@@ -1086,19 +1091,21 @@ function p5(){
 }
 function save5(){
   if(!CART.length) return toast('ยังไม่มีรายการ','err');
-  var box=boxProd(),tape=tapeProd();
-  var nb=+$('a5Box').value||0, nt=+$('a5Tape').value||0;
-  if((box&&nb>0&&box.avgCost<=0) || (nt>0&&tape&&tape.avgCost<=0)){
+  var box=boxProd(),tape=tapeProd(),bub=bubbleProd();
+  var nb=+$('a5Box').value||0, nt=+$('a5Tape').value||0, nu=+$('a5Bubble').value||0;
+  if((box&&nb>0&&box.avgCost<=0) || (nt>0&&tape&&tape.avgCost<=0) || (nu>0&&bub&&bub.avgCost<=0)){
     if(!confirm((box&&box.avgCost<=0?box.name:'เทปกาว')+' ยังไม่มีต้นทุน (ยังไม่ได้บันทึกซื้อในขั้นที่ 4)\n\nบันทึกต่อโดยคิดเป็น 0 บาทหรือไม่?')) return;
   }
   var items=[];
   if(nb>0&&box) items.push({code:box.code,qty:nb});
   if(nt>0&&tape) items.push({code:tape.code,qty:nt});
+  if(nu>0&&bub) items.push({code:bub.code,qty:nu});
   submit('sell',{lines:CART.map(function(l){return {code:l.code,kind:l.kind,size:l.size,qty:l.qty,price:l.price};}),
     packItems:items,shipCharged:+$('a5ShipIn').value||0,shipPaid:+$('a5ShipOut').value||0,
     customer:$('a5Cust').value.trim(),channel:$('a5Chan').value,date:$('a5Date').value||iso(),user:CFG.user||''},
     'บันทึกการขายแล้ว',function(){
-      CART=[];renderCart();$('a5Cust').value='';$('a5ShipIn').value='0';$('a5ShipOut').value='0';p5();
+      CART=[];renderCart();$('a5Cust').value='';$('a5ShipIn').value='0';$('a5ShipOut').value='0';
+      $('a5Bubble').value='0';$('a5Tape').value='0';p5();
     });
 }
 
