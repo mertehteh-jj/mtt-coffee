@@ -1050,7 +1050,8 @@ function seedCoffeeCatalog() {
     { code: 'MT-POUCH500', name: 'ซองกาแฟ 500g', type: 'วัสดุอุปกรณ์', unit: 'ใบ', reorder: 100 },
     { code: 'MT-POUCH1000', name: 'ซองกาแฟ 1000g', type: 'วัสดุอุปกรณ์', unit: 'ใบ', reorder: 50 },
     { code: 'MT-LABEL', name: 'สติ๊กเกอร์สินค้า', type: 'วัสดุอุปกรณ์', unit: 'ดวง', reorder: 300 },
-    { code: 'MT-TAPE', name: 'เทปกาว', type: 'วัสดุอุปกรณ์', unit: 'ม้วน', reorder: 5 }
+    { code: 'MT-TAPE', name: 'เทปกาว', type: 'วัสดุอุปกรณ์', unit: 'ม้วน', reorder: 5 },
+    { code: 'MT-BUBBLE', name: 'บับเบิ้ลกันกระแทก', type: 'วัสดุอุปกรณ์', unit: 'เมตร', reorder: 20 }
   ];
   boxItems_().forEach(function (b) { items.push(b); });
   roasts.forEach(function (r) {
@@ -1549,4 +1550,14 @@ function purgeCancelledSales() {
   });
   cacheClear_();
   return 'ลบแถวที่ยกเลิกแล้วออก ' + n + ' แถว';
+}
+
+/* ══════════ เพิ่มบับเบิ้ลกันกระแทกเข้ารายการวัสดุ — รันครั้งเดียว ══════════
+   ไม่แตะข้อมูลเดิม ถ้ามีอยู่แล้วจะไม่สร้างซ้ำ                              */
+function seedBubbleWrap() {
+  cacheClear_(); ensureSheets_(true);
+  if (findP_('MT-BUBBLE')) { flush_(); return 'มีบับเบิ้ลกันกระแทกอยู่แล้ว'; }
+  saveProduct_({ code: 'MT-BUBBLE', name: 'บับเบิ้ลกันกระแทก', type: 'วัสดุอุปกรณ์', unit: 'เมตร', reorder: 20 });
+  flush_();
+  return 'เพิ่ม "บับเบิ้ลกันกระแทก" (หน่วย: เมตร) เรียบร้อย — อย่าลืมบันทึกซื้อในขั้นที่ 4 เพื่อให้มีต้นทุน';
 }
