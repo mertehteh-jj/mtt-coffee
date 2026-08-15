@@ -154,6 +154,15 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
 .ci{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:10px 12px;border-bottom:1px solid var(--line)}
 .ci:last-child{border-bottom:0}
 .x{border:0;background:none;color:var(--bad);font-size:20px;line-height:1;padding:0 3px;cursor:pointer}
+
+/* ── แผนภูมิ ── */
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.ch-lg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:9px;font-size:11.5px;color:var(--ink2)}
+.ch-lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.ch-note{font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.5}
+.ch-empty{color:var(--muted);font-size:12.5px;text-align:center;padding:22px 0}
+.gtxt{font-family:var(--f);font-size:9.5px;fill:var(--muted)}
+.gval{font-family:var(--m);font-size:10px;fill:var(--ink2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -351,6 +360,13 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
     </div>
     <div style="margin:11px 0"><input id="sumKey" type="month" onchange="loadSum()"></div>
     <div class="card" id="sumMain"><div class="empty">กำลังโหลด…</div></div>
+
+    <div class="card"><h3>ต้นทุน 100 บาทไปไหนบ้าง</h3><div id="chSplit"></div></div>
+    <div class="card"><h3>แนวโน้มรายได้กับกำไร</h3><div id="chTrend"></div></div>
+    <div class="card"><h3>ยอดขายแยกระดับคั่ว × ขนาด</h3><div id="chSku"></div></div>
+    <div class="card"><h3>Yield แต่ละรอบผลิต</h3><div id="chYield"></div></div>
+    <div class="card"><h3>กำไรตามช่องทาง</h3><div id="chChan"></div></div>
+    <div class="card"><h3>มูลค่าสต๊อกแยกประเภท</h3><div id="chStock"></div></div>
     <div class="card"><h3>ต้นทุนต่อซอง <span class="pill" id="pbTag">—</span></h3>
       <div class="hint">ไล่ตั้งแต่กาแฟกะลา ผ่านค่าสี ค่าคั่ว จนถึงซองและสติ๊กเกอร์ · คำนวณจากต้นทุนเฉลี่ยปัจจุบันและ yield จริง</div>
       <div class="chips" id="pbChips" style="margin-top:10px"></div>
@@ -469,6 +485,8 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
     <div class="prev" id="cStat">ยังไม่ได้เชื่อมต่อ</div>
     <div class="prev" id="qStat" style="display:none"></div>
     <button class="btn ghost" onclick="copyCfg()">คัดลอก URL สำหรับย้ายไปโดเมนใหม่</button>
+    <button class="btn ghost" onclick="forceUpdate()">บังคับโหลดแอปเวอร์ชันล่าสุด</button>
+    <div style="text-align:center;font-size:11.5px;color:var(--muted);margin-top:10px" id="verLine"></div>
   </div></div>
 </section>
 
@@ -482,6 +500,7 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
 <div class="toast" id="toast"></div>
 
 <script>
+var APPVER='2026.08.15-แดชบอร์ด';   /* แก้เลขนี้ทุกครั้งที่แก้ไฟล์ จะได้รู้ว่าเครื่องโหลดตัวใหม่แล้วหรือยัง */
 var CFG=JSON.parse(localStorage.getItem('mttCfg')||'{}');
 var DATA=JSON.parse(localStorage.getItem('mttData')||'null');
 var BOX=JSON.parse(localStorage.getItem('mttBox')||'[]');
@@ -1109,6 +1128,229 @@ function save5(){
     });
 }
 
+
+/* ══════════ แผนภูมิ วาดด้วย SVG เอง ไม่พึ่งไลบรารีภายนอก เพื่อให้ใช้ออฟไลน์ได้ ══════════ */
+var CH={bean:'#C9A227',pouch:'#7FA96B',box:'#E39A6B',ship:'#C25A5A',profit:'#6F8FCB',
+        mill:'#5F8552',roast:'#B86F44',rev:'#C0C6E8',line:'#75609E',bar:'#A99BC4'};
+
+function svg_(vb,inner){ return '<svg class="chart" viewBox="'+vb+'" xmlns="http://www.w3.org/2000/svg" role="img">'+inner+'</svg>'; }
+function esc2(t){ return esc(t); }
+function lg_(items){
+  return '<div class="ch-lg">'+items.map(function(x){
+    return '<span><i style="background:'+x.c+'"></i>'+esc(x.t)+'</span>';
+  }).join('')+'</div>';
+}
+function nice_(max){
+  if(max<=0) return 1;
+  var p=Math.pow(10,Math.floor(Math.log10(max))), n=max/p;
+  return (n<=1?1:n<=2?2:n<=5?5:10)*p;
+}
+function short_(v){
+  v=Number(v)||0;
+  if(Math.abs(v)>=1000000) return (v/1000000).toFixed(1)+'ล.';
+  if(Math.abs(v)>=1000) return Math.round(v/1000)+'พ.';
+  return String(Math.round(v));
+}
+
+/* 1 ── ต้นทุน 100 บาทไปไหน (แท่งเดียวแบ่งสัดส่วน) */
+function drawSplit(s){
+  var el=$('chSplit');
+  if(!s||s.revenue<=0){ el.innerHTML='<div class="ch-empty">ยังไม่มีการขายในช่วงนี้</div>'; return; }
+  var shipLoss=Math.max(0,s.shipPaid-s.shipCharged);
+  var parts=[
+    {t:'เมล็ดกาแฟ',v:s.beanCost,c:CH.bean},
+    {t:'ซอง+สติ๊กเกอร์',v:s.pouchCost,c:CH.pouch},
+    {t:'กล่อง+บับเบิ้ล+เทป',v:s.boxCost,c:CH.box},
+    {t:'ค่าส่งส่วนที่ขาดทุน',v:shipLoss,c:CH.ship},
+    {t:'กำไร',v:Math.max(0,s.profit),c:CH.profit}
+  ].filter(function(p){return p.v>0;});
+  var tot=parts.reduce(function(a,b){return a+b.v;},0);
+  if(tot<=0){ el.innerHTML='<div class="ch-empty">ยังไม่มีข้อมูล</div>'; return; }
+
+  var W=340,H=46,x=0,seg='',lab='';
+  parts.forEach(function(p){
+    var w=p.v/tot*W;
+    seg+='<rect x="'+x.toFixed(1)+'" y="0" width="'+Math.max(0.6,w).toFixed(1)+'" height="30" fill="'+p.c+'"/>';
+    var pct=p.v/tot*100;
+    if(pct>=9) lab+='<text class="gval" x="'+(x+w/2).toFixed(1)+'" y="20" text-anchor="middle" fill="#fff">'+pct.toFixed(0)+'%</text>';
+    x+=w;
+  });
+  el.innerHTML=svg_('0 0 '+W+' '+H,'<g>'+seg+lab+'</g>')+
+    lg_(parts.map(function(p){return {c:p.c,t:p.t+' '+(p.v/tot*100).toFixed(1)+'%'};}))+
+    '<div class="ch-note">คิดจากรายได้รวม '+f(s.revenue)+' บาท · ทุกขาย 100 บาท เป็นกำไร '+
+    (s.revenue>0?(s.profit/s.revenue*100).toFixed(1):0)+' บาท</div>';
+}
+
+/* 2 ── แนวโน้มรายได้ (แท่ง) กับกำไร (เส้น) */
+function drawTrend(tr,mode){
+  var el=$('chTrend');
+  if(!tr||!tr.length){ el.innerHTML='<div class="ch-empty">ยังไม่มีข้อมูล</div>'; return; }
+  var has=tr.some(function(p){return p.revenue!==0||p.profit!==0;});
+  if(!has){ el.innerHTML='<div class="ch-empty">ยังไม่มีการขายในช่วงนี้</div>'; return; }
+
+  var W=340,H=150,L=30,R=6,T=8,B=24;
+  var iw=W-L-R, ih=H-T-B;
+  var maxV=Math.max.apply(null,tr.map(function(p){return Math.max(p.revenue,p.profit);}));
+  var minV=Math.min(0,Math.min.apply(null,tr.map(function(p){return p.profit;})));
+  var top=nice_(maxV||1), bot=minV<0?-nice_(-minV):0;
+  var span=top-bot||1;
+  var y=function(v){ return T+ih-((v-bot)/span)*ih; };
+  var bw=iw/tr.length;
+
+  var g='';
+  [top,(top+bot)/2,bot].forEach(function(v){
+    g+='<line x1="'+L+'" y1="'+y(v).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(v).toFixed(1)+'" stroke="#E7E3EF" stroke-width="1"/>'+
+       '<text class="gtxt" x="'+(L-4)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+short_(v)+'</text>';
+  });
+
+  var bars='',pts=[],lbl='';
+  var step=Math.ceil(tr.length/(tr.length>20?6:tr.length>12?5:tr.length));
+  tr.forEach(function(p,i){
+    var bx=L+i*bw+bw*0.18, bwid=bw*0.64;
+    var h0=Math.abs(y(p.revenue)-y(0));
+    if(p.revenue>0) bars+='<rect x="'+bx.toFixed(1)+'" y="'+y(p.revenue).toFixed(1)+'" width="'+bwid.toFixed(1)+'" height="'+h0.toFixed(1)+'" rx="2" fill="'+CH.rev+'"/>';
+    pts.push((L+i*bw+bw/2).toFixed(1)+','+y(p.profit).toFixed(1));
+    if(i%step===0||i===tr.length-1)
+      lbl+='<text class="gtxt" x="'+(L+i*bw+bw/2).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle">'+esc(p.label)+'</text>';
+  });
+  if(bot<0) g+='<line x1="'+L+'" y1="'+y(0).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(0).toFixed(1)+'" stroke="#C9C2D8" stroke-width="1"/>';
+
+  var line='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+CH.line+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+  var dots=tr.length<=20?tr.map(function(p,i){
+    return '<circle cx="'+(L+i*bw+bw/2).toFixed(1)+'" cy="'+y(p.profit).toFixed(1)+'" r="2.4" fill="'+CH.line+'"/>';
+  }).join(''):'';
+
+  var unit={day:'14 วันล่าสุด',month:'รายวันในเดือนนี้',year:'รายเดือน'}[mode]||'';
+  var tot=tr.reduce(function(a,b){return a+b.revenue;},0);
+  var pf=tr.reduce(function(a,b){return a+b.profit;},0);
+  el.innerHTML=svg_('0 0 '+W+' '+H, g+bars+line+dots+lbl)+
+    lg_([{c:CH.rev,t:'รายได้'},{c:CH.line,t:'กำไรสุทธิ'}])+
+    '<div class="ch-note">'+unit+' · รายได้รวม '+f(tot)+' · กำไรรวม '+f(pf)+'</div>';
+}
+
+/* 3 ── ยอดขายแยกระดับคั่ว × ขนาด (แท่งแนวนอน) */
+function drawSku(rows){
+  var el=$('chSku');
+  if(!rows||!rows.length){ el.innerHTML='<div class="ch-empty">ยังไม่มีการขายในช่วงนี้</div>'; return; }
+  var d=rows.slice().sort(function(a,b){return b.sales-a.sales;}).slice(0,8);
+  var max=Math.max.apply(null,d.map(function(r){return r.sales;}))||1;
+  var rowH=26,W=340,H=d.length*rowH+8,LW=118;
+  var g='';
+  d.forEach(function(r,i){
+    var yy=i*rowH+4, w=(r.sales/max)*(W-LW-46);
+    var nm=(r.roast||'')+(r.size?' '+r.size+'g':'');
+    if(nm.length>17) nm=nm.slice(0,16)+'…';
+    g+='<text class="gtxt" x="0" y="'+(yy+13)+'">'+esc(nm)+'</text>'+
+       '<rect x="'+LW+'" y="'+yy+'" width="'+Math.max(1.5,w).toFixed(1)+'" height="16" rx="3" fill="'+CH.bar+'"/>'+
+       '<text class="gval" x="'+(LW+w+5).toFixed(1)+'" y="'+(yy+13)+'">'+short_(r.sales)+'</text>';
+  });
+  el.innerHTML=svg_('0 0 '+W+' '+H,g)+
+    '<div class="ch-note">เรียงตามยอดขาย แสดงสูงสุด 8 อันดับ · ตัวเลขคือมูลค่าขาย (บาท)</div>';
+}
+
+/* 4 ── Yield แต่ละรอบผลิต (เส้นเทียบกับมาตรฐาน) */
+function drawYield(b){
+  var el=$('chYield');
+  if(!b||!b.length){ el.innerHTML='<div class="ch-empty">ยังไม่มีรอบผลิต</div>'; return; }
+  var W=340,H=150,L=28,R=8,T=10,B=24;
+  var iw=W-L-R, ih=H-T-B;
+  var vals=b.map(function(x){return x.yieldPct;}).concat(b.map(function(x){return x.std;}));
+  var lo=Math.max(0,Math.floor((Math.min.apply(null,vals)-4)/5)*5);
+  var hi=Math.min(100,Math.ceil((Math.max.apply(null,vals)+4)/5)*5);
+  var span=(hi-lo)||1;
+  var y=function(v){ return T+ih-((v-lo)/span)*ih; };
+  var x=function(i){ return b.length<2?L+iw/2:L+(i/(b.length-1))*iw; };
+
+  var g='';
+  [hi,(hi+lo)/2,lo].forEach(function(v){
+    g+='<line x1="'+L+'" y1="'+y(v).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(v).toFixed(1)+'" stroke="#E7E3EF"/>'+
+       '<text class="gtxt" x="'+(L-4)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v.toFixed(0)+'%</text>';
+  });
+
+  ['สี','คั่ว'].forEach(function(kind){
+    var pts=[],col=kind==='สี'?CH.mill:CH.roast,std=null;
+    b.forEach(function(p,i){ if(p.kind===kind){ pts.push({i:i,v:p.yieldPct}); std=p.std; } });
+    if(!pts.length) return;
+    if(std!=null) g+='<line x1="'+L+'" y1="'+y(std).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(std).toFixed(1)+
+      '" stroke="'+col+'" stroke-width="1" stroke-dasharray="4 3" opacity=".55"/>';
+    if(pts.length>1) g+='<polyline points="'+pts.map(function(p){return x(p.i).toFixed(1)+','+y(p.v).toFixed(1);}).join(' ')+
+      '" fill="none" stroke="'+col+'" stroke-width="2" stroke-linejoin="round"/>';
+    pts.forEach(function(p){
+      var off=Math.abs(p.v-std)>5;
+      g+='<circle cx="'+x(p.i).toFixed(1)+'" cy="'+y(p.v).toFixed(1)+'" r="'+(off?3.6:2.6)+
+        '" fill="'+(off?'#C25A5A':col)+'"/>';
+    });
+  });
+  g+='<text class="gtxt" x="'+L+'" y="'+(H-6)+'">'+esc(b[0].date.slice(5))+'</text>'+
+     '<text class="gtxt" x="'+(W-R)+'" y="'+(H-6)+'" text-anchor="end">'+esc(b[b.length-1].date.slice(5))+'</text>';
+
+  var bad=b.filter(function(p){return Math.abs(p.yieldPct-p.std)>5;}).length;
+  el.innerHTML=svg_('0 0 '+W+' '+H,g)+
+    lg_([{c:CH.mill,t:'สี'},{c:CH.roast,t:'คั่ว'},{c:'#C25A5A',t:'ต่างจากมาตรฐานเกิน 5 จุด'}])+
+    '<div class="ch-note">เส้นประคือ Yield มาตรฐาน · '+b.length+' รอบล่าสุด'+
+    (bad?' · <span style="color:var(--bad)">มี '+bad+' รอบที่ผิดปกติ</span>':' · ทุกรอบอยู่ในเกณฑ์')+'</div>';
+}
+
+/* 5 ── กำไรตามช่องทาง */
+function drawChan(ch){
+  var el=$('chChan');
+  if(!ch||!ch.length){ el.innerHTML='<div class="ch-empty">ยังไม่มีข้อมูล</div>'; return; }
+  var max=Math.max.apply(null,ch.map(function(c){return Math.max(Math.abs(c.revenue),Math.abs(c.profit));}))||1;
+  var rowH=40,W=340,H=ch.length*rowH+6,LW=76,BW=W-LW-46;
+  var g='';
+  ch.forEach(function(c,i){
+    var yy=i*rowH+4;
+    var w1=Math.abs(c.revenue)/max*BW, w2=Math.abs(c.profit)/max*BW;
+    var nm=c.channel.length>9?c.channel.slice(0,8)+'…':c.channel;
+    g+='<text class="gtxt" x="0" y="'+(yy+14)+'">'+esc(nm)+'</text>'+
+       '<text class="gtxt" x="0" y="'+(yy+27)+'" opacity=".7">'+c.orders+' บิล</text>'+
+       '<rect x="'+LW+'" y="'+yy+'" width="'+Math.max(1.5,w1).toFixed(1)+'" height="13" rx="2.5" fill="'+CH.rev+'"/>'+
+       '<text class="gval" x="'+(LW+w1+5).toFixed(1)+'" y="'+(yy+11)+'">'+short_(c.revenue)+'</text>'+
+       '<rect x="'+LW+'" y="'+(yy+16)+'" width="'+Math.max(1.5,w2).toFixed(1)+'" height="13" rx="2.5" fill="'+(c.profit>=0?CH.line:'#C25A5A')+'"/>'+
+       '<text class="gval" x="'+(LW+w2+5).toFixed(1)+'" y="'+(yy+27)+'">'+short_(c.profit)+'</text>';
+  });
+  el.innerHTML=svg_('0 0 '+W+' '+H,g)+lg_([{c:CH.rev,t:'รายได้'},{c:CH.line,t:'กำไรสุทธิ'}]);
+}
+
+/* 6 ── มูลค่าสต๊อกแยกประเภท (โดนัท) */
+function drawStock(st){
+  var el=$('chStock');
+  if(!st||!st.length){ el.innerHTML='<div class="ch-empty">ยังไม่มีสต๊อก</div>'; return; }
+  var tot=st.reduce(function(a,b){return a+b.value;},0);
+  if(tot<=0){ el.innerHTML='<div class="ch-empty">ยังไม่มีมูลค่าสต๊อก</div>'; return; }
+  var cols={'กาแฟกะลา':CH.bean,'สารเขียว':CH.mill,'เมล็ดคั่ว':CH.roast,'วัสดุอุปกรณ์':CH.line};
+  var cx=76,cy=76,r=56,rin=32,a=-Math.PI/2,g='';
+  st.forEach(function(p){
+    var ang=p.value/tot*Math.PI*2, a2=a+ang;
+    var col=cols[p.type]||CH.bar;
+    if(ang>=Math.PI*2-0.0001){
+      g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+((r+rin)/2)+'" fill="none" stroke="'+col+'" stroke-width="'+(r-rin)+'"/>';
+    } else {
+      var x1=cx+r*Math.cos(a),y1=cy+r*Math.sin(a),x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);
+      var x3=cx+rin*Math.cos(a2),y3=cy+rin*Math.sin(a2),x4=cx+rin*Math.cos(a),y4=cy+rin*Math.sin(a);
+      var big=ang>Math.PI?1:0;
+      g+='<path d="M'+x1.toFixed(1)+' '+y1.toFixed(1)+' A'+r+' '+r+' 0 '+big+' 1 '+x2.toFixed(1)+' '+y2.toFixed(1)+
+         ' L'+x3.toFixed(1)+' '+y3.toFixed(1)+' A'+rin+' '+rin+' 0 '+big+' 0 '+x4.toFixed(1)+' '+y4.toFixed(1)+' Z" fill="'+col+'"/>';
+    }
+    a=a2;
+  });
+  g+='<text class="gval" x="'+cx+'" y="'+(cy-2)+'" text-anchor="middle" style="font-size:13px;font-weight:600">'+short_(tot)+'</text>'+
+     '<text class="gtxt" x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle">บาท</text>';
+  el.innerHTML=svg_('0 0 152 152',g)+
+    lg_(st.map(function(p){return {c:cols[p.type]||CH.bar,t:p.type+' '+f(p.value)+' ('+(p.value/tot*100).toFixed(0)+'%)'};}));
+}
+
+function drawCharts(r){
+  try{
+    drawSplit(r.summary);
+    drawTrend(r.trend,r.mode);
+    drawSku(r.rows);
+    drawYield(r.batches);
+    drawChan(r.channels);
+    drawStock(r.stockByType);
+  }catch(e){ console.error('chart error',e); }
+}
+
 /* ── 6 สรุป ── */
 function setMode(m){
   MODE=m;
@@ -1157,6 +1399,7 @@ function loadSum(){
     }).join(''):'<div class="empty">ไม่มีข้อมูล</div>';
 
     renderPerBag(r.perBag);
+    drawCharts(r);
   }).catch(function(e){$('sumMain').innerHTML='<div class="empty">'+esc(e.message)+'</div>';});
 }
 function renderPerBag(pb){
@@ -1290,6 +1533,21 @@ function queueStat(){
     'รายการเหล่านี้เก็บอยู่ในเครื่องเฉพาะโดเมนนี้ ถ้าย้ายไปโดเมนใหม่ก่อนส่งจะหายไป '+
     'ให้ต่อเน็ตแล้วกด “ดึงข้อมูลใหม่” จนตัวเลขนี้เป็น 0 ก่อนย้าย</div>';
 }
+/* ล้างแคชของแอปแล้วโหลดใหม่ ใช้เมื่ออัปเดตโค้ดแล้วหน้าจอยังเป็นของเดิม */
+function forceUpdate(){
+  toast('กำลังโหลดเวอร์ชันล่าสุด…');
+  var jobs=[];
+  if(window.caches&&caches.keys) jobs.push(caches.keys().then(function(k){
+    return Promise.all(k.map(function(x){return caches.delete(x);}));
+  }));
+  if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations)
+    jobs.push(navigator.serviceWorker.getRegistrations().then(function(rs){
+      return Promise.all(rs.map(function(r){return r.unregister();}));
+    }));
+  Promise.all(jobs).catch(function(){}).then(function(){
+    setTimeout(function(){ location.reload(true); }, 600);
+  });
+}
 function copyCfg(){
   var t=CFG.url||'';
   if(!t) return toast('ยังไม่มี URL ให้คัดลอก','err');
@@ -1303,6 +1561,7 @@ window.addEventListener('online',online);window.addEventListener('offline',onlin
 
 (function init(){
   $('cUrl').value=CFG.url||'';$('cUser').value=CFG.user||'';
+  if($('verLine')) $('verLine').textContent='เวอร์ชันแอป '+APPVER;
   ['a1Date','a2Date','a3Date','a4Date','a5Date','oDate'].forEach(function(i){$(i).value=iso();});
   $('sumKey').value=iso().slice(0,7);
   online();

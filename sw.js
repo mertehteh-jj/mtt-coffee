@@ -1,5 +1,5 @@
 /* เปลี่ยนเลขนี้ทุกครั้งที่แก้ index.html เพื่อบังคับให้เครื่องที่ติดตั้งไว้โหลดของใหม่ */
-const CACHE = 'mtt-v5';
+const CACHE = 'mtt-v6';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
