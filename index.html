@@ -504,6 +504,10 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
         <div><label for="rDep">หักมัดจำ (บาท)</label><input id="rDep" type="number" inputmode="decimal" step="any" value="0" oninput="rPrev()"></div>
         <div><label for="rDepRef">เลขที่ใบมัดจำ</label><input id="rDepRef" placeholder="-"></div>
       </div>
+      <label for="rRecvPick">ผู้รับเงิน</label>
+      <select id="rRecvPick" onchange="pickRecv()"></select>
+      <input id="rRecv" placeholder="พิมพ์ชื่อผู้รับเงิน" style="margin-top:6px" oninput="rPrev()">
+
       <label for="rCopies">พิมพ์</label>
       <select id="rCopies">
         <option value="both">ต้นฉบับ + สำเนา (2 แผ่น)</option>
@@ -548,7 +552,7 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
 <div class="toast" id="toast"></div>
 
 <script>
-var APPVER='2026.08.23-ใบเสร็จ';   /* แก้เลขนี้ทุกครั้งที่แก้ไฟล์ จะได้รู้ว่าเครื่องโหลดตัวใหม่แล้วหรือยัง */
+var APPVER='2026.08.24-ใบเสร็จ3';   /* แก้เลขนี้ทุกครั้งที่แก้ไฟล์ จะได้รู้ว่าเครื่องโหลดตัวใหม่แล้วหรือยัง */
 var CFG=JSON.parse(localStorage.getItem('mttCfg')||'{}');
 var DATA=JSON.parse(localStorage.getItem('mttData')||'null');
 var BOX=JSON.parse(localStorage.getItem('mttBox')||'[]');
@@ -784,10 +788,23 @@ function openReceipt(docNo){
       (d.customers||[]).map(function(x,i){return '<option value="'+i+'">'+esc(x.name)+'</option>';}).join('');
     var sel=(d.customers||[]).findIndex(function(x){return x.name===(c.name||'');});
     if(sel>=0) $('rPick').value=String(sel);
+
+    var rc=d.receivers||[];
+    $('rRecvPick').innerHTML='<option value="">— พิมพ์ใหม่เอง —</option>'+
+      rc.map(function(x,i){return '<option value="'+i+'">'+esc(x.name)+'</option>';}).join('');
+    if(rc.length){ $('rRecvPick').value='0'; $('rRecv').value=rc[0].name; }
+    else $('rRecv').value=(d.seller&&d.seller.receiver)||'';
     rPrev(); go('rcp');
   }).catch(function(e){ toast(e.message,'err'); });
 }
 
+function pickRecv(){
+  var i=$('rRecvPick').value;
+  if(i===''||!RCP) return;
+  var r=(RCP.receivers||[])[+i];
+  if(r) $('rRecv').value=r.name;
+  rPrev();
+}
 function pickCust(){
   var i=$('rPick').value;
   if(i===''||!RCP) return;
@@ -804,7 +821,8 @@ function rPrev(){
   $('rPrev').innerHTML=pr('รวมเงิน',f(tot))+
     (dep>0?pr('หักมัดจำ','-'+f(dep)):'')+
     pr('<b style="font-weight:600">รวมทั้งสิ้น</b>','<b>'+f(tot-dep)+'</b>','hi')+
-    pr('ลูกค้า',esc($('rName').value||'— ยังไม่ได้กรอก —'));
+    pr('ลูกค้า',esc($('rName').value||'— ยังไม่ได้กรอก —'))+
+    pr('ผู้รับเงิน',esc($('rRecv').value||'— ยังไม่ได้กรอก —'));
 }
 
 /* ── QR พร้อมเพย์ (มาตรฐาน EMV ของธนาคารแห่งประเทศไทย) ── */
@@ -850,19 +868,26 @@ function makeReceipt(){
   var no=$('rNo').value.trim()||RCP.receiptNo;
   var dt=$('rDate').value||iso();
   var dep=+$('rDep').value||0;
-  var html=receiptHTML(no,dt,cust,dep,$('rDepRef').value.trim(),$('rCopies').value,$('rQR').checked);
+  var recv=$('rRecv').value.trim();
+  var html=receiptHTML(no,dt,cust,dep,$('rDepRef').value.trim(),$('rCopies').value,$('rQR').checked,recv);
 
   var w=window.open('','_blank');
   if(!w){ toast('เบราว์เซอร์บล็อกหน้าต่างใหม่ ให้อนุญาต popup ก่อน','err'); return; }
   w.document.write(html); w.document.close();
 
-  api('saveReceipt',{receiptNo:no,date:dt,docNo:RCP.order.docNo,customer:cust,
+  api('saveReceipt',{receiptNo:no,date:dt,docNo:RCP.order.docNo,customer:cust,receiver:recv,
     total:RCP.order.total,deposit:dep,depositRef:$('rDepRef').value.trim(),user:CFG.user||''})
     .then(function(){ toast('บันทึกใบเสร็จ '+no+' แล้ว'); })
     .catch(function(e){ toast('เปิดใบเสร็จแล้ว แต่บันทึกไม่สำเร็จ: '+e.message,'warn'); });
 }
 
-function receiptHTML(no,dateIso,cust,dep,depRef,copies,useQR){
+function absUrl(u){
+  u=String(u||'');
+  if(!u) return '';
+  if(/^https?:\/\//i.test(u)||/^data:/i.test(u)) return u;
+  return location.origin+(u.charAt(0)==='/'?u:'/'+u);
+}
+function receiptHTML(no,dateIso,cust,dep,depRef,copies,useQR,recvName){
   var S=RCP.seller, O=RCP.order, L=RCP.lines;
   var tot=O.total, net=tot-dep;
   var pages=[];
@@ -898,9 +923,9 @@ function receiptHTML(no,dateIso,cust,dep,depRef,copies,useQR){
   function money2(v){ return (Math.round((Number(v)||0)*100)/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 
   var page=pages.map(function(tag){
-    return '<div class="sheet">'+
+    return '<div class="sheet'+(S.logo?' haslogo':'')+'">'+
       '<div class="mark">(เอกสารออกเป็นชุด)</div>'+
-      (S.logo?'<img class="logo" src="'+esc(S.logo)+'" alt="">':'')+
+      (S.logo?'<img class="logo" src="'+esc(absUrl(S.logo))+'" alt="">':'')+
       '<div class="hd"><div class="ttl">ใบเสร็จรับเงิน</div><div class="sub">'+tag+'</div></div>'+
       '<div class="top2">'+
         '<div class="me">'+
@@ -922,9 +947,9 @@ function receiptHTML(no,dateIso,cust,dep,depRef,copies,useQR){
             '<td class="lb">โทร.</td><td class="u2">'+esc(cust.contactTel||'')+'</td></tr>'+
       '</table>'+
       '<table class="items"><thead><tr>'+
-        '<th style="width:7%">ลำดับ</th><th style="width:17%">ชื่อสินค้า</th><th style="width:34%">รายละเอียด</th>'+
-        '<th style="width:8%">จำนวน</th><th style="width:8%">หน่วย</th>'+
-        '<th style="width:13%">ราคา/หน่วย</th><th style="width:13%">จำนวนเงิน</th></tr></thead>'+
+        '<th style="width:6%">ลำดับ</th><th style="width:15%">ชื่อสินค้า</th><th style="width:38%">รายละเอียด</th>'+
+        '<th style="width:7%">จำนวน</th><th style="width:7%">หน่วย</th>'+
+        '<th style="width:13.5%">ราคา/หน่วย</th><th style="width:13.5%">จำนวนเงิน</th></tr></thead>'+
         '<tbody>'+rowsHTML()+'</tbody></table>'+
       '<table class="foot"><tr>'+
         '<td class="pay">'+
@@ -950,7 +975,7 @@ function receiptHTML(no,dateIso,cust,dep,depRef,copies,useQR){
           '<div class="ln">ผู้รับสินค้า <span></span></div><div class="ln">วันที่ <span></span></div></td>'+
         '<td><div>ในนาม &nbsp; '+esc(S.name)+'</div><div>&nbsp;</div>'+
           '<div class="ln">ผู้รับเงิน <span></span></div>'+
-          '<div class="cn">('+esc(S.receiver||'')+')</div>'+
+          '<div class="cn">('+esc(recvName||S.receiver||'')+')</div>'+
           '<div class="ln">วันที่ <span class="dt">'+esc(thDate(dateIso))+'</span></div></td>'+
       '</tr></table>'+
     '</div>';
@@ -968,11 +993,12 @@ function receiptHTML(no,dateIso,cust,dep,depRef,copies,useQR){
   '.bar button.g{background:#fff;color:#6F6486;border:1px solid #ccc}'+
   '.sheet{background:#fff;width:200mm;min-height:288mm;margin:12px auto;padding:12mm 10mm;border:1px solid #000;position:relative}'+
   '.mark{position:absolute;right:10mm;top:8mm;font-size:12px}'+
-  '.logo{position:absolute;left:12mm;top:10mm;width:82px;height:82px;object-fit:contain}'+
-  '.hd{text-align:center;margin-bottom:10px}'+
+  '.logo{position:absolute;left:13mm;top:11mm;width:88px;height:88px;object-fit:contain;border-radius:50%}'+
+  '.haslogo .top2{margin-top:44px}'+
+  '.hd{text-align:center;margin-bottom:14px;padding-top:6px}'+
   '.ttl{font-size:22px;font-weight:600}.sub{font-size:12px}'+
-  '.top2{display:flex;justify-content:space-between;gap:12px}'+
-  '.me{line-height:1.55;font-size:12.5px}'+
+  '.top2{display:flex;justify-content:space-between;gap:12px;margin-top:8px}'+
+  '.me{line-height:1.6;font-size:12.5px;padding-left:2mm}'+
   '.noBox td{padding:1px 4px;font-size:12.5px}.noBox .u{border-bottom:1px dotted #000;min-width:130px}'+
   '.cust{width:100%;margin:10px 0 6px;border-collapse:collapse;font-size:12.5px}'+
   '.cust td{padding:2px 4px}.cust .lb{white-space:nowrap;width:1%}'+
