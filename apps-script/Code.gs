@@ -21,6 +21,9 @@ var SH = {
   LINE: '5 รายการขาย',
   ISSUE: 'ตัดจ่ายอื่นๆ',
   COUNT: 'ตรวจนับ',
+  CUSTOMER: 'ลูกค้า',
+  RECEIPT: 'ใบเสร็จ',
+  RECEIVER: 'ผู้รับเงิน',
   PACKSPEC: 'สูตรซอง',
   SETTING: 'ตั้งค่า'
 };
@@ -32,11 +35,36 @@ H[SH.BUYPC]    = ['เลขที่เอกสาร','วันที่','�
 H[SH.MILL]     = ['เลขที่เอกสาร','วันที่','กะลาที่ตัดเบิก (kg)','ต้นทุนกะลา','สารเขียวที่ได้ (kg)','น้ำหนักหาย (kg)','% Yield','ค่าสี/kg','ค่าสีรวม','ค่าส่งสารเขียว','ต้นทุนรวม','ต้นทุนสารเขียว/kg','เลขที่ล็อต','วันหมดอายุ','โรงสี','หมายเหตุ','ผู้บันทึก','บันทึกเมื่อ','สถานะ'];
 H[SH.ROAST]    = ['เลขที่เอกสาร','วันที่','ระดับคั่ว','รหัสผลผลิต','สารเขียวรวมทั้งรอบ (kg)','สารเขียวที่ปันส่วน (kg)','เมล็ดคั่วที่ได้ (kg)','น้ำหนักหาย (kg)','% Yield','ต้นทุนสารเขียว','ค่าแรงจ้างคั่ว','ค่าเช่าเครื่องคั่ว','ต้นทุนรวม','ต้นทุน/kg','เลขที่ล็อต','วันหมดอายุ','ผู้คั่ว','หมายเหตุ','ผู้บันทึก','บันทึกเมื่อ','สถานะ'];
 H[SH.BUYMAT]   = ['เลขที่เอกสาร','วันที่','รหัสสินค้า','ชื่อวัสดุ','จำนวน','ราคา/หน่วย','ค่าขนส่ง','ต้นทุนรวม','ต้นทุนจริง/หน่วย','เลขที่ล็อต','ผู้ขาย','หมายเหตุ','ผู้บันทึก','บันทึกเมื่อ','สถานะ'];
-H[SH.ORDER]    = ['เลขที่ออร์เดอร์','วันที่','ลูกค้า','ช่องทางขาย','มูลค่าสินค้า','ค่าส่งที่เก็บลูกค้า','รายได้รวม','ต้นทุนเมล็ด','ต้นทุนซอง+สติ๊กเกอร์','ต้นทุนกล่อง+เทป','ค่าส่งที่จ่ายจริง','ต้นทุนรวม','กำไรสุทธิ','% กำไร','กล่อง/เทปที่ใช้','หมายเหตุ','ผู้บันทึก','บันทึกเมื่อ','สถานะ'];
+H[SH.ORDER]    = ['เลขที่ออร์เดอร์','วันที่','ลูกค้า','ช่องทางขาย','มูลค่าสินค้า','ค่าส่งที่เก็บลูกค้า','รายได้รวม','ต้นทุนเมล็ด','ต้นทุนซอง+สติ๊กเกอร์','ต้นทุนกล่อง+เทป','ค่าส่งที่จ่ายจริง','ต้นทุนรวม','กำไรสุทธิ','% กำไร','กล่อง/เทปที่ใช้','หลักฐานการรับเงิน','ไอดีหลักฐาน','หมายเหตุ','ผู้บันทึก','บันทึกเมื่อ','สถานะ'];
 H[SH.LINE]     = ['เลขที่ออร์เดอร์','วันที่','ประเภท','ระดับคั่ว','ขนาด (g)','จำนวน (ซอง/kg)','น้ำหนักรวม (kg)','ราคา/หน่วย','มูลค่า','ต้นทุนเมล็ด/หน่วย','ต้นทุนซอง/หน่วย','ต้นทุนสติ๊กเกอร์/หน่วย','ต้นทุนรวม/หน่วย','ต้นทุนรวม','กำไรขั้นต้น','ล็อตที่ตัด','สถานะ'];
 H[SH.ISSUE]    = ['เลขที่เอกสาร','วันที่','ประเภท','รหัสสินค้า','ชื่อสินค้า','จำนวน','ต้นทุน/หน่วย','มูลค่าที่ตัด','ล็อตที่ตัด','หมายเหตุ','ผู้บันทึก','บันทึกเมื่อ','สถานะ'];
 H[SH.COUNT]    = ['วันที่','รหัสสินค้า','ชื่อสินค้า','ยอดตามระบบ','ยอดนับจริง','ผลต่าง','มูลค่าผลต่าง','เหตุผล','ผู้ตรวจนับ','บันทึกเมื่อ','สถานะ'];
 H[SH.PACKSPEC] = ['ขนาด (g)','รหัสซอง','ชื่อซอง','ซอง/หน่วย','รหัสสติ๊กเกอร์','สติ๊กเกอร์/หน่วย'];
+H[SH.CUSTOMER] = ['ชื่อลูกค้า','ที่อยู่ 1','ที่อยู่ 2','โทร','เลขประจำตัวผู้เสียภาษี','ผู้ติดต่อ','โทรผู้ติดต่อ','ใช้ล่าสุด'];
+H[SH.RECEIVER] = ['ชื่อผู้รับเงิน','ใช้ล่าสุด'];
+H[SH.RECEIPT]  = ['เลขที่ใบเสร็จ','วันที่','เลขที่ออร์เดอร์','ชื่อลูกค้า','รวมเงิน','หักมัดจำ','รวมทั้งสิ้น','เลขที่ใบมัดจำ','ลิงก์ไฟล์','ไอดีไฟล์','หมายเหตุ','ผู้บันทึก','บันทึกเมื่อ','สถานะ'];
+
+var SERVER_VER = '2026.08.25-จัดหน้า';   /* เปลี่ยนทุกครั้งที่แก้ไฟล์นี้ ใช้เช็คว่า deploy เวอร์ชันใหม่แล้วหรือยัง */
+/* ไอดีโฟลเดอร์ Drive ค่าตั้งต้น ใช้เมื่อชีตตั้งค่ายังไม่มีค่าหรือหาแถวไม่เจอ
+   ถ้าอยากเปลี่ยนโฟลเดอร์ ให้กรอกในชีตตั้งค่า ค่าในชีตจะถูกใช้ก่อนเสมอ */
+var FOLDER_RECEIPT_DEFAULT = '1bfQTjC0rg7rqo182MCJBmBoKm_YWaghs';
+var FOLDER_PROOF_DEFAULT   = '1L72pcYreTu6u5QBCS1zgEw_-vjeMCvNu';
+
+/* ข้อมูลร้านที่พิมพ์บนใบเสร็จ — ค่าตั้งต้นอยู่ตรงนี้ ใช้เมื่อชีตตั้งค่ายังว่าง
+   ถ้ากรอกในชีตตั้งค่า ค่าในชีตจะถูกใช้ก่อนเสมอ (ปลอดภัยกว่าถ้าไม่อยากให้เลขบัญชีอยู่ในโค้ด) */
+var SHOP_DEFAULT = {
+  name:     'เม่อะ เต เต ฟาร์มกาแฟ',
+  addr1:    '301/150 หมู่ที่ 3 ซอยบ้านช้าง ตำบลหมากแข้ง',
+  addr2:    'อำเภอเมืองอุดรธานี จังหวัดอุดรธานี 41000',
+  taxId:    '1419900049955',
+  tel:      '06 1426 3442',
+  bank:     'กรุงเทพ',
+  acctName: 'นางสาวชลธิชา มายอด',
+  acctNo:   '369-7-027682',
+  receiver: 'นางสาวชลธิชา มายอด',
+  logo:     '/logo.png',
+  footer:   'สินค้าตามรายการข้างต้นแม้จะได้ส่งมอบให้แก่ผู้ซื้อแล้วก็ยังคงเป็นทรัพย์สินของผู้ขายจนกว่าผู้ซื้อจะได้ชำระเงินเรียบร้อยแล้ว'
+};
 
 var TYPES = ['กาแฟกะลา','สารเขียว','เมล็ดคั่ว','วัสดุอุปกรณ์'];
 /* ชื่อแบรนด์ของเมล็ดคั่วแต่ละระดับ — ระดับคั่วยังเป็นตัวเชื่อมของระบบ ชื่อเป็นแค่ป้ายที่แสดง */
@@ -91,7 +119,29 @@ var DEFAULT_SETTINGS = [
   ['เกณฑ์สินค้าค้างสต๊อก (วัน)','90',''],
   ['เป้าหมายอัตรากำไร (%)','40','ใช้คำนวณราคาขายที่แนะนำ'],
   ['ค่าใช้จ่ายคงที่ต่อเดือน','0','ค่าเช่าที่เก็บ ค่าน้ำค่าไฟ ค่าแรงประจำ — ใช้หักในสรุปรายเดือน'],
-  ['อีเมลรับแจ้งเตือน','','เว้นว่างได้']
+  ['อีเมลรับแจ้งเตือน','','เว้นว่างได้'],
+  ['— ข้อมูลสำหรับใบเสร็จ —','','กรอกให้ครบก่อนออกใบเสร็จครั้งแรก'],
+  ['ชื่อกิจการ','เม่อะ เต เต ฟาร์มกาแฟ',''],
+  ['ที่อยู่กิจการ 1','301/150 หมู่ที่ 3 ซอยบ้านช้าง ตำบลหมากแข้ง',''],
+  ['ที่อยู่กิจการ 2','อำเภอเมืองอุดรธานี จังหวัดอุดรธานี 41000',''],
+  ['เลขประจำตัวผู้เสียภาษีกิจการ','1419900049955',''],
+  ['โทรกิจการ','06 1426 3442',''],
+  ['ธนาคาร','กรุงเทพ',''],
+  ['ชื่อบัญชี','','ชื่อบัญชีที่รับโอน'],
+  ['เลขที่บัญชี','','กรอกในชีตนี้ครั้งเดียว — ตั้งใจไม่ใส่ไว้ในโค้ดที่อัปขึ้น GitHub'],
+  ['เบอร์พร้อมเพย์','','เบอร์มือถือหรือเลขบัตรประชาชน ใช้สร้าง QR — เว้นว่างถ้าไม่ใช้'],
+  ['ชื่อผู้รับเงิน','',''],
+  ['URL โลโก้','/logo.png','ไฟล์โลโก้ที่อยู่ในเว็บของเรา · เว้นว่างถ้าไม่อยากให้แสดง'],
+  ['โฟลเดอร์ Drive เก็บใบเสร็จ','1bfQTjC0rg7rqo182MCJBmBoKm_YWaghs','ไอดีโฟลเดอร์ · เว้นว่างถ้าไม่ต้องการอัปโหลดอัตโนมัติ'],
+  ['โฟลเดอร์ Drive เก็บหลักฐานการรับเงิน','1L72pcYreTu6u5QBCS1zgEw_-vjeMCvNu','ไอดีโฟลเดอร์เก็บรูปสลิป'],
+  ['เปิดสิทธิ์ดูรูปหลักฐานด้วยลิงก์','ใช่','ต้องเป็น "ใช่" ถ้าอยากให้ QR บนใบเสร็จเปิดรูปได้ · ดูคำเตือนในคู่มือ'],
+  ['บังคับแนบหลักฐานก่อนออกใบเสร็จ','ใช่','ใช่ / ไม่'],
+  ['รูปแบบไฟล์ที่เก็บใน Drive','ทั้งคู่','PDF / HTML / ทั้งคู่'],
+  ['โฟลเดอร์ Drive เก็บหลักฐานการรับเงิน','1L72pcYreTu6u5QBCS1zgEw_-vjeMCvNu','ไอดีโฟลเดอร์เก็บภาพสลิป/หลักฐาน'],
+  ['บังคับแนบหลักฐานก่อนออกใบเสร็จ','ใช่','ใช่ / ไม่'],
+  ['คำนำหน้าเลขที่ใบเสร็จ','RMER','ติดกันหมดไม่มีขีด เช่น RMER2026005'],
+  ['ชื่อสินค้าในใบเสร็จ','เมล็ดกาแฟอาราบิก้า','คำนำหน้าในช่องรายละเอียด'],
+  ['ข้อความท้ายใบเสร็จ','สินค้าตามรายการข้างต้นแม้จะได้ส่งมอบให้แก่ผู้ซื้อแล้วก็ยังคงเป็นทรัพย์สินของผู้ขายจนกว่าผู้ซื้อจะได้ชำระเงินเรียบร้อยแล้ว','']
 ];
 
 /* ══════════ Entry ══════════ */
@@ -117,7 +167,7 @@ function doPost(e) {
   catch (parseErr) { return json_({ ok: false, error: 'ข้อมูลที่ส่งมาไม่ถูกต้อง' }); }
 
   /* คำขออ่านอย่างเดียว ไม่ต้องกันซ้ำและไม่ต้องล็อก */
-  var readOnly = { ping: 1, bootstrap: 1, summary: 1, listDocs: 1, getDoc: 1, productDetail: 1 };
+  var readOnly = { ping: 1, bootstrap: 1, summary: 1, listDocs: 1, getDoc: 1, productDetail: 1, receiptData: 1, listCustomers: 1, listReceipts: 1 };
 
   if (!readOnly[req.action]) {
     var prev = seen_(req.reqId);
@@ -162,6 +212,15 @@ function route_(a, p) {
     case 'getDoc':        return getDoc_(p);
     case 'voidDoc':       return voidDoc_(p);
     case 'updateDoc':     return updateDoc_(p);
+    case 'receiptData':   return receiptData_(p);
+    case 'saveReceipt':   return saveReceipt_(p);
+    case 'listCustomers': return { customers: listCustomers_() };
+    case 'listReceipts':  return listReceipts_(p);
+    case 'uploadProof':   return uploadProof_(p);
+    case 'removeProof':   return removeProof_(p);
+    case 'uploadProof':   return uploadProof_(p);
+    case 'removeProof':   return removeProof_(p);
+    case 'saveCustomer':  return saveCustomer_(p);
     case 'productDetail': return productDetail_(p);
     default: throw new Error('ไม่รู้จักคำสั่ง: ' + a);
   }
@@ -201,6 +260,7 @@ function ensureSheets_(migrate) {
     st.setFrozenRows(1);
     st.autoResizeColumns(1, 3);
   }
+  if (migrate === 'full') { ensureSettings_(); ensurePhoneFormat_(); }
   var d = s.getSheetByName('Sheet1') || s.getSheetByName('ชีต1');
   if (d && d.getLastRow() === 0 && s.getSheets().length > 1) s.deleteSheet(d);
 }
@@ -228,6 +288,45 @@ function flush_() {
     sheet_(SH.LOT).getRange(lots[0]._row, 7, col.length, 1).setValues(col);
   }
   _DIRTY = {};
+}
+
+/* เติมหัวข้อตั้งค่าที่ยังไม่มีลงท้ายชีต ค่าที่กรอกไว้แล้วไม่ถูกแตะ */
+function ensureSettings_() {
+  var sh = sheet_(SH.SETTING);
+  if (!sh) return [];
+  var last = sh.getLastRow();
+  var have = {}, lastKeyRow = 1;
+  if (last >= 2) {
+    sh.getRange(2, 1, last - 1, 1).getValues().forEach(function (r, i) {
+      if (r[0] !== '' && r[0] != null) {
+        have[String(r[0]).trim()] = true;
+        lastKeyRow = i + 2;          /* แถวสุดท้ายที่ "คอลัมน์ A" มีข้อความจริง */
+      }
+    });
+  }
+  var add = DEFAULT_SETTINGS.slice(1).filter(function (row) { return !have[String(row[0]).trim()]; });
+  if (add.length) {
+    /* ต่อท้ายหัวข้อสุดท้ายจริง ๆ ไม่ใช่ท้ายชีต
+       ถ้ามีข้อความหลงอยู่แถวล่าง ๆ การใช้ getLastRow() จะทำให้แถวใหม่ไปโผล่ไกลจนหาไม่เจอ */
+    sh.getRange(lastKeyRow + 1, 1, add.length, 3).setValues(add);
+    sh.autoResizeColumns(1, 3);
+  }
+  delete _C.__set;
+  return add.map(function (r) { return r[0]; });
+}
+
+/* ตั้งคอลัมน์เบอร์โทรและเลขผู้เสียภาษีเป็นข้อความ เลข 0 ข้างหน้าจะได้ไม่หาย */
+function ensurePhoneFormat_() {
+  var pairs = [[SH.CUSTOMER, ['โทร', 'โทรผู้ติดต่อ', 'เลขประจำตัวผู้เสียภาษี']]];
+  pairs.forEach(function (pr) {
+    var sh = sheet_(pr[0]);
+    if (!sh) return;
+    pr[1].forEach(function (colName) {
+      var idx = H[pr[0]].indexOf(colName) + 1;
+      if (idx < 1) return;
+      sh.getRange(2, idx, Math.max(sh.getMaxRows() - 1, 1), 1).setNumberFormat('@');
+    });
+  });
 }
 
 function readAll_(name) {
@@ -270,9 +369,33 @@ function settings_() {
   if (_C.__set) return _C.__set;
   var sh = sheet_(SH.SETTING), last = sh.getLastRow(), o = {};
   if (last < 2) { _C.__set = o; return o; }
-  sh.getRange(2, 1, last - 1, 2).getValues().forEach(function (r) { if (r[0]) o[String(r[0]).trim()] = r[1]; });
+  sh.getRange(2, 1, last - 1, 2).getValues().forEach(function (r) {
+    if (r[0] === '' || r[0] == null) return;
+    var k = String(r[0]).trim();
+    o[k] = r[1];
+    o['~' + k.replace(/\s+/g, '')] = r[1];   /* คีย์สำรองแบบไม่มีช่องว่าง */
+  });
   _C.__set = o;
   return o;
+}
+
+/* อ่านค่าตั้งค่าแบบทนต่อการพิมพ์เว้นวรรคไม่ตรง และมีค่าสำรองให้ */
+function setting_(key, fallback) {
+  var st = settings_();
+  var v = st[key];
+  if (v === undefined || String(v).trim() === '') v = st['~' + String(key).replace(/\s+/g, '')];
+  v = (v === undefined || v === null) ? '' : String(v).trim();
+  return v || (fallback === undefined ? '' : fallback);
+}
+
+/* รับได้ทั้งไอดีโฟลเดอร์และลิงก์เต็ม */
+function folderId_(v) {
+  v = String(v || '').trim();
+  var m = /\/folders\/([A-Za-z0-9_\-]+)/.exec(v);
+  if (m) return m[1];
+  m = /[?&]id=([A-Za-z0-9_\-]+)/.exec(v);
+  if (m) return m[1];
+  return v.replace(/[^A-Za-z0-9_\-]/g, '');
 }
 function list_(k) {
   var v = settings_()[k];
@@ -280,6 +403,9 @@ function list_(k) {
 }
 
 function live_(rows) { return rows.filter(function (r) { return r['สถานะ'] !== 'ยกเลิก'; }); }
+
+/* เก็บเลขผู้เสียภาษีเป็นตัวเลขล้วน แต่คงศูนย์นำหน้าไว้ (คอลัมน์ตั้งเป็นข้อความแล้ว) */
+function digits_(v) { return String(v == null ? '' : v).replace(/[^0-9]/g, ''); }
 
 function n_(v) { var x = Number(v); return isNaN(x) ? 0 : x; }
 function r2_(x) { return Math.round((x + Number.EPSILON) * 100) / 100; }
@@ -725,7 +851,8 @@ function issue_(p) {
     'เลขที่เอกสาร': docNo, 'วันที่': p.date || today_(), 'ประเภท': p.type || 'ของเสีย/เสียหาย',
     'รหัสสินค้า': p.code, 'ชื่อสินค้า': res.product['ชื่อสินค้า'], 'จำนวน': r4_(n_(p.qty)),
     'ต้นทุน/หน่วย': res.unitCost, 'มูลค่าที่ตัด': res.cost, 'ล็อตที่ตัด': res.lots,
-    'หมายเหตุ': p.note || '', 'ผู้บันทึก': p.user || '', 'บันทึกเมื่อ': new Date(), 'สถานะ': 'ใช้งาน'
+    'หมายเหตุ': (p.receiver ? 'ผู้รับเงิน: ' + p.receiver + (p.note ? ' · ' : '') : '') + (p.note || ''),
+    'ผู้บันทึก': p.user || '', 'บันทึกเมื่อ': new Date(), 'สถานะ': 'ใช้งาน'
   });
   return { docNo: docNo, value: res.cost };
 }
@@ -824,6 +951,7 @@ function bootstrap_() {
   recent.sort(function (a, b) { return a.date < b.date ? 1 : (a.date > b.date ? -1 : (a.doc < b.doc ? 1 : -1)); });
 
   return {
+    serverVer: SERVER_VER,
     today: t, products: products, lots: lots, packSpecs: specs, sizes: SIZES,
     expiring: lots.filter(function (l) { return l.expiry && days_(t, l.expiry) <= expDays; })
       .sort(function (a, b) { return a.expiry < b.expiry ? -1 : 1; }),
@@ -906,6 +1034,95 @@ function costPerBag_() {
   return { rows: out, yieldMill: r2_(yM * 100), yieldRoast: r2_(yR * 100), target: target };
 }
 
+/* ══════════ ข้อมูลสำหรับแผนภูมิ ══════════ */
+
+/* ชุดข้อมูลตามเวลา: รายวัน = ย้อนหลัง 14 วัน · รายเดือน = ทุกวันในเดือน · รายปี = 12 เดือน */
+function trend_(mode, key, ordersInPeriod) {
+  var out = [], all = live_(readAll_(SH.ORDER));
+  var bucket = {};
+
+  function put(k, o) {
+    if (!bucket[k]) bucket[k] = { revenue: 0, profit: 0, orders: 0 };
+    bucket[k].revenue += n_(o['รายได้รวม']);
+    bucket[k].profit += n_(o['กำไรสุทธิ']);
+    bucket[k].orders++;
+  }
+
+  if (mode === 'year') {
+    all.forEach(function (o) {
+      var d = d_(o['วันที่']);
+      if (d.slice(0, 4) !== key) return;
+      put(d.slice(0, 7), o);
+    });
+    for (var m = 1; m <= 12; m++) {
+      var k = key + '-' + ('0' + m).slice(-2);
+      var b = bucket[k] || { revenue: 0, profit: 0, orders: 0 };
+      out.push({ label: String(m), key: k, revenue: r2_(b.revenue), profit: r2_(b.profit), orders: b.orders });
+    }
+    return out;
+  }
+
+  if (mode === 'month') {
+    all.forEach(function (o) {
+      var d = d_(o['วันที่']);
+      if (d.slice(0, 7) !== key) return;
+      put(d, o);
+    });
+    var y = n_(key.slice(0, 4)), mo = n_(key.slice(5, 7));
+    var days = new Date(y, mo, 0).getDate();
+    for (var i = 1; i <= days; i++) {
+      var kk = key + '-' + ('0' + i).slice(-2);
+      var bb = bucket[kk] || { revenue: 0, profit: 0, orders: 0 };
+      out.push({ label: String(i), key: kk, revenue: r2_(bb.revenue), profit: r2_(bb.profit), orders: bb.orders });
+    }
+    return out;
+  }
+
+  /* รายวัน: ย้อนหลัง 14 วันจบที่วันที่เลือก */
+  all.forEach(function (o) { put(d_(o['วันที่']), o); });
+  for (var j = 13; j >= 0; j--) {
+    var dk = addDays_(key, -j);
+    var b3 = bucket[dk] || { revenue: 0, profit: 0, orders: 0 };
+    out.push({ label: dk.slice(8), key: dk, revenue: r2_(b3.revenue), profit: r2_(b3.profit), orders: b3.orders });
+  }
+  return out;
+}
+
+/* yield ของแต่ละรอบผลิต เรียงตามเวลา (เอา 20 รอบล่าสุดในช่วงที่เลือก ถ้าไม่มีเลยใช้ล่าสุดทั้งหมด) */
+function batchYields_(mode, key) {
+  var cut = mode === 'day' ? 10 : (mode === 'month' ? 7 : 4);
+  var st = settings_();
+  var stdMill = n_(st['Yield มาตรฐาน สี (%)']) || 80;
+  var stdRoast = n_(st['Yield มาตรฐาน คั่ว (%)']) || 84;
+
+  var mills = live_(readAll_(SH.MILL)).map(function (r) {
+    return { date: d_(r['วันที่']), kind: 'สี', doc: r['เลขที่เอกสาร'],
+             yieldPct: n_(r['% Yield']), std: stdMill, name: 'สารเขียว' };
+  });
+  var roasts = live_(readAll_(SH.ROAST)).map(function (r) {
+    return { date: d_(r['วันที่']), kind: 'คั่ว', doc: r['เลขที่เอกสาร'],
+             yieldPct: n_(r['% Yield']), std: stdRoast, name: r['ระดับคั่ว'] };
+  });
+  var all = mills.concat(roasts).sort(function (a, b) { return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+  var inPeriod = all.filter(function (x) { return x.date.slice(0, cut) === key; });
+  var use = inPeriod.length ? inPeriod : all;
+  return use.slice(-20);
+}
+
+/* มูลค่าสต๊อกแยกตามประเภทสินค้า */
+function stockByType_() {
+  var agg = {};
+  readAll_(SH.PRODUCT).forEach(function (p) {
+    if (p['สถานะ'] === 'ยกเลิกใช้') return;
+    var v = n_(p['คงเหลือ']) * n_(p['ต้นทุนเฉลี่ย/หน่วย']);
+    if (v <= 0) return;
+    var t = p['ประเภท'] || 'อื่น ๆ';
+    agg[t] = (agg[t] || 0) + v;
+  });
+  return Object.keys(agg).map(function (k) { return { type: k, value: r2_(agg[k]) }; })
+    .sort(function (a, b) { return b.value - a.value; });
+}
+
 function summary_(p) {
   var mode = p.mode || 'month';           // day | month | year
   var key = p.key || today_();            // 2026-07-24 | 2026-07 | 2026
@@ -982,6 +1199,9 @@ function summary_(p) {
       roastLost: r4_(rIn - rOut)
     },
     rows: rows,
+    trend: trend_(mode, key, orders),
+    batches: batchYields_(mode, key),
+    stockByType: stockByType_(),
     channels: Object.keys(byChannel).map(function (k) {
       var c = byChannel[k]; c.revenue = r2_(c.revenue); c.profit = r2_(c.profit); return c;
     }).sort(function (a, b) { return b.profit - a.profit; }),
@@ -1016,6 +1236,485 @@ function productDetail_(p) {
   return { moves: m.slice(0, 40) };
 }
 
+
+/*  ═══════════════════════════════════════════════════════════
+    ใบเสร็จรับเงิน
+    ═══════════════════════════════════════════════════════════ */
+
+/* แปลงจำนวนเงินเป็นตัวอักษรไทย เช่น 4200 → สี่พันสองร้อยบาทถ้วน */
+function bahtText_(amount) {
+  var num = Math.abs(Math.round(n_(amount) * 100) / 100);
+  var baht = Math.floor(num);
+  var satang = Math.round((num - baht) * 100);
+  var digits = ['ศูนย์','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'];
+  var units = ['','สิบ','ร้อย','พัน','หมื่น','แสน','ล้าน'];
+
+  function readGroup(s) {                    /* อ่านเลขไม่เกิน 7 หลัก */
+    var out = '', len = s.length;
+    for (var i = 0; i < len; i++) {
+      var d = Number(s.charAt(i));
+      var pos = len - i - 1;
+      if (d === 0) continue;
+      if (pos === 1 && d === 1) out += 'สิบ';
+      else if (pos === 1 && d === 2) out += 'ยี่สิบ';
+      else if (pos === 0 && d === 1 && len > 1) out += 'เอ็ด';
+      else out += digits[d] + units[pos];
+    }
+    return out;
+  }
+
+  function readNum(x) {
+    if (x === 0) return 'ศูนย์';
+    var s = String(x), out = '';
+    while (s.length > 6) {                   /* ตัดหลักล้านทีละชุด */
+      out += readGroup(s.slice(0, s.length - 6)) + 'ล้าน';
+      s = s.slice(s.length - 6);
+      s = String(Number(s)).length < s.length ? s : s;
+    }
+    out += readGroup(String(Number(s)) === '0' ? '' : s.replace(/^0+/, ''));
+    return out;
+  }
+
+  var txt = (n_(amount) < 0 ? 'ลบ' : '') + readNum(baht) + 'บาท';
+  txt += satang > 0 ? readNum(satang) + 'สตางค์' : 'ถ้วน';
+  return txt;
+}
+
+/* วันที่แบบไทย 24 ส.ค. 2569 */
+var THMON = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+function thaiDate_(iso) {
+  if (!iso) return '';
+  var p = String(iso).split('-');
+  if (p.length < 3) return String(iso);
+  return Number(p[2]) + ' ' + THMON[Number(p[1]) - 1] + ' ' + (Number(p[0]) + 543);
+}
+
+/* ── ลูกค้า ── */
+function listCustomers_() {
+  return readAll_(SH.CUSTOMER).map(function (c) {
+    return {
+      name: c['ชื่อลูกค้า'], addr1: c['ที่อยู่ 1'], addr2: c['ที่อยู่ 2'],
+      tel: c['โทร'], taxId: String(c['เลขประจำตัวผู้เสียภาษี'] || ''),
+      contact: c['ผู้ติดต่อ'], contactTel: c['โทรผู้ติดต่อ'], last: d_(c['ใช้ล่าสุด'])
+    };
+  }).sort(function (a, b) { return a.last < b.last ? 1 : -1; });
+}
+
+function saveCustomer_(c) {
+  var name = String(c.name || '').trim();
+  if (!name) return null;
+  var rows = readAll_(SH.CUSTOMER), sh = sheet_(SH.CUSTOMER);
+  var digits = function (v) { return String(v || '').replace(/[^0-9]/g, ''); };
+  var vals = [name, c.addr1 || '', c.addr2 || '', String(c.tel || ''),
+              digits(c.taxId), c.contact || '', String(c.contactTel || ''), today_()];
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i]['ชื่อลูกค้า']).trim() === name) {
+      sh.getRange(rows[i]._row, 1, 1, vals.length).setValues([vals]);
+      H[SH.CUSTOMER].forEach(function (h, k) { rows[i][h] = vals[k]; });
+      return { updated: true, name: name };
+    }
+  }
+  append_(SH.CUSTOMER, {
+    'ชื่อลูกค้า': name, 'ที่อยู่ 1': c.addr1 || '', 'ที่อยู่ 2': c.addr2 || '',
+    'โทร': c.tel || '', 'เลขประจำตัวผู้เสียภาษี': digits_(c.taxId),
+    'ผู้ติดต่อ': c.contact || '', 'โทรผู้ติดต่อ': c.contactTel || '', 'ใช้ล่าสุด': today_()
+  });
+  return { created: true, name: name };
+}
+
+/* ── รายชื่อผู้รับเงิน ── */
+function listReceivers_() {
+  var out = readAll_(SH.RECEIVER).map(function (r) {
+    return { name: String(r['ชื่อผู้รับเงิน'] || '').trim(), last: d_(r['ใช้ล่าสุด']) };
+  }).filter(function (r) { return r.name; });
+  var def = String(settings_()['ชื่อผู้รับเงิน'] || '').trim();
+  if (def && !out.some(function (r) { return r.name === def; })) out.unshift({ name: def, last: '' });
+  return out.sort(function (a, b) { return a.last < b.last ? 1 : -1; });
+}
+
+function saveReceiver_(name) {
+  name = String(name || '').trim();
+  if (!name) return null;
+  var rows = readAll_(SH.RECEIVER), sh = sheet_(SH.RECEIVER);
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i]['ชื่อผู้รับเงิน']).trim() === name) {
+      put_(SH.RECEIVER, rows[i], 'ใช้ล่าสุด', today_());
+      return { updated: true };
+    }
+  }
+  append_(SH.RECEIVER, { 'ชื่อผู้รับเงิน': name, 'ใช้ล่าสุด': today_() });
+  return { created: true };
+}
+
+/* ── เลขที่ใบเสร็จถัดไป ── */
+function nextReceiptNo_() {
+  var st = settings_();
+  var prefix = String(st['คำนำหน้าเลขที่ใบเสร็จ'] || 'RMER').trim();
+  var year = new Date().getFullYear();
+  var max = 0;
+  /* ตัดคำนำหน้ากับปีออกก่อน แล้วค่อยอ่านเลขลำดับ
+     ถ้าอ่านทั้งก้อนจะได้ 2026005 แทนที่จะเป็น 5 */
+  var head = prefix + year;
+  live_(readAll_(SH.RECEIPT)).forEach(function (r) {
+    var v = String(r['เลขที่ใบเสร็จ'] || '').trim();
+    if (v.indexOf(head) !== 0) return;
+    var tail = v.slice(head.length).replace(/[^0-9]/g, '');
+    if (tail) max = Math.max(max, Number(tail));
+  });
+  var seq = String(max + 1);
+  while (seq.length < 3) seq = '0' + seq;      /* เติมศูนย์ให้ครบ 3 หลัก แต่ไม่ตัดถ้าเกิน */
+  return prefix + year + seq;
+}
+
+/* ── ข้อมูลผู้ขายจากชีตตั้งค่า ── */
+function seller_() {
+  return {
+    name:     setting_('ชื่อกิจการ', SHOP_DEFAULT.name),
+    addr1:    setting_('ที่อยู่กิจการ 1', SHOP_DEFAULT.addr1),
+    addr2:    setting_('ที่อยู่กิจการ 2', SHOP_DEFAULT.addr2),
+    taxId:    setting_('เลขประจำตัวผู้เสียภาษีกิจการ', SHOP_DEFAULT.taxId),
+    tel:      setting_('โทรกิจการ', SHOP_DEFAULT.tel),
+    bank:     setting_('ธนาคาร', SHOP_DEFAULT.bank),
+    acctName: setting_('ชื่อบัญชี', SHOP_DEFAULT.acctName),
+    acctNo:   setting_('เลขที่บัญชี', SHOP_DEFAULT.acctNo),
+    promptpay: setting_('เบอร์พร้อมเพย์', ''),
+    receiver: setting_('ชื่อผู้รับเงิน', SHOP_DEFAULT.receiver),
+    logo:     setting_('URL โลโก้', SHOP_DEFAULT.logo),
+    footer:   setting_('ข้อความท้ายใบเสร็จ', SHOP_DEFAULT.footer)
+  };
+}
+
+/* เขียนข้อมูลร้านลงชีตตั้งค่าให้ครบ — รันครั้งเดียวถ้าอยากให้ค่าไปอยู่ในชีตแทนโค้ด */
+function setShopInfo() {
+  cacheClear_(); ensureSheets_(true); ensureSettings_();
+  var map = {
+    'ชื่อกิจการ': SHOP_DEFAULT.name,
+    'ที่อยู่กิจการ 1': SHOP_DEFAULT.addr1,
+    'ที่อยู่กิจการ 2': SHOP_DEFAULT.addr2,
+    'เลขประจำตัวผู้เสียภาษีกิจการ': SHOP_DEFAULT.taxId,
+    'โทรกิจการ': SHOP_DEFAULT.tel,
+    'ธนาคาร': SHOP_DEFAULT.bank,
+    'ชื่อบัญชี': SHOP_DEFAULT.acctName,
+    'เลขที่บัญชี': SHOP_DEFAULT.acctNo,
+    'ชื่อผู้รับเงิน': SHOP_DEFAULT.receiver,
+    'URL โลโก้': SHOP_DEFAULT.logo,
+    'โฟลเดอร์ Drive เก็บใบเสร็จ': FOLDER_RECEIPT_DEFAULT,
+    'โฟลเดอร์ Drive เก็บหลักฐานการรับเงิน': FOLDER_PROOF_DEFAULT
+  };
+  var sh = sheet_(SH.SETTING), last = sh.getLastRow(), done = [], missing = [];
+  var col = sh.getRange(1, 1, last, 1).getValues();
+  Object.keys(map).forEach(function (k) {
+    var hit = false;
+    for (var r = 1; r < last; r++) {
+      if (String(col[r][0]).trim().replace(/\s+/g, '') === k.replace(/\s+/g, '')) {
+        sh.getRange(r + 1, 2).setValue(map[k]); done.push(k); hit = true; break;
+      }
+    }
+    if (!hit) missing.push(k);
+  });
+  cacheClear_();
+  var msg = 'เขียนค่าลงชีตแล้ว ' + done.length + ' รายการ' +
+            (missing.length ? ' · ไม่พบหัวข้อ: ' + missing.join(', ') + ' (ให้รัน setupSheets ก่อน)' : '');
+  Logger.log(msg);
+  return msg;
+}
+
+/* ── เตรียมข้อมูลใบเสร็จของออร์เดอร์หนึ่ง ── */
+function receiptData_(p) {
+  var docNo = String(p.docNo || '').trim();
+  var order = null;
+  live_(readAll_(SH.ORDER)).forEach(function (o) {
+    if (String(o['เลขที่ออร์เดอร์']).trim() === docNo) order = o;
+  });
+  if (!order) throw new Error('ไม่พบออร์เดอร์ ' + docNo);
+
+  var lines = live_(readAll_(SH.LINE)).filter(function (l) {
+    return String(l['เลขที่ออร์เดอร์']).trim() === docNo;
+  }).map(function (l) {
+    var size = n_(l['ขนาด (g)']);
+    var roast = String(l['ระดับคั่ว'] || '').trim();
+
+    /* ชื่อสินค้าเอาจากชีตสินค้า (ชื่อแบรนด์) ไม่ใช่ระดับคั่ว */
+    var prodName = '', prod = null;
+    if (roast) {
+      var code = beanCodeOf_(roast, size);
+      if (code) prod = findP_(code);
+    }
+    if (!prod) prod = firstOfType_(l['ประเภท'] || 'สารเขียว');
+    prodName = prod ? String(prod['ชื่อสินค้า']) : (roast || l['ประเภท'] || '');
+
+    var lead = String(settings_()['ชื่อสินค้าในใบเสร็จ'] || 'เมล็ดกาแฟอาราบิก้า').trim();
+    var detail = roast
+      ? lead + ' ' + (roast.indexOf('คั่ว') === 0 ? 'คั่วระดับ' + roast.slice(3) : roast) + (size ? '  ' + size + 'g' : '')
+      : (prod && prod['ประเภท'] === 'สารเขียว' ? lead + ' สารเขียว' : lead);
+
+    return {
+      name: prodName,
+      detail: detail,
+      qty: n_(l['จำนวน (ซอง/kg)']), unit: size > 0 ? 'ถุง' : 'kg',
+      price: n_(l['ราคา/หน่วย']), amount: n_(l['มูลค่า'])
+    };
+  });
+
+  /* ค่าส่งที่เก็บลูกค้า ให้ขึ้นเป็นอีกบรรทัดในใบเสร็จ */
+  var ship = n_(order['ค่าส่งที่เก็บลูกค้า']);
+  if (ship > 0) lines.push({ name: 'ค่าจัดส่ง', detail: '', qty: 1, unit: 'ครั้ง', price: ship, amount: ship });
+
+  /* ถ้าเคยออกใบเสร็จของออร์เดอร์นี้แล้ว ใช้เลขเดิม */
+  var prev = null;
+  live_(readAll_(SH.RECEIPT)).forEach(function (r) {
+    if (String(r['เลขที่ออร์เดอร์']).trim() === docNo) prev = r;
+  });
+
+  var cust = null;
+  var cname = String(order['ลูกค้า'] || '').trim();
+  if (cname) {
+    listCustomers_().forEach(function (c) { if (c.name === cname) cust = c; });
+    if (!cust) cust = { name: cname, addr1: '', addr2: '', tel: '', taxId: '', contact: '', contactTel: '' };
+  }
+
+  var st2 = settings_();
+  return {
+    seller: seller_(),
+    proofUrl: String(order['หลักฐานการรับเงิน'] || ''),
+    requireProof: String(st2['บังคับแนบหลักฐานก่อนออกใบเสร็จ'] || 'ใช่').trim() === 'ใช่',
+    order: {
+      docNo: docNo, date: d_(order['วันที่']), dateTh: thaiDate_(d_(order['วันที่'])),
+      goods: n_(order['มูลค่าสินค้า']), ship: ship, total: n_(order['รายได้รวม']),
+      channel: order['ช่องทางขาย'], note: order['หมายเหตุ']
+    },
+    lines: lines,
+    customer: cust,
+    customers: listCustomers_(),
+    receivers: listReceivers_(),
+    proofUrl: String(order['หลักฐานการรับเงิน'] || ''),
+    requireProof: setting_('บังคับแนบหลักฐานก่อนออกใบเสร็จ', 'ใช่') !== 'ไม่',
+    receiptNo: prev ? String(prev['เลขที่ใบเสร็จ']) : nextReceiptNo_(),
+    deposit: prev ? n_(prev['หักมัดจำ']) : 0,
+    depositRef: prev ? String(prev['เลขที่ใบมัดจำ'] || '') : '',
+    issued: !!prev,
+    issuedAt: prev ? d_(prev['วันที่']) : ''
+  };
+}
+
+/* ── บันทึกว่าออกใบเสร็จแล้ว ── */
+function saveReceipt_(p) {
+  var no = String(p.receiptNo || '').trim();
+  if (!no) throw new Error('กรุณาระบุเลขที่ใบเสร็จ');
+  var need = setting_('บังคับแนบหลักฐานก่อนออกใบเสร็จ', 'ใช่') !== 'ไม่';
+  if (need) {
+    var ord = orderRow_(p.docNo);
+    if (!ord || !String(ord['หลักฐานการรับเงิน'] || '').trim())
+      throw new Error('ต้องแนบหลักฐานการรับเงินของบิลนี้ก่อนจึงจะออกใบเสร็จได้');
+  }
+
+  if (String(settings_()['บังคับแนบหลักฐานก่อนออกใบเสร็จ'] || 'ใช่').trim() === 'ใช่') {
+    var ord = orderRow_(p.docNo);
+    if (ord && !String(ord['หลักฐานการรับเงิน'] || '').trim())
+      throw new Error('ต้องแนบรูปหลักฐานการรับเงินก่อนจึงจะออกใบเสร็จได้');
+  }
+  if (p.customer && p.customer.name) saveCustomer_(p.customer);
+  if (p.receiver) saveReceiver_(p.receiver);
+
+  var up = null, upErr = '';
+  try { up = uploadReceipt_(no, p.html || '', (p.customer && p.customer.name) || ''); }
+  catch (e) { upErr = String(e && e.message ? e.message : e); }
+
+  var rows = readAll_(SH.RECEIPT), sh = sheet_(SH.RECEIPT);
+  var total = n_(p.total), dep = n_(p.deposit);
+  var vals = {
+    'เลขที่ใบเสร็จ': no, 'วันที่': p.date || today_(), 'เลขที่ออร์เดอร์': p.docNo || '',
+    'ชื่อลูกค้า': (p.customer && p.customer.name) || '', 'รวมเงิน': r2_(total),
+    'หักมัดจำ': r2_(dep), 'รวมทั้งสิ้น': r2_(total - dep), 'เลขที่ใบมัดจำ': p.depositRef || '',
+    'ลิงก์ไฟล์': up ? (up.pdfUrl || up.htmlUrl || '') : '', 'ไอดีไฟล์': up ? (up.fileId || '') : '',
+    'หมายเหตุ': (p.receiver ? 'ผู้รับเงิน: ' + p.receiver + (p.note ? ' · ' : '') : '') + (p.note || ''),
+    'ผู้บันทึก': p.user || '', 'บันทึกเมื่อ': new Date(), 'สถานะ': 'ใช้งาน'
+  };
+
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i]['เลขที่ออร์เดอร์']).trim() === String(p.docNo).trim() && rows[i]['สถานะ'] !== 'ยกเลิก') {
+      var line = H[SH.RECEIPT].map(function (h) { return vals[h]; });
+      sh.getRange(rows[i]._row, 1, 1, line.length).setValues([line]);
+      H[SH.RECEIPT].forEach(function (h, k) { rows[i][h] = line[k]; });
+      return { receiptNo: no, updated: true, drive: up, uploadError: upErr };
+    }
+  }
+  append_(SH.RECEIPT, vals);
+
+  /* เขียนเลขที่ใบเสร็จกลับไปที่ออร์เดอร์ในช่องหมายเหตุ เพื่อให้ตามรอยได้ */
+  return { receiptNo: no, created: true, drive: up, uploadError: upErr };
+}
+
+
+function listReceipts_(p) {
+  var lim = n_(p && p.limit) || 40;
+  var rows = live_(readAll_(SH.RECEIPT));
+  return {
+    receipts: rows.slice(-lim).reverse().map(function (r) {
+      return {
+        receiptNo: String(r['เลขที่ใบเสร็จ']), date: d_(r['วันที่']),
+        docNo: String(r['เลขที่ออร์เดอร์'] || ''), customer: r['ชื่อลูกค้า'],
+        total: n_(r['รวมทั้งสิ้น']), deposit: n_(r['หักมัดจำ']),
+        url: String(r['ลิงก์ไฟล์'] || '')
+      };
+    })
+  };
+}
+
+
+/* ══════════ หลักฐานการรับเงิน ══════════ */
+
+function orderRow_(docNo) {
+  var found = null;
+  live_(readAll_(SH.ORDER)).forEach(function (o) {
+    if (String(o['เลขที่ออร์เดอร์']).trim() === String(docNo).trim()) found = o;
+  });
+  return found;
+}
+
+/* รับรูปเป็น base64 จากแอป แล้วเก็บเข้าโฟลเดอร์ Drive */
+function uploadProof_(p) {
+  var docNo = String(p.docNo || '').trim();
+  if (!docNo) throw new Error('ไม่พบเลขที่ออร์เดอร์');
+  if (!p.data) throw new Error('ไม่พบไฟล์รูป');
+
+  var order = orderRow_(docNo);
+  if (!order) throw new Error('ไม่พบออร์เดอร์ ' + docNo);
+
+  var st = settings_();
+  var folderId = String(st['โฟลเดอร์ Drive เก็บหลักฐานการรับเงิน'] || '').trim();
+  if (!folderId) throw new Error('ยังไม่ได้ตั้งค่าโฟลเดอร์เก็บหลักฐานในชีตตั้งค่า');
+
+  var folder;
+  try { folder = DriveApp.getFolderById(folderId); }
+  catch (e) { throw new Error('เปิดโฟลเดอร์หลักฐานไม่ได้ ตรวจไอดีโฟลเดอร์หรือสิทธิ์การเข้าถึง'); }
+
+  var mime = String(p.mimeType || 'image/jpeg');
+  var ext = mime.indexOf('png') >= 0 ? '.png' : (mime.indexOf('webp') >= 0 ? '.webp' : '.jpg');
+  var name = ('หลักฐาน ' + docNo + ' ' + (order['ลูกค้า'] || '')).replace(/[\\/\\\\:*?"<>|]/g, '-').trim() + ext;
+
+  /* ของเดิมชื่อเดียวกันย้ายลงถังขยะก่อน */
+  var it = folder.getFilesByName(name);
+  while (it.hasNext()) it.next().setTrashed(true);
+
+  var blob = Utilities.newBlob(Utilities.base64Decode(p.data), mime, name);
+  var file = folder.createFile(blob);
+
+  if (String(st['เปิดสิทธิ์ดูรูปหลักฐานด้วยลิงก์'] || 'ใช่').trim() === 'ใช่') {
+    try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e2) {}
+  }
+
+  var url = 'https://drive.google.com/file/d/' + file.getId() + '/view';
+  put_(SH.ORDER, order, 'หลักฐานการรับเงิน', url);
+  put_(SH.ORDER, order, 'ไอดีหลักฐาน', file.getId());
+
+  return { docNo: docNo, url: url, fileId: file.getId(), name: name };
+}
+
+function removeProof_(p) {
+  var order = orderRow_(p.docNo);
+  if (!order) throw new Error('ไม่พบออร์เดอร์');
+  var id = String(order['ไอดีหลักฐาน'] || '');
+  if (id) { try { DriveApp.getFileById(id).setTrashed(true); } catch (e) {} }
+  put_(SH.ORDER, order, 'หลักฐานการรับเงิน', '');
+  put_(SH.ORDER, order, 'ไอดีหลักฐาน', '');
+  return { docNo: p.docNo, removed: true };
+}
+
+
+/* ══════════ หลักฐานการรับเงิน ══════════ */
+
+function orderRow_(docNo) {
+  var found = null;
+  live_(readAll_(SH.ORDER)).forEach(function (o) {
+    if (String(o['เลขที่ออร์เดอร์']).trim() === String(docNo).trim()) found = o;
+  });
+  return found;
+}
+
+/* รับภาพเป็น base64 จากแอป แล้วเก็บลง Drive */
+function uploadProof_(p) {
+  var docNo = String(p.docNo || '').trim();
+  var order = orderRow_(docNo);
+  if (!order) throw new Error('ไม่พบออร์เดอร์ ' + docNo);
+  if (!p.data) throw new Error('ไม่พบไฟล์ที่อัปโหลด');
+
+  var folderId = folderId_(setting_('โฟลเดอร์ Drive เก็บหลักฐานการรับเงิน', FOLDER_PROOF_DEFAULT));
+  var folder;
+  try { folder = DriveApp.getFolderById(folderId); }
+  catch (e) {
+    throw new Error('เปิดโฟลเดอร์เก็บหลักฐานไม่ได้ (ไอดีที่ใช้: ' + folderId + ') — ' +
+      'ตรวจว่าบัญชีที่ deploy สคริปต์มีสิทธิ์เข้าโฟลเดอร์นี้ · ' + (e && e.message ? e.message : e));
+  }
+
+  var mime = String(p.mimeType || 'image/jpeg');
+  var ext = mime.indexOf('png') >= 0 ? '.png' : (mime.indexOf('pdf') >= 0 ? '.pdf' : '.jpg');
+  var name = (docNo + ' ' + (order['ลูกค้า'] || '') + ' ' + d_(order['วันที่'])).trim().replace(/[\\/\\\\:*?"<>|]/g, '-') + ext;
+
+  /* ของเดิมของบิลนี้ให้ทิ้งก่อน กันไฟล์ซ้อน */
+  var old = String(order['ไอดีหลักฐาน'] || '').trim();
+  if (old) { try { DriveApp.getFileById(old).setTrashed(true); } catch (e2) {} }
+
+  var blob = Utilities.newBlob(Utilities.base64Decode(p.data), mime, name);
+  var file = folder.createFile(blob);
+  try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e3) {}
+
+  var url = 'https://drive.google.com/file/d/' + file.getId() + '/view';
+  put_(SH.ORDER, order, 'หลักฐานการรับเงิน', url);
+  put_(SH.ORDER, order, 'ไอดีหลักฐาน', file.getId());
+  return { url: url, fileId: file.getId(), name: name };
+}
+
+function removeProof_(p) {
+  var order = orderRow_(p.docNo);
+  if (!order) throw new Error('ไม่พบออร์เดอร์');
+  var id = String(order['ไอดีหลักฐาน'] || '').trim();
+  if (id) { try { DriveApp.getFileById(id).setTrashed(true); } catch (e) {} }
+  put_(SH.ORDER, order, 'หลักฐานการรับเงิน', '');
+  put_(SH.ORDER, order, 'ไอดีหลักฐาน', '');
+  return { removed: true };
+}
+
+/* ══════════ อัปโหลดใบเสร็จเข้า Google Drive ══════════
+   PDF ที่แปลงฝั่งเซิร์ฟเวอร์บางครั้งฟอนต์ไทยไม่สวยเท่าการสั่งพิมพ์จากเบราว์เซอร์
+   จึงเก็บไฟล์ HTML คู่ไว้ด้วย เปิดแล้วสั่งพิมพ์ได้เหมือนกันทุกประการ          */
+function uploadReceipt_(receiptNo, html, custName) {
+  var st = settings_();
+  if (!html) return null;
+  var folderId = folderId_(setting_('โฟลเดอร์ Drive เก็บใบเสร็จ', FOLDER_RECEIPT_DEFAULT));
+  if (!folderId) return null;
+
+  var mode = setting_('รูปแบบไฟล์ที่เก็บใน Drive', 'ทั้งคู่');
+  var folder;
+  try { folder = DriveApp.getFolderById(folderId); }
+  catch (e) { throw new Error('เปิดโฟลเดอร์ใบเสร็จไม่ได้ (ไอดี: ' + folderId + ') — ' + (e && e.message ? e.message : e)); }
+
+  var base = receiptNo + (custName ? ' ' + String(custName).slice(0, 40) : '');
+  base = base.replace(/[\\/\\\\:*?"<>|]/g, '-');
+
+  /* ไฟล์เดิมชื่อเดียวกันให้ย้ายลงถังขยะก่อน จะได้ไม่ซ้อนกันหลายไฟล์ */
+  ['.pdf', '.html'].forEach(function (ext) {
+    var it = folder.getFilesByName(base + ext);
+    while (it.hasNext()) it.next().setTrashed(true);
+  });
+
+  var out = { pdfUrl: '', htmlUrl: '', fileId: '' };
+  var blob = Utilities.newBlob(html, 'text/html', base + '.html');
+
+  if (mode !== 'HTML') {
+    try {
+      var pdf = folder.createFile(blob.getAs('application/pdf').setName(base + '.pdf'));
+      out.pdfUrl = pdf.getUrl(); out.fileId = pdf.getId();
+    } catch (e2) { out.pdfError = String(e2 && e2.message ? e2.message : e2); }
+  }
+  if (mode !== 'PDF') {
+    var h = folder.createFile(blob);
+    out.htmlUrl = h.getUrl();
+    if (!out.fileId) out.fileId = h.getId();
+  }
+  return out;
+}
+
 /* ══════════ แจ้งเตือนรายวัน ══════════ */
 
 function dailyAlert() {
@@ -1038,7 +1737,16 @@ function dailyAlert() {
 
 /* ══════════ ติดตั้งครั้งแรก ══════════ */
 
-function setupSheets() { ensureSheets_(true); cacheClear_(); return 'ตรวจและอัปเดตโครงสร้างชีตเรียบร้อย'; }
+function setupSheets() {
+  cacheClear_(); ensureSheets_(true);
+  var added = ensureSettings_(); ensurePhoneFormat_(); cacheClear_();
+  SpreadsheetApp.getActiveSpreadsheet().toast(
+    added.length ? 'เพิ่มหัวข้อตั้งค่าใหม่ ' + added.length + ' รายการ' : 'หัวข้อตั้งค่าครบอยู่แล้ว',
+    'setupSheets', 8);
+  return added.length
+    ? 'อัปเดตโครงสร้างชีตเรียบร้อย · เพิ่มหัวข้อตั้งค่าใหม่ ' + added.length + ' รายการ: ' + added.join(', ')
+    : 'อัปเดตโครงสร้างชีตเรียบร้อย · หัวข้อตั้งค่าครบอยู่แล้ว';
+}
 
 function seedCoffeeCatalog() {
   cacheClear_(); ensureSheets_(true);
@@ -1175,7 +1883,18 @@ function listDocs_(p) {
       o.amt = r2_(cost);
     }
     else if (p.kind === 'buyMaterial') { o.title = r['ชื่อวัสดุ']; o.sub = r4_(n_(r['จำนวน'])) + ' × ' + f2_(n_(r['ราคา/หน่วย'])); o.amt = n_(r['ต้นทุนรวม']); }
-    else if (p.kind === 'sell') { o.title = r['ลูกค้า'] || r['ช่องทางขาย'] || 'ขาย'; o.sub = 'กำไร ' + f2_(n_(r['กำไรสุทธิ'])) + ' (' + r2_(n_(r['% กำไร'])) + '%)'; o.amt = n_(r['รายได้รวม']); }
+    else if (p.kind === 'sell') {
+      o.title = r['ลูกค้า'] || r['ช่องทางขาย'] || 'ขาย';
+      o.sub = 'กำไร ' + f2_(n_(r['กำไรสุทธิ'])) + ' (' + r2_(n_(r['% กำไร'])) + '%)';
+      o.amt = n_(r['รายได้รวม']);
+      o.proofUrl = String(r['หลักฐานการรับเงิน'] || '');
+      live_(readAll_(SH.RECEIPT)).forEach(function (rc) {
+        if (String(rc['เลขที่ออร์เดอร์']).trim() === id) {
+          o.receiptNo = String(rc['เลขที่ใบเสร็จ']);
+          o.receiptUrl = String(rc['ลิงก์ไฟล์'] || '');
+        }
+      });
+    }
     else { o.title = r['ชื่อสินค้า']; o.sub = r['ประเภท'] + ' · ' + r4_(n_(r['จำนวน'])); o.amt = n_(r['มูลค่าที่ตัด']); }
     out.push(o);
   }
@@ -1560,4 +2279,103 @@ function seedBubbleWrap() {
   saveProduct_({ code: 'MT-BUBBLE', name: 'บับเบิ้ลกันกระแทก', type: 'วัสดุอุปกรณ์', unit: 'เมตร', reorder: 20 });
   flush_();
   return 'เพิ่ม "บับเบิ้ลกันกระแทก" (หน่วย: เมตร) เรียบร้อย — อย่าลืมบันทึกซื้อในขั้นที่ 4 เพื่อให้มีต้นทุน';
+}
+
+/* ══════════ ตรวจว่าตั้งค่าครบไหม — รันแล้วดูผลในบันทึกการดำเนินการ ══════════ */
+function checkSettings() {
+  cacheClear_();
+  var sh = sheet_(SH.SETTING);
+  var out = [];
+  if (!sh) {
+    out.push('✗ ไม่พบชีตชื่อ "' + SH.SETTING + '"');
+    out.push('  ชีตที่มีอยู่: ' + ss_().getSheets().map(function (x) { return x.getName(); }).join(' | '));
+    Logger.log(out.join('\n'));
+    return out.join('\n');
+  }
+
+  var st = settings_();
+  out.push('สเปรดชีต: ' + ss_().getName());
+  out.push('ชีตตั้งค่า: "' + sh.getName() + '" · ' + Math.max(0, sh.getLastRow() - 1) + ' แถว');
+  out.push('');
+
+  var need = [
+    'โฟลเดอร์ Drive เก็บหลักฐานการรับเงิน',
+    'โฟลเดอร์ Drive เก็บใบเสร็จ',
+    'บังคับแนบหลักฐานก่อนออกใบเสร็จ',
+    'URL โลโก้', 'ชื่อกิจการ', 'ที่อยู่กิจการ 1', 'เลขที่บัญชี'
+  ];
+  need.forEach(function (k) {
+    var has = st.hasOwnProperty(k);
+    var v = has ? String(st[k]) : '';
+    out.push((has ? (v ? '✓ ' : '△ ') : '✗ ') + k + (has ? ' = ' + (v || '(ยังว่าง)') : ' — ไม่มีแถวนี้'));
+  });
+
+  out.push('');
+  out.push('— ข้อมูลที่จะพิมพ์บนใบเสร็จจริง —');
+  var sel = seller_();
+  ['name','addr1','addr2','taxId','tel','bank','acctName','acctNo','receiver','logo'].forEach(function (k) {
+    out.push('  ' + k + ': ' + (sel[k] || '(ว่าง)'));
+  });
+
+  out.push('');
+  out.push('เวอร์ชันโค้ดในไฟล์นี้: ' + SERVER_VER);
+  out.push('ถ้ามี ✗ ให้รัน setupSheets อีกครั้ง · ถ้ามี △ ให้ไปกรอกค่าในชีต');
+  Logger.log(out.join('\n'));
+  return out.join('\n');
+}
+
+/* ตั้งค่าไอดีโฟลเดอร์ให้เลย เผื่อแก้ในชีตไม่สะดวก — รันครั้งเดียว */
+function setDriveFolders() {
+  cacheClear_(); ensureSheets_(true); ensureSettings_();
+  var pairs = {
+    'โฟลเดอร์ Drive เก็บใบเสร็จ': '1bfQTjC0rg7rqo182MCJBmBoKm_YWaghs',
+    'โฟลเดอร์ Drive เก็บหลักฐานการรับเงิน': '1L72pcYreTu6u5QBCS1zgEw_-vjeMCvNu'
+  };
+  var sh = sheet_(SH.SETTING), last = sh.getLastRow(), done = [];
+  var col = sh.getRange(1, 1, last, 1).getValues();
+  Object.keys(pairs).forEach(function (k) {
+    for (var r = 1; r < last; r++) {
+      if (String(col[r][0]).trim() === k) {
+        sh.getRange(r + 1, 2).setValue(pairs[k]);
+        done.push(k);
+        return;
+      }
+    }
+  });
+  cacheClear_();
+  var msg = done.length ? 'ตั้งไอดีโฟลเดอร์ให้แล้ว: ' + done.join(' · ') : 'ไม่พบแถวหัวข้อ ให้รัน setupSheets ก่อน';
+  Logger.log(msg);
+  return msg;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   รันฟังก์ชันนี้ในหน้า Apps Script เพื่อขอสิทธิ์ Google Drive
+   ต้องรันจากหน้าแก้ไขโค้ดเท่านั้น หน้าต่างขออนุญาตจึงจะเด้งขึ้นมา
+   ══════════════════════════════════════════════════════════════ */
+function authorizeDrive() {
+  var out = [];
+  out.push('บัญชีที่รันสคริปต์: ' + Session.getEffectiveUser().getEmail());
+
+  var ids = {
+    'โฟลเดอร์ใบเสร็จ': folderId_(setting_('โฟลเดอร์ Drive เก็บใบเสร็จ', FOLDER_RECEIPT_DEFAULT)),
+    'โฟลเดอร์หลักฐานการรับเงิน': folderId_(setting_('โฟลเดอร์ Drive เก็บหลักฐานการรับเงิน', FOLDER_PROOF_DEFAULT))
+  };
+
+  Object.keys(ids).forEach(function (label) {
+    var id = ids[label];
+    try {
+      var f = DriveApp.getFolderById(id);
+      /* ลองเขียนไฟล์เล็ก ๆ แล้วลบทิ้ง เพื่อยืนยันว่าเขียนได้จริง ไม่ใช่แค่เปิดดูได้ */
+      var t = f.createFile(Utilities.newBlob('ok', 'text/plain', '__ทดสอบสิทธิ์.txt'));
+      t.setTrashed(true);
+      out.push('✓ ' + label + ' — เข้าถึงและเขียนไฟล์ได้ (' + f.getName() + ')');
+    } catch (e) {
+      out.push('✗ ' + label + ' (' + id + ') — ' + (e && e.message ? e.message : e));
+    }
+  });
+
+  out.push('');
+  out.push('ถ้าขึ้น ✓ ทั้งสองบรรทัด ให้กลับไป deploy ใหม่แล้วลองอัปโหลดจากแอปได้เลย');
+  Logger.log(out.join('\n'));
+  return out.join('\n');
 }
