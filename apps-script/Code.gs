@@ -44,7 +44,7 @@ H[SH.CUSTOMER] = ['ชื่อลูกค้า','ที่อยู่ 1','�
 H[SH.RECEIVER] = ['ชื่อผู้รับเงิน','ใช้ล่าสุด'];
 H[SH.RECEIPT]  = ['เลขที่ใบเสร็จ','วันที่','เลขที่ออร์เดอร์','ชื่อลูกค้า','รวมเงิน','หักมัดจำ','รวมทั้งสิ้น','เลขที่ใบมัดจำ','ลิงก์ไฟล์','ไอดีไฟล์','หมายเหตุ','ผู้บันทึก','บันทึกเมื่อ','สถานะ'];
 
-var SERVER_VER = '2026.08.25-จัดหน้า';   /* เปลี่ยนทุกครั้งที่แก้ไฟล์นี้ ใช้เช็คว่า deploy เวอร์ชันใหม่แล้วหรือยัง */
+var SERVER_VER = '2026.08.27-แก้คอลัมน์';   /* เปลี่ยนทุกครั้งที่แก้ไฟล์นี้ ใช้เช็คว่า deploy เวอร์ชันใหม่แล้วหรือยัง */
 /* ไอดีโฟลเดอร์ Drive ค่าตั้งต้น ใช้เมื่อชีตตั้งค่ายังไม่มีค่าหรือหาแถวไม่เจอ
    ถ้าอยากเปลี่ยนโฟลเดอร์ ให้กรอกในชีตตั้งค่า ค่าในชีตจะถูกใช้ก่อนเสมอ */
 var FOLDER_RECEIPT_DEFAULT = '1bfQTjC0rg7rqo182MCJBmBoKm_YWaghs';
@@ -270,22 +270,28 @@ function ensureSheets_(migrate) {
    ชีตแต่ละแผ่นจึงถูกอ่านจริงแค่ครั้งเดียวต่อ 1 คำขอ ที่เหลืออ่านจากหน่วยความจำ
    ทุกจุดที่เขียนค่าจะอัปเดตแคชไปพร้อมกัน (write-through) ข้อมูลจึงตรงเสมอ  */
 var _C = {}, _DIRTY = {};
-function cacheClear_() { _C = {}; _DIRTY = {}; }
+function cacheClear_() { _C = {}; _DIRTY = {}; }   /* ล้างทั้งข้อมูลและแผนผังหัวคอลัมน์ */
 
 /* ค่าคงเหลือของสินค้าและล็อตถูกแก้หลายครั้งใน 1 คำขอ
    จึงเก็บไว้ในแคชก่อน แล้วเขียนลงชีตครั้งเดียวตอนจบ */
+/* เขียนคอลัมน์เดียวทั้งก้อน โดยหาเลขคอลัมน์จากชื่อหัวจริง */
+function writeCol_(sheetName, rows, colName, pick) {
+  var c = col_(sheetName, colName);
+  if (c < 1 || !rows.length) return;
+  sheet_(sheetName).getRange(rows[0]._row, c, rows.length, 1)
+    .setValues(rows.map(function (r) { return [pick(r)]; }));
+}
+
 function flush_() {
   if (_DIRTY[SH.PRODUCT] && _C[SH.PRODUCT] && _C[SH.PRODUCT].length) {
     var rows = _C[SH.PRODUCT];
-    var block = rows.map(function (r) {
-      return [n_(r['คงเหลือ']), n_(r['ต้นทุนเฉลี่ย/หน่วย']), n_(r['มูลค่าคงคลัง']), r['สถานะ'] || 'ใช้งาน', r['เคลื่อนไหวล่าสุด'] || ''];
-    });
-    sheet_(SH.PRODUCT).getRange(rows[0]._row, 8, block.length, 5).setValues(block);
+    writeCol_(SH.PRODUCT, rows, 'คงเหลือ', function (r) { return n_(r['คงเหลือ']); });
+    writeCol_(SH.PRODUCT, rows, 'ต้นทุนเฉลี่ย/หน่วย', function (r) { return n_(r['ต้นทุนเฉลี่ย/หน่วย']); });
+    writeCol_(SH.PRODUCT, rows, 'มูลค่าคงคลัง', function (r) { return n_(r['มูลค่าคงคลัง']); });
+    writeCol_(SH.PRODUCT, rows, 'เคลื่อนไหวล่าสุด', function (r) { return r['เคลื่อนไหวล่าสุด'] || ''; });
   }
   if (_DIRTY[SH.LOT] && _C[SH.LOT] && _C[SH.LOT].length) {
-    var lots = _C[SH.LOT];
-    var col = lots.map(function (l) { return [n_(l['คงเหลือ'])]; });
-    sheet_(SH.LOT).getRange(lots[0]._row, 7, col.length, 1).setValues(col);
+    writeCol_(SH.LOT, _C[SH.LOT], 'คงเหลือ', function (l) { return n_(l['คงเหลือ']); });
   }
   _DIRTY = {};
 }
@@ -329,14 +335,43 @@ function ensurePhoneFormat_() {
   });
 }
 
+/* อ่านหัวคอลัมน์จริงจากแถวแรกของชีต แล้วจับคู่ชื่อ → เลขคอลัมน์
+   สำคัญมาก: คอลัมน์ที่เพิ่มทีหลังจะไปต่อท้ายชีตเสมอ ไม่ตรงกับลำดับใน H
+   ถ้าอ่านแบบนับตำแหน่งจะได้ค่าผิดช่องทั้งแถว                        */
+function head_(name) {
+  var key = '__h_' + name;
+  if (_C[key]) return _C[key];
+  var sh = sheet_(name);
+  var wide = Math.max(sh.getLastColumn(), H[name].length);
+  var row = sh.getRange(1, 1, 1, wide).getValues()[0];
+  var map = {}, order = [];
+  row.forEach(function (v, i) {
+    var t = String(v == null ? '' : v).trim();
+    order.push(t);
+    if (t && map[t] === undefined) map[t] = i;      /* ชื่อ → index (0-based) */
+  });
+  var info = { map: map, order: order, width: wide };
+  _C[key] = info;
+  return info;
+}
+
+/* เลขคอลัมน์จริง (1-based) ของหัวข้อที่ระบุ · คืน 0 ถ้าไม่มี */
+function col_(name, colName) {
+  var i = head_(name).map[colName];
+  return i === undefined ? 0 : i + 1;
+}
+
 function readAll_(name) {
   if (_C[name]) return _C[name];
   var sh = sheet_(name), last = sh.getLastRow();
-  var head = H[name], out = [];
+  var info = head_(name), out = [];
   if (last >= 2) {
-    out = sh.getRange(2, 1, last - 1, head.length).getValues().map(function (row, i) {
+    var vals = sh.getRange(2, 1, last - 1, info.width).getValues();
+    out = vals.map(function (row, i) {
       var o = { _row: i + 2 };
-      head.forEach(function (h, c) { o[h] = row[c]; });
+      /* เติมทุกหัวข้อที่โค้ดรู้จักก่อน กันกรณีชีตยังไม่มีคอลัมน์นั้น */
+      H[name].forEach(function (h) { o[h] = ''; });
+      info.order.forEach(function (h, c) { if (h) o[h] = row[c]; });
       return o;
     });
   }
@@ -345,21 +380,26 @@ function readAll_(name) {
 }
 
 function append_(name, obj) {
-  var head = H[name];
-  var vals = head.map(function (h) { return obj[h] === undefined ? '' : obj[h]; });
+  var info = head_(name);
+  var vals = [];
+  for (var i = 0; i < info.width; i++) {
+    var h = info.order[i];
+    vals.push((h && obj[h] !== undefined) ? obj[h] : '');
+  }
   var sh = sheet_(name);
   sh.appendRow(vals);
   if (_C[name]) {                       /* ต่อแถวใหม่เข้าแคชแทนการอ่านชีตซ้ำ */
     var rows = _C[name];
     var o = { _row: (rows.length ? rows[rows.length - 1]._row + 1 : 2) };
-    head.forEach(function (h, c) { o[h] = vals[c]; });
+    H[name].forEach(function (h) { o[h] = ''; });
+    info.order.forEach(function (h, c) { if (h) o[h] = vals[c]; });
     rows.push(o);
   }
 }
 
 /* เขียนค่าลงชีตพร้อมอัปเดตแถวในแคชให้ตรงกัน */
 function put_(name, rowObj, colName, value) {
-  var col = H[name].indexOf(colName) + 1;
+  var col = col_(name, colName);
   if (col < 1) return;
   sheet_(name).getRange(rowObj._row, col).setValue(value);
   rowObj[colName] = value;
@@ -508,11 +548,12 @@ function saveProduct_(p) {
   if (!p.name) throw new Error('กรุณาระบุชื่อสินค้า');
   var ex = findP_(code), sh = sheet_(SH.PRODUCT);
   if (ex) {
-    var vals = [p.name, p.type || ex['ประเภท'], p.roast || '', p.unit || '', n_(p.price), n_(p.reorder)];
-    sh.getRange(ex._row, 2, 1, 6).setValues([vals]);
-    sh.getRange(ex._row, 11).setValue(p.active === false ? 'ยกเลิกใช้' : 'ใช้งาน');
-    ['ชื่อสินค้า','ประเภท','ระดับคั่ว','หน่วยนับ','ราคาขาย','จุดสั่งซื้อ'].forEach(function (h, i) { ex[h] = vals[i]; });
-    ex['สถานะ'] = p.active === false ? 'ยกเลิกใช้' : 'ใช้งาน';
+    var pairs = {
+      'ชื่อสินค้า': p.name, 'ประเภท': p.type || ex['ประเภท'], 'ระดับคั่ว': p.roast || '',
+      'หน่วยนับ': p.unit || '', 'ราคาขาย': n_(p.price), 'จุดสั่งซื้อ': n_(p.reorder),
+      'สถานะ': p.active === false ? 'ยกเลิกใช้' : 'ใช้งาน'
+    };
+    Object.keys(pairs).forEach(function (k) { put_(SH.PRODUCT, ex, k, pairs[k]); });
     return { code: code, updated: true };
   }
   append_(SH.PRODUCT, {
@@ -534,8 +575,7 @@ function savePackSpec_(p) {
   var vals = [n_(p.size), p.pouchCode || '', pouch ? pouch['ชื่อสินค้า'] : '', n_(p.pouchQty) || 1, p.stickerCode || '', n_(p.stickerQty) || 1];
   for (var i = 0; i < rows.length; i++) {
     if (n_(rows[i]['ขนาด (g)']) === n_(p.size)) {
-      sh.getRange(rows[i]._row, 1, 1, 6).setValues([vals]);
-      H[SH.PACKSPEC].forEach(function (h, c) { rows[i][h] = vals[c]; });
+      H[SH.PACKSPEC].forEach(function (h, c) { put_(SH.PACKSPEC, rows[i], h, vals[c]); });
       return { updated: true };
     }
   }
@@ -1309,8 +1349,7 @@ function saveCustomer_(c) {
               digits(c.taxId), c.contact || '', String(c.contactTel || ''), today_()];
   for (var i = 0; i < rows.length; i++) {
     if (String(rows[i]['ชื่อลูกค้า']).trim() === name) {
-      sh.getRange(rows[i]._row, 1, 1, vals.length).setValues([vals]);
-      H[SH.CUSTOMER].forEach(function (h, k) { rows[i][h] = vals[k]; });
+      H[SH.CUSTOMER].forEach(function (h, k) { put_(SH.CUSTOMER, rows[i], h, vals[k]); });
       return { updated: true, name: name };
     }
   }
@@ -1533,9 +1572,7 @@ function saveReceipt_(p) {
 
   for (var i = 0; i < rows.length; i++) {
     if (String(rows[i]['เลขที่ออร์เดอร์']).trim() === String(p.docNo).trim() && rows[i]['สถานะ'] !== 'ยกเลิก') {
-      var line = H[SH.RECEIPT].map(function (h) { return vals[h]; });
-      sh.getRange(rows[i]._row, 1, 1, line.length).setValues([line]);
-      H[SH.RECEIPT].forEach(function (h, k) { rows[i][h] = line[k]; });
+      H[SH.RECEIPT].forEach(function (h) { put_(SH.RECEIPT, rows[i], h, vals[h] === undefined ? '' : vals[h]); });
       return { receiptNo: no, updated: true, drive: up, uploadError: upErr };
     }
   }
@@ -1795,7 +1832,7 @@ function rowsOfDoc_(sheetName, keyCol, docNo) {
 }
 
 function setStatus_(sheetName, rows, status) {
-  var col = H[sheetName].indexOf('สถานะ') + 1;
+  var col = col_(sheetName, 'สถานะ');
   if (col < 1) return;
   var sh = sheet_(sheetName);
   rows.forEach(function (r) { sh.getRange(r._row, col).setValue(status); r['สถานะ'] = status; });
