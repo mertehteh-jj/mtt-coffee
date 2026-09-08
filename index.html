@@ -547,6 +547,7 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
     <div class="prev" id="qStat" style="display:none"></div>
     <button class="btn ghost" onclick="copyCfg()">คัดลอก URL สำหรับย้ายไปโดเมนใหม่</button>
     <button class="btn ghost" onclick="forceUpdate()">บังคับโหลดแอปเวอร์ชันล่าสุด</button>
+    <button class="btn ghost" onclick="clearCache()">ล้างข้อมูลที่จำไว้ในเครื่อง แล้วดึงใหม่</button>
     <div style="text-align:center;font-size:11.5px;color:var(--muted);margin-top:10px" id="verLine"></div>
   </div></div>
 </section>
@@ -562,7 +563,7 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
 <div class="toast" id="toast"></div>
 
 <script>
-var APPVER='2026.08.26-ไม่มีQR';   /* แก้เลขนี้ทุกครั้งที่แก้ไฟล์ จะได้รู้ว่าเครื่องโหลดตัวใหม่แล้วหรือยัง */
+var APPVER='2026.09.08-ล้างแคช';   /* แก้เลขนี้ทุกครั้งที่แก้ไฟล์ จะได้รู้ว่าเครื่องโหลดตัวใหม่แล้วหรือยัง */
 var CFG=JSON.parse(localStorage.getItem('mttCfg')||'{}');
 var DATA=JSON.parse(localStorage.getItem('mttData')||'null');
 var BOX=JSON.parse(localStorage.getItem('mttBox')||'[]');
@@ -591,7 +592,14 @@ function once(a,p,reqId,ms){
     body:JSON.stringify({action:a,payload:p||{},reqId:reqId})})
     .then(function(r){
       if(timer) clearTimeout(timer);
-      if(!r.ok) throw new Error('เซิร์ฟเวอร์ตอบกลับผิดปกติ ('+r.status+')');
+      if(!r.ok){
+        var e=new Error(r.status===404
+          ? 'เซิร์ฟเวอร์ตอบ 404 — มักเกิดจาก URL ของ Apps Script ไม่ใช่ตัวล่าสุด '+
+            '(ต้องลงท้ายด้วย /exec และเป็น deployment ที่ใช้งานอยู่) หรือ Google ขัดข้องชั่วคราว'
+          : 'เซิร์ฟเวอร์ตอบกลับผิดปกติ ('+r.status+')');
+        e.httpStatus=r.status;
+        throw e;
+      }
       return r.text();
     })
     .then(function(t){
@@ -616,7 +624,8 @@ function api(a,p,reqId){
   function attempt(){
     tries++;
     return once(a,p,id).catch(function(e){
-      var net = (e.name==='AbortError') || /Failed to fetch|NetworkError|Load failed|network/i.test(e.message||'');
+      var net = (e.name==='AbortError') || (e.httpStatus>=500) || (e.httpStatus===404)
+                || /Failed to fetch|NetworkError|Load failed|network/i.test(e.message||'');
       if(net && tries<max){
         if(tries===1) toast('เน็ตสะดุด กำลังลองใหม่…','warn');
         return new Promise(function(r){setTimeout(r, tries*1800);}).then(attempt);
@@ -1527,8 +1536,30 @@ function p5(){
     pr('<b style="font-weight:600">กำไรสุทธิ</b>','<b style="color:'+(pf>=0?'var(--ok)':'var(--bad)')+'">'+f(pf)+' ('+(rev>0?f(pf/rev*100):0)+'%)</b>')+
     (zero.length?'<div class="pr hi"><span style="color:var(--warn);font-size:11.5px">⚠ '+zero.join(' · ')+' — บันทึกซื้อในขั้นที่ 4 ก่อน กล่อง/เทปจึงจะเข้าต้นทุน</span></div>':'');
 }
+/* รหัสที่ยังใช้ได้จริงในรอบข้อมูลล่าสุด */
+function knownCode(c){ return !!(DATA&&DATA.products&&DATA.products.some(function(p){return p.code===c;})); }
+
+/* หารายการที่รหัสใช้ไม่ได้ พร้อมชื่อที่ผู้ใช้เห็น */
+function badCodes(items){
+  return items.filter(function(x){return x&&x.code&&!knownCode(x.code);})
+              .map(function(x){return (x.name||x.code);});
+}
+
 function save5(){
   if(!CART.length) return toast('ยังไม่มีรายการ','err');
+
+  /* กันกรณีรายการสินค้าที่จำไว้ในเครื่องเป็นของเก่า จนส่งรหัสที่ไม่มีอยู่จริงไป */
+  var bad=badCodes(CART);
+  if(bad.length){
+    toast('รายการ "'+bad[0]+'" ใช้ไม่ได้แล้ว กำลังดึงข้อมูลใหม่…','warn');
+    refresh(false);
+    setTimeout(function(){
+      var still=badCodes(CART);
+      if(still.length) toast('สินค้า "'+still[0]+'" ไม่มีอยู่ในระบบแล้ว — ลบออกจากรายการแล้วเลือกใหม่','err');
+      else toast('ข้อมูลอัปเดตแล้ว กดบันทึกอีกครั้งได้เลย');
+    },2500);
+    return;
+  }
   var box=boxProd(),tape=tapeProd(),bub=bubbleProd();
   var nb=+$('a5Box').value||0, nt=+$('a5Tape').value||0, nu=+$('a5Bubble').value||0;
   if((box&&nb>0&&box.avgCost<=0) || (nt>0&&tape&&tape.avgCost<=0) || (nu>0&&bub&&bub.avgCost<=0)){
@@ -1974,6 +2005,15 @@ function showVer(){
   var warn=(sv&&sv!==APPVER);
   e.innerHTML='แอป '+esc(APPVER)+' · เซิร์ฟเวอร์ '+(sv?esc(sv):'<span style="color:var(--warn)">ยังไม่ทราบ</span>')+
     (warn?'<div style="color:var(--warn);margin-top:5px">⚠ เวอร์ชันไม่ตรงกัน — เปิด Apps Script แล้วกด ทำให้ใช้งานได้ → จัดการการทำให้ใช้งานได้ → ✏️ → เวอร์ชัน: ใหม่</div>':'');
+}
+/* ลบสำเนาข้อมูลในเครื่องแล้วดึงจากชีตใหม่ทั้งหมด
+   ใช้เมื่อรายการสินค้าในแอปไม่ตรงกับในชีต */
+function clearCache(){
+  if(BOX.length && !confirm('ยังมี '+BOX.length+' รายการที่ยังไม่ได้ส่งขึ้นชีต\nถ้าล้างตอนนี้รายการเหล่านั้นจะหาย ต้องการทำต่อหรือไม่?')) return;
+  try{ localStorage.removeItem('mttData'); }catch(e){}
+  DATA=null; CART=[]; 
+  toast('ล้างแล้ว กำลังดึงข้อมูลใหม่…');
+  refresh(true);
 }
 function copyCfg(){
   var t=CFG.url||'';
