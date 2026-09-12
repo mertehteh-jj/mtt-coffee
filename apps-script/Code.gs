@@ -44,7 +44,7 @@ H[SH.CUSTOMER] = ['ชื่อลูกค้า','ที่อยู่ 1','�
 H[SH.RECEIVER] = ['ชื่อผู้รับเงิน','ใช้ล่าสุด'];
 H[SH.RECEIPT]  = ['เลขที่ใบเสร็จ','วันที่','เลขที่ออร์เดอร์','ชื่อลูกค้า','รวมเงิน','หักมัดจำ','รวมทั้งสิ้น','เลขที่ใบมัดจำ','ลิงก์ไฟล์','ไอดีไฟล์','หมายเหตุ','ผู้บันทึก','บันทึกเมื่อ','สถานะ'];
 
-var SERVER_VER = '2026.08.27-แก้คอลัมน์';   /* เปลี่ยนทุกครั้งที่แก้ไฟล์นี้ ใช้เช็คว่า deploy เวอร์ชันใหม่แล้วหรือยัง */
+var SERVER_VER = '2026.09.10-กู้รหัส';   /* เปลี่ยนทุกครั้งที่แก้ไฟล์นี้ ใช้เช็คว่า deploy เวอร์ชันใหม่แล้วหรือยัง */
 /* ไอดีโฟลเดอร์ Drive ค่าตั้งต้น ใช้เมื่อชีตตั้งค่ายังไม่มีค่าหรือหาแถวไม่เจอ
    ถ้าอยากเปลี่ยนโฟลเดอร์ ให้กรอกในชีตตั้งค่า ค่าในชีตจะถูกใช้ก่อนเสมอ */
 var FOLDER_RECEIPT_DEFAULT = '1bfQTjC0rg7rqo182MCJBmBoKm_YWaghs';
@@ -186,7 +186,8 @@ function doPost(e) {
     if (!readOnly[req.action]) remember_(req.reqId, out);
     return json_({ ok: true, data: out });
   } catch (err) {
-    return json_({ ok: false, error: String(err && err.message ? err.message : err) });
+    return json_({ ok: false,
+      error: String(err && err.message ? err.message : err) + '  [เซิร์ฟเวอร์ ' + SERVER_VER + ']' });
   } finally { if (locked) { try { lock.releaseLock(); } catch (ig) {} } }
 }
 
@@ -478,7 +479,10 @@ function findP_(code) {
 }
 function mustP_(code) {
   var p = findP_(code);
-  if (!p) throw new Error('ไม่พบสินค้ารหัส ' + code);
+  if (!p) {
+    var t = (code instanceof Date) ? 'วันที่' : (typeof code);
+    throw new Error('ไม่พบสินค้ารหัส "' + String(code).slice(0, 40) + '" (ชนิดข้อมูล: ' + t + ')');
+  }
   return p;
 }
 function firstOfType_(type) {
@@ -808,12 +812,31 @@ function sell_(p) {
   var date = p.date || today_();
   var docNo = doc_('SO', SH.ORDER);
 
-  var goods = 0, beanCost = 0, packCost = 0;
+  var goods = 0, beanCost = 0, packCost = 0, recovered = [];
 
-  lines.forEach(function (ln) {
+  lines.forEach(function (ln, idx) {
     var qty = n_(ln.qty);
     if (qty <= 0) return;
-    var prod = mustP_(ln.code);
+    var prod = findP_(ln.code);
+
+    /* รหัสใช้ไม่ได้ (เช่น แอปยังจำรายการเก่าไว้) ลองหาจากชื่อหรือระดับคั่วที่ส่งมาแทน */
+    if (!prod && (ln.name || ln.roast)) {
+      var want = String(ln.roast || ln.name || '').trim();
+      readAll_(SH.PRODUCT).forEach(function (p) {
+        if (prod || p['สถานะ'] === 'ยกเลิกใช้') return;
+        var nm = String(p['ชื่อสินค้า'] || '').trim();
+        var rs = String(p['ระดับคั่ว'] || '').trim();
+        if (nm === want || rs === want || (want && nm.indexOf(want) === 0)) prod = p;
+      });
+      if (prod) recovered.push(String(ln.code).slice(0, 20) + ' → ' + prod['ชื่อสินค้า']);
+    }
+
+    if (!prod) {
+      throw new Error('รายการที่ ' + (idx + 1) + ' ในบิลนี้อ้างถึงสินค้าที่ไม่มีอยู่แล้ว (รหัส "' +
+        String(ln.code).slice(0, 40) + '") — ในแอปให้กด "ล้างข้อมูลที่จำไว้ในเครื่อง" ในหน้าตั้งค่า ' +
+        'หรือล้างข้อมูลเว็บไซต์ในเบราว์เซอร์ แล้วเลือกสินค้าใหม่');
+    }
+    ln.code = String(prod['รหัสสินค้า']);
     var isBag = String(ln.kind) === 'ซอง';
     var size = isBag ? n_(ln.size) : 0;
     var kg = isBag ? qty * size / 1000 : qty;
@@ -853,12 +876,15 @@ function sell_(p) {
   });
 
   /* กล่อง + เทป ต่อออร์เดอร์ */
-  var boxCost = 0, boxUsed = [];
+  var boxCost = 0, boxUsed = [], skipped = [];
   (p.packItems || []).forEach(function (it) {
     if (n_(it.qty) <= 0) return;
-    var c = consume_(it.code, n_(it.qty), true);
+    var code = String(it.code == null ? '' : it.code).trim();
+    /* ถ้ารหัสวัสดุใช้ไม่ได้ ข้ามไปก่อนแล้วแจ้งเตือน ดีกว่าให้บันทึกการขายล้มทั้งบิล */
+    if (!code || !findP_(code)) { skipped.push(code || '(ไม่มีรหัส)'); return; }
+    var c = consume_(code, n_(it.qty), true);
     boxCost += c.cost;
-    boxUsed.push(it.code + '(' + r4_(n_(it.qty)) + '@' + c.unitCost + ')');
+    boxUsed.push(code + '(' + r4_(n_(it.qty)) + '@' + c.unitCost + ')');
   });
 
   var shipIn = n_(p.shipCharged), shipOut = n_(p.shipPaid);
@@ -878,7 +904,12 @@ function sell_(p) {
   return {
     docNo: docNo, revenue: r2_(revenue), beanCost: r2_(beanCost), packCost: r2_(packCost),
     boxCost: r2_(boxCost), shipPaid: shipOut, profit: r2_(profit),
-    marginPct: revenue > 0 ? r2_(profit / revenue * 100) : 0
+    marginPct: revenue > 0 ? r2_(profit / revenue * 100) : 0,
+    warn: [
+      skipped.length ? 'ข้ามวัสดุที่หารหัสไม่พบ: ' + skipped.join(', ') : '',
+      recovered.length ? 'จับคู่สินค้าจากชื่อให้แทนรหัสเก่า: ' + recovered.join(', ') +
+        ' — ควรล้างข้อมูลที่จำไว้ในเครื่องของแอป' : ''
+    ].filter(String).join(' · ')
   };
 }
 
@@ -2413,6 +2444,326 @@ function authorizeDrive() {
 
   out.push('');
   out.push('ถ้าขึ้น ✓ ทั้งสองบรรทัด ให้กลับไป deploy ใหม่แล้วลองอัปโหลดจากแอปได้เลย');
+  Logger.log(out.join('\n'));
+  return out.join('\n');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ตรวจบิลขายว่ามีค่าไหนผิดชนิด — ใส่เลขที่บิลแล้วรัน ดูผลในบันทึกการดำเนินการ
+   ตัวอย่าง:  diagnoseSale('SO2608-012')
+   ถ้าไม่ใส่เลขที่ จะตรวจบิลล่าสุดให้เอง
+   ══════════════════════════════════════════════════════════════ */
+function diagnoseSale(docNo) {
+  cacheClear_(); ensureSheets_(true);
+  var out = [];
+  out.push('เวอร์ชันโค้ดที่กำลังรัน: ' + SERVER_VER);
+
+  var orders = live_(readAll_(SH.ORDER));
+  if (!orders.length) { Logger.log('ไม่มีบิลขายในระบบ'); return 'ไม่มีบิลขายในระบบ'; }
+  var row = null;
+  if (docNo) {
+    orders.forEach(function (o) { if (String(o['เลขที่ออร์เดอร์']).trim() === String(docNo).trim()) row = o; });
+    if (!row) { Logger.log('ไม่พบบิล ' + docNo); return 'ไม่พบบิล ' + docNo; }
+  } else row = orders[orders.length - 1];
+
+  var id = String(row['เลขที่ออร์เดอร์']).trim();
+  out.push('ตรวจบิล: ' + id);
+  out.push('');
+  out.push('— หัวคอลัมน์จริงในชีต "' + SH.ORDER + '" —');
+  out.push('  ' + head_(SH.ORDER).order.filter(String).join(' | '));
+  out.push('');
+
+  function typ(v) { return (v instanceof Date) ? 'วันที่ ⚠' : (v === '' || v == null ? 'ว่าง' : typeof v); }
+  out.push('— ค่าในบิล —');
+  ['เลขที่ออร์เดอร์','วันที่','ลูกค้า','ช่องทางขาย','กล่อง/เทปที่ใช้','หลักฐานการรับเงิน','ไอดีหลักฐาน','หมายเหตุ','ผู้บันทึก','สถานะ']
+    .forEach(function (k) {
+      out.push('  ' + k + ' = "' + String(row[k]).slice(0, 40) + '" (' + typ(row[k]) + ')');
+    });
+
+  out.push('');
+  out.push('— หัวคอลัมน์จริงในชีต "' + SH.LINE + '" —');
+  out.push('  ' + head_(SH.LINE).order.filter(String).join(' | '));
+  var lines = live_(readAll_(SH.LINE)).filter(function (l) {
+    return String(l['เลขที่ออร์เดอร์']).trim() === id;
+  });
+  out.push('');
+  out.push('— รายการย่อย ' + lines.length + ' บรรทัด —');
+  lines.forEach(function (l, i) {
+    out.push('  [' + (i + 1) + '] ระดับคั่ว="' + String(l['ระดับคั่ว']).slice(0, 30) + '" (' + typ(l['ระดับคั่ว']) + ')' +
+             ' · ขนาด=' + String(l['ขนาด (g)']) + ' (' + typ(l['ขนาด (g)']) + ')' +
+             ' · จำนวน=' + String(l['จำนวน (ซอง/kg)']) + ' (' + typ(l['จำนวน (ซอง/kg)']) + ')');
+    out.push('      ล็อตที่ตัด="' + String(l['ล็อตที่ตัด']).slice(0, 50) + '" (' + typ(l['ล็อตที่ตัด']) + ')');
+    var code = beanCodeOf_(l['ระดับคั่ว'], n_(l['ขนาด (g)']));
+    out.push('      → จับคู่ได้รหัสสินค้า: "' + String(code) + '" ' + (findP_(code) ? '✓ พบในชีตสินค้า' : '✗ ไม่พบ'));
+  });
+
+  out.push('');
+  out.push('— รหัสสินค้าในชีตสินค้า (10 รายการแรก) —');
+  readAll_(SH.PRODUCT).slice(0, 10).forEach(function (p) {
+    out.push('  "' + String(p['รหัสสินค้า']) + '" (' + typ(p['รหัสสินค้า']) + ') · ' +
+             String(p['ชื่อสินค้า']) + ' · ระดับคั่ว="' + String(p['ระดับคั่ว']) + '"');
+  });
+
+  var bad = out.filter(function (x) { return x.indexOf('⚠') >= 0; }).length;
+  out.push('');
+  out.push(bad ? '⚠ พบค่าที่เป็นวันที่ผิดที่ ' + bad + ' จุด (ดูบรรทัดที่มี ⚠)' : 'ไม่พบค่าผิดชนิดในบิลนี้');
+  Logger.log(out.join('\n'));
+  return out.join('\n');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   สแกนหาเซลล์ที่มีค่าผิดปกติในทุกชีต — รันแล้วดูผลในบันทึกการดำเนินการ
+   หาทั้งค่าที่เป็นวันที่ในช่องที่ควรเป็นข้อความ และเศษข้อความวันที่
+   ══════════════════════════════════════════════════════════════ */
+function findBadCells() {
+  cacheClear_(); ensureSheets_(true);
+  var out = ['เวอร์ชันโค้ด: ' + SERVER_VER, ''];
+  var hits = 0;
+  var suspect = /เวลาอินโดจีน|GMT[+\-]|Indochina|\bGMT\b/i;
+
+  ss_().getSheets().forEach(function (sh) {
+    var name = sh.getName();
+    var lastR = sh.getLastRow(), lastC = sh.getLastColumn();
+    if (lastR < 2 || lastC < 1) return;
+    var head = sh.getRange(1, 1, 1, lastC).getValues()[0];
+    var vals = sh.getRange(2, 1, lastR - 1, lastC).getValues();
+    vals.forEach(function (row, ri) {
+      row.forEach(function (v, ci) {
+        if (v === '' || v == null) return;
+        var colName = String(head[ci] || ('คอลัมน์ ' + (ci + 1))).trim();
+        var isTimeCol = /บันทึกเมื่อ|วันที่|หมดอายุ|เคลื่อนไหวล่าสุด|ใช้ล่าสุด/.test(colName);
+        var bad = '';
+        if (suspect.test(String(v))) bad = 'มีเศษข้อความวันที่ปนอยู่';
+        else if ((v instanceof Date) && !isTimeCol) bad = 'เป็นค่าวันที่ ทั้งที่ไม่ควรเป็น';
+        if (bad) {
+          hits++;
+          out.push('⚠ ชีต "' + name + '" แถว ' + (ri + 2) + ' คอลัมน์ "' + colName + '"');
+          out.push('   ค่า: ' + String(v).slice(0, 70));
+          out.push('   ปัญหา: ' + bad);
+        }
+      });
+    });
+  });
+
+  out.push('');
+  out.push(hits ? 'พบทั้งหมด ' + hits + ' เซลล์ — แก้ค่าในชีตให้ถูกต้อง แล้วลองใหม่'
+                : 'ไม่พบเซลล์ผิดปกติ');
+  Logger.log(out.join('\n'));
+  return out.join('\n');
+}
+
+/* ลบรายการสินค้าที่รหัสผิดปกติทิ้ง (ใช้เมื่อ findBadCells เจอในชีตสินค้า) */
+function removeBadProducts() {
+  cacheClear_(); ensureSheets_(true);
+  var sh = sheet_(SH.PRODUCT), rows = readAll_(SH.PRODUCT), gone = [];
+  var suspect = /เวลาอินโดจีน|GMT[+\-]|Indochina/i;
+  rows.filter(function (p) {
+    var c = p['รหัสสินค้า'];
+    return (c instanceof Date) || suspect.test(String(c)) || String(c).trim() === '';
+  }).sort(function (a, b) { return b._row - a._row; })
+    .forEach(function (p) {
+      gone.push('แถว ' + p._row + ': "' + String(p['รหัสสินค้า']).slice(0, 40) + '" · ' + String(p['ชื่อสินค้า']).slice(0, 30));
+      sh.deleteRow(p._row);
+    });
+  cacheClear_();
+  var msg = gone.length ? 'ลบรายการสินค้าที่ผิดปกติ ' + gone.length + ' แถว:\n  ' + gone.join('\n  ')
+                        : 'ไม่พบรายการสินค้าที่ผิดปกติ';
+  Logger.log(msg);
+  return msg;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ซ่อมข้อมูลที่เคยถูกเขียนลงผิดคอลัมน์ — รันครั้งเดียว ปลอดภัย รันซ้ำได้
+   สาเหตุ: เวอร์ชันก่อนเขียนค่าโดยนับตำแหน่ง แต่คอลัมน์ใหม่ถูกเติมไว้ท้ายชีต
+           ลิงก์หลักฐานจึงไปตกอยู่ในช่อง "หมายเหตุ" และไอดีอยู่ในช่อง "ผู้บันทึก"
+   ══════════════════════════════════════════════════════════════ */
+function repairShiftedData() {
+  cacheClear_(); ensureSheets_(true); ensureSettings_();
+  var out = ['เวอร์ชันโค้ด: ' + SERVER_VER, ''];
+  var isUrl = /drive\.google\.com|docs\.google\.com/i;
+  var isFileId = /^[A-Za-z0-9_\-]{20,}$/;
+  var isDateish = /เวลาอินโดจีน|GMT[+\-]|Indochina/i;
+
+  /* ── 1. ชีตขาย: กู้ลิงก์หลักฐานกับไอดี ── */
+  var fixedOrder = 0, clearedOrder = 0;
+  live_(readAll_(SH.ORDER)).forEach(function (o) {
+    var proof = String(o['หลักฐานการรับเงิน'] || '').trim();
+    var pid   = String(o['ไอดีหลักฐาน'] || '').trim();
+
+    if (!proof) {                                  /* หาลิงก์ที่หลงอยู่ช่องอื่น */
+      ['หมายเหตุ', 'ผู้บันทึก', 'กล่อง/เทปที่ใช้'].forEach(function (k) {
+        var v = String(o[k] || '').trim();
+        if (!proof && isUrl.test(v)) {
+          put_(SH.ORDER, o, 'หลักฐานการรับเงิน', v);
+          put_(SH.ORDER, o, k, '');
+          proof = v; fixedOrder++;
+          out.push('✓ ' + o['เลขที่ออร์เดอร์'] + ': ย้ายลิงก์หลักฐานจากช่อง "' + k + '" กลับที่เดิม');
+        }
+      });
+    }
+    if (!pid) {                                    /* ไอดีไฟล์ที่หลงอยู่ช่องอื่น */
+      ['ผู้บันทึก', 'หมายเหตุ'].forEach(function (k) {
+        var v = String(o[k] || '').trim();
+        if (!pid && isFileId.test(v) && !isUrl.test(v)) {
+          put_(SH.ORDER, o, 'ไอดีหลักฐาน', v);
+          put_(SH.ORDER, o, k, '');
+          pid = v;
+          out.push('✓ ' + o['เลขที่ออร์เดอร์'] + ': ย้ายไอดีหลักฐานจากช่อง "' + k + '"');
+        }
+      });
+    }
+    /* เศษข้อความวันที่ที่ตกค้างในช่องข้อความ */
+    ['หมายเหตุ', 'ผู้บันทึก', 'กล่อง/เทปที่ใช้', 'ลูกค้า', 'ช่องทางขาย'].forEach(function (k) {
+      if (isDateish.test(String(o[k] || ''))) { put_(SH.ORDER, o, k, ''); clearedOrder++; }
+    });
+  });
+
+  /* ── 2. ชีตใบเสร็จ: กู้ลิงก์ไฟล์ ── */
+  var fixedRcp = 0;
+  live_(readAll_(SH.RECEIPT)).forEach(function (r) {
+    if (String(r['ลิงก์ไฟล์'] || '').trim()) return;
+    ['หมายเหตุ', 'ผู้บันทึก'].forEach(function (k) {
+      var v = String(r[k] || '').trim();
+      if (isUrl.test(v)) {
+        put_(SH.RECEIPT, r, 'ลิงก์ไฟล์', v);
+        put_(SH.RECEIPT, r, k, '');
+        fixedRcp++;
+        out.push('✓ ใบเสร็จ ' + r['เลขที่ใบเสร็จ'] + ': ย้ายลิงก์ไฟล์จากช่อง "' + k + '"');
+      }
+    });
+  });
+
+  /* ── 3. ชีตสินค้า: ลบแถวที่รหัสเสีย ── */
+  var sh = sheet_(SH.PRODUCT), gone = [];
+  readAll_(SH.PRODUCT).filter(function (p) {
+    var c = p['รหัสสินค้า'];
+    return (c instanceof Date) || isDateish.test(String(c)) || String(c).trim() === '';
+  }).sort(function (a, b) { return b._row - a._row; })
+    .forEach(function (p) {
+      gone.push('"' + String(p['รหัสสินค้า']).slice(0, 30) + '" · ' + String(p['ชื่อสินค้า']).slice(0, 30));
+      sh.deleteRow(p._row);
+    });
+
+  flush_(); cacheClear_();
+
+  out.push('');
+  out.push('สรุป');
+  out.push('  กู้ลิงก์หลักฐานในบิลขาย: ' + fixedOrder + ' รายการ');
+  out.push('  กู้ลิงก์ไฟล์ใบเสร็จ    : ' + fixedRcp + ' รายการ');
+  out.push('  ล้างเศษข้อความวันที่   : ' + clearedOrder + ' ช่อง');
+  out.push('  ลบสินค้ารหัสเสีย       : ' + gone.length + ' แถว' + (gone.length ? ' → ' + gone.join(' | ') : ''));
+  out.push('');
+  out.push('เสร็จแล้วให้กลับไปที่แอป กด "ล้างข้อมูลที่จำไว้ในเครื่อง" ในหน้าตั้งค่า');
+  Logger.log(out.join('\n'));
+  return out.join('\n');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ดูหัวคอลัมน์จริงของทุกชีต เทียบกับที่โค้ดต้องการ
+   ══════════════════════════════════════════════════════════════ */
+function showHeaders() {
+  cacheClear_(); ensureSheets_(true);
+  var out = ['เวอร์ชันโค้ด: ' + SERVER_VER, ''];
+  Object.keys(H).forEach(function (name) {
+    var sh = sheet_(name);
+    if (!sh) { out.push('✗ ไม่มีชีต "' + name + '"'); return; }
+    var wide = Math.max(sh.getLastColumn(), 1);
+    var cur = sh.getRange(1, 1, 1, wide).getValues()[0].map(function (v) { return String(v == null ? '' : v).trim(); });
+    var want = H[name];
+    var same = want.length === cur.filter(String).length &&
+               want.every(function (c, i) { return cur[i] === c; });
+    out.push((same ? '✓ ' : '⚠ ') + 'ชีต "' + name + '" · ' + (sh.getLastRow() - 1) + ' แถว');
+    if (!same) {
+      out.push('   ตอนนี้ : ' + cur.map(function (c, i) { return (i + 1) + '.' + (c || '(ว่าง)'); }).join('  '));
+      out.push('   ควรเป็น: ' + want.map(function (c, i) { return (i + 1) + '.' + c; }).join('  '));
+      var missing = want.filter(function (c) { return cur.indexOf(c) < 0; });
+      var extra = cur.filter(function (c) { return c && want.indexOf(c) < 0; });
+      if (missing.length) out.push('   ขาด   : ' + missing.join(', '));
+      if (extra.length)   out.push('   เกินมา : ' + extra.join(', '));
+    }
+    out.push('');
+  });
+  Logger.log(out.join('\n'));
+  return out.join('\n');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   จัดเรียงคอลัมน์ทุกชีตให้ตรงกับที่โค้ดต้องการ
+   ย้ายข้อมูลไปพร้อมหัวคอลัมน์ ไม่ใช่แค่เปลี่ยนชื่อ จึงไม่มีข้อมูลติดป้ายผิด
+   คอลัมน์แปลกที่ไม่รู้จักจะถูกเก็บไว้ท้ายสุด ไม่ลบทิ้ง
+   รันซ้ำได้ ปลอดภัย
+   ══════════════════════════════════════════════════════════════ */
+function alignColumns() {
+  cacheClear_(); ensureSheets_(true);
+  var out = ['เวอร์ชันโค้ด: ' + SERVER_VER, ''];
+  var changed = 0;
+
+  Object.keys(H).forEach(function (name) {
+    var sh = sheet_(name);
+    if (!sh) return;
+    var lastR = sh.getLastRow(), lastC = Math.max(sh.getLastColumn(), 1);
+    var cur = sh.getRange(1, 1, 1, lastC).getValues()[0].map(function (v) { return String(v == null ? '' : v).trim(); });
+    var want = H[name];
+
+    /* คอลัมน์ที่มีอยู่แต่โค้ดไม่รู้จัก เก็บต่อท้ายไว้ ไม่ทิ้ง */
+    var extras = cur.filter(function (c, i) { return c && want.indexOf(c) < 0 && cur.indexOf(c) === i; });
+    var target = want.concat(extras);
+
+    var same = target.length === lastC && target.every(function (c, i) { return cur[i] === c; });
+    if (same) { out.push('✓ "' + name + '" เรียงถูกอยู่แล้ว'); return; }
+
+    var body = (lastR >= 2) ? sh.getRange(2, 1, lastR - 1, lastC).getValues() : [];
+    var idx = {};
+    cur.forEach(function (c, i) { if (c && idx[c] === undefined) idx[c] = i; });
+
+    var newBody = body.map(function (row) {
+      return target.map(function (c) {
+        var i = idx[c];
+        return (i === undefined) ? '' : row[i];
+      });
+    });
+
+    /* เขียนทับทั้งบล็อก แล้วลบคอลัมน์ส่วนเกินที่ค้างอยู่ทางขวา */
+    sh.getRange(1, 1, 1, target.length).setValues([target]);
+    if (newBody.length) sh.getRange(2, 1, newBody.length, target.length).setValues(newBody);
+    if (lastC > target.length) {
+      sh.getRange(1, target.length + 1, Math.max(lastR, 1), lastC - target.length).clearContent();
+    }
+    sh.getRange(1, 1, 1, target.length).setFontWeight('bold').setBackground('#6F6486').setFontColor('#FFFFFF');
+
+    changed++;
+    out.push('⟳ "' + name + '" จัดเรียงใหม่ ' + lastC + ' → ' + target.length + ' คอลัมน์' +
+             (extras.length ? ' (เก็บคอลัมน์แปลกไว้ท้าย: ' + extras.join(', ') + ')' : ''));
+  });
+
+  cacheClear_();
+  out.push('');
+  out.push(changed ? 'จัดเรียงแล้ว ' + changed + ' ชีต · ขั้นต่อไปให้รัน repairShiftedData'
+                   : 'ทุกชีตเรียงถูกอยู่แล้ว');
+  Logger.log(out.join('\n'));
+  return out.join('\n');
+}
+
+/* ซ่อมครบวงจร: จัดเรียงคอลัมน์ → ย้ายข้อมูลที่หลงช่อง → ล้างของเสีย */
+function fixEverything() {
+  var a = alignColumns();
+  var b = repairShiftedData();
+  var msg = a + '\n\n' + '═'.repeat(50) + '\n\n' + b;
+  Logger.log(msg);
+  return msg;
+}
+
+/* ดูรหัสสินค้าทั้งหมดที่มีอยู่จริงในชีต — ใช้เทียบกับที่แอปส่งมา */
+function listProducts() {
+  cacheClear_(); ensureSheets_(true);
+  var rows = readAll_(SH.PRODUCT);
+  var out = ['เวอร์ชันโค้ด: ' + SERVER_VER, 'สินค้าทั้งหมด ' + rows.length + ' รายการ', ''];
+  rows.forEach(function (p) {
+    var c = p['รหัสสินค้า'];
+    var weird = (c instanceof Date) || /เวลาอินโดจีน|GMT[+\-]/.test(String(c)) || String(c).trim() === '';
+    out.push((weird ? '⚠ ' : '  ') + '"' + String(c) + '" · ' + String(p['ชื่อสินค้า']) +
+             ' · ' + String(p['ประเภท']) + ' · คงเหลือ ' + n_(p['คงเหลือ']));
+  });
   Logger.log(out.join('\n'));
   return out.join('\n');
 }
