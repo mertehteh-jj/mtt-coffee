@@ -563,7 +563,7 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
 <div class="toast" id="toast"></div>
 
 <script>
-var APPVER='2026.09.08-ล้างแคช';   /* แก้เลขนี้ทุกครั้งที่แก้ไฟล์ จะได้รู้ว่าเครื่องโหลดตัวใหม่แล้วหรือยัง */
+var APPVER='2026.09.10-กู้รหัส';   /* แก้เลขนี้ทุกครั้งที่แก้ไฟล์ จะได้รู้ว่าเครื่องโหลดตัวใหม่แล้วหรือยัง */
 var CFG=JSON.parse(localStorage.getItem('mttCfg')||'{}');
 var DATA=JSON.parse(localStorage.getItem('mttData')||'null');
 var BOX=JSON.parse(localStorage.getItem('mttBox')||'[]');
@@ -1569,7 +1569,12 @@ function save5(){
   if(nb>0&&box) items.push({code:box.code,qty:nb});
   if(nt>0&&tape) items.push({code:tape.code,qty:nt});
   if(nu>0&&bub) items.push({code:bub.code,qty:nu});
-  submit('sell',{lines:CART.map(function(l){return {code:l.code,kind:l.kind,size:l.size,qty:l.qty,price:l.price};}),
+  submit('sell',{lines:CART.map(function(l){
+      var p=P(l.code);
+      /* ส่งชื่อไปด้วย เผื่อรหัสที่จำไว้ในเครื่องเป็นของเก่า เซิร์ฟเวอร์จะจับคู่จากชื่อให้ */
+      return {code:l.code,kind:l.kind,size:l.size,qty:l.qty,price:l.price,
+              name:(p&&p.name)||l.name||'', roast:(p&&p.roast)||''};
+    }),
     packItems:items,shipCharged:+$('a5ShipIn').value||0,shipPaid:+$('a5ShipOut').value||0,
     customer:$('a5Cust').value.trim(),channel:$('a5Chan').value,date:$('a5Date').value||iso(),user:CFG.user||''},
     'บันทึกการขายแล้ว',function(){
