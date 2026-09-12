@@ -1,0 +1,21 @@
+# ไฟล์นี้ใช้ได้ทั้ง Cloudflare Pages และ Netlify รูปแบบเดียวกัน
+
+# ตัวแอปกับ service worker ห้ามแคชนาน ไม่งั้นแก้อะไรแล้วเครื่องผู้ใช้ไม่อัปเดต
+/index.html
+  Cache-Control: no-cache
+/sw.js
+  Cache-Control: no-cache
+/manifest.json
+  Cache-Control: no-cache
+
+# ไอคอนไม่ค่อยเปลี่ยน แคชได้ยาว
+/icon-*.png
+  Cache-Control: public, max-age=2592000
+
+# ไฟล์ยืนยันความเป็นเจ้าของโดเมน สำหรับแอป Android (TWA)
+/.well-known/assetlinks.json
+  Content-Type: application/json
+  Cache-Control: no-cache
+
+/logo.png
+  Cache-Control: public, max-age=2592000

@@ -1,16 +1,27 @@
 {
+  "id": "/",
   "name": "ต้นทุนกาแฟ เม่อะ เต เต",
   "short_name": "เม่อะ เต เต",
   "description": "บันทึกกะลา สารเขียว เมล็ดคั่ว วัสดุ และการขาย พร้อมสรุปต้นทุน-กำไรต่อซอง ต่อวัน ต่อเดือน ต่อปี",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#F4F2F8",
   "theme_color": "#F4F2F8",
   "lang": "th",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "finance"],
+  "prefer_related_applications": false,
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "บันทึกการขาย", "short_name": "ขาย", "url": "/index.html?go=f5", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "สรุปต้นทุน-กำไร", "short_name": "สรุป", "url": "/index.html?go=sum", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
   ]
 }
