@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F4F2F8">
+<meta name="theme-color" content="#F5F1EA">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="เม่อะ เต เต">
@@ -14,124 +14,164 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+/* ══ ธีม minimal · Muji coffee ══
+   กระดาษสีครีม เส้นบาง สีดินโทนกาแฟ ไม่มีเงา ไม่มีไล่สี */
 :root{
-  --paper:#F4F2F8; --card:#FFF; --ink:#453D52; --ink2:#665E76; --muted:#9A93A8; --line:#E7E3EF;
-  --s1:#F5E5C2; --s1d:#9C7C3E;
-  --s2:#CFE7CB; --s2d:#4F8449;
-  --s3:#F7D8C3; --s3d:#B86F44;
-  --s4:#D8DBF4; --s4d:#5F68B0;
-  --s5:#F8D4E0; --s5d:#B85A80;
-  --s6:#E5DAF2; --s6d:#75609E;
-  --ok:#4F8449; --bad:#C25A5A; --warn:#B08829;
-  --r:16px;
+  --paper:#F5F1EA; --card:#FFFDF9; --ink:#3B332C; --ink2:#6A6057; --muted:#A1978B; --line:#E6DFD4; --soft:#EEE8DF;
+  --s1:#EFE3CF;  --s1d:#8A6A43;   /* 1  กะลา — กระดาษคราฟต์ */
+  --s1b:#E4E7D2; --s1bd:#5D6A42;  /* 1B สารเขียวซื้อ — มะกอก */
+  --s2:#DCE4D2;  --s2d:#52704A;   /* 2  สารเขียว — เซจ */
+  --s3:#EADCCF;  --s3d:#7A4F35;   /* 3  เมล็ดคั่ว — น้ำตาลกาแฟ */
+  --s4:#E4E2DC;  --s4d:#5D5F58;   /* 4  วัสดุ — เทาหิน */
+  --s5:#F1DCD5;  --s5d:#9B3A2E;   /* 5  ขาย — แดงอิฐ */
+  --s6:#E9E3D9;  --s6d:#4A3F35;   /* 6  สรุป — ชาร์โคลอุ่น */
+  --coffee:#8A5A3C; --cream:#FFF8EE; --blush:#EBC0AE;
+  --ok:#5E7A4E; --bad:#A8453A; --warn:#A67C2E;
+  --r:12px;
   --f:'IBM Plex Sans Thai',system-ui,sans-serif;
   --m:'IBM Plex Mono',ui-monospace,monospace;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{font-family:var(--f);background:var(--paper);color:var(--ink);font-size:15px;line-height:1.55;
-     padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+body{font-family:var(--f);background:var(--paper);color:var(--ink);font-size:15px;line-height:1.6;
+     padding-bottom:calc(80px + env(safe-area-inset-bottom))}
 .num{font-family:var(--m);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-h2,h3{margin:0;font-weight:600;letter-spacing:-.01em}
-.wrap{padding:14px}
-.screen{display:none}.screen.on{display:block}
-.eyebrow{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h2,h3{margin:0;font-weight:500;letter-spacing:0}
+.wrap{padding:14px 16px}
+.screen{display:none}.screen.on{display:block;animation:fade .22s ease}
+@keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.eyebrow{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:500}
 
-.top{padding:calc(16px + env(safe-area-inset-top)) 16px 6px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.top h2{font-size:21px}
-.back{border:0;background:#fff;border:1px solid var(--line);border-radius:99px;width:34px;height:34px;
-      font-size:19px;line-height:1;color:var(--ink2);cursor:pointer;flex:0 0 auto}
-.link{color:var(--s6d);font-size:12.5px;font-weight:600;background:none;border:0;padding:0;cursor:pointer;font-family:var(--f)}
+/* ไอคอนเส้น */
+.ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;vertical-align:middle}
+.ic.sm{width:15px;height:15px}.ic.lg{width:26px;height:26px}
+.ib{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;flex:0 0 auto}
+
+.top{padding:calc(18px + env(safe-area-inset-top)) 16px 6px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.top h2{font-size:19px;display:flex;align-items:center;gap:8px}
+.brand{font-size:19px;letter-spacing:.06em}
+.brand small{display:block;font-size:10px;letter-spacing:.22em;color:var(--muted);font-weight:400;margin-top:-2px}
+.back{border:1px solid var(--line);background:var(--card);border-radius:50%;width:34px;height:34px;
+      font-size:18px;line-height:1;color:var(--ink2);cursor:pointer;flex:0 0 auto}
+.link{color:var(--ink2);font-size:12.5px;font-weight:500;background:none;border:0;padding:0;cursor:pointer;font-family:var(--f);
+      text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
 
 /* hero */
-.hero{margin:0 14px;background:linear-gradient(140deg,#E5DAF2,#D8DBF4 55%,#CFE7CB);
-      border-radius:20px;padding:18px 18px 16px;margin-top:8px}
-.hero .big{font-family:var(--m);font-size:34px;font-weight:600;line-height:1.1;letter-spacing:-.03em;margin-top:2px}
-.hero .sub{font-size:12px;color:var(--ink2);margin-top:3px}
-.hrow{display:flex;gap:9px;margin-top:14px}
-.hcell{flex:1;background:rgba(255,255,255,.62);border-radius:13px;padding:9px 11px}
-.hcell .k{font-size:10.5px;color:var(--ink2)}
-.hcell .v{font-family:var(--m);font-size:16px;font-weight:600;margin-top:1px}
+.hero{margin:6px 16px 0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px;position:relative}
+.hero .big{font-family:var(--m);font-size:32px;font-weight:500;line-height:1.1;letter-spacing:-.03em;margin-top:4px}
+.hero .big small{font-family:var(--f);font-size:13px;color:var(--muted);margin-left:4px;letter-spacing:0}
+.hero .sub{font-size:11.5px;color:var(--muted);margin-top:4px}
+.hero .mascot{position:absolute;right:12px;top:10px;width:84px;text-align:center}
+.hero .mascot svg{width:78px;height:78px;display:block;margin:0 auto}
+.hero .mascot .say{font-size:10px;color:var(--ink2);line-height:1.3;margin-top:-2px}
+.hrow{display:flex;gap:0;margin-top:16px;border-top:1px solid var(--line)}
+.hcell{flex:1;padding:10px 2px 0}
+.hcell+.hcell{border-left:1px solid var(--line);padding-left:14px}
+.hcell .k{font-size:10.5px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.hcell .v{font-family:var(--m);font-size:17px;font-weight:500;margin-top:1px}
 
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:11px}
-.card h3{font-size:15px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.pill{font-size:10.5px;font-weight:600;padding:2.5px 9px;border-radius:99px;background:var(--paper);color:var(--muted)}
-.pill.w{background:#FBF0D6;color:#8A6510}.pill.b{background:#FADDDD;color:#9A3A3A}.pill.g{background:#DCEEDA;color:#3C6C37}
-.empty{color:var(--muted);font-size:12.5px;padding:12px 0;text-align:center}
-.hint{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:5px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:12px}
+.card h3{font-size:14.5px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card h3 .ttl{display:flex;align-items:center;gap:8px}
+.card h3 .ttl .ic{color:var(--ink2)}
+.pill{white-space:nowrap;font-size:10.5px;font-weight:500;padding:2px 9px;border-radius:99px;background:var(--soft);color:var(--ink2)}
+.pill.w{background:#F4E9D2;color:#81601F}.pill.b{background:#F3DEDA;color:#8E392F}.pill.g{background:#E1E9D8;color:#4B6A3F}
+.empty{color:var(--muted);font-size:12.5px;padding:14px 0 10px;text-align:center}
+.empty::before{content:"";display:block;width:44px;height:44px;margin:0 auto 6px;opacity:.85;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cellipse cx='24' cy='26' rx='13' ry='16' transform='rotate(-20 24 26)' fill='%23EADCCF' stroke='%237A4F35' stroke-width='1.5'/%3E%3Cpath d='M20 12c4 5-2 10 2 16s1 10-1 13' fill='none' stroke='%237A4F35' stroke-width='1.3' stroke-linecap='round'/%3E%3Cpath d='M14 25q2 2 4 0M27 23q2 2 4 0' fill='none' stroke='%233B332C' stroke-width='1.4' stroke-linecap='round'/%3E%3Ccircle cx='14' cy='29' r='1.8' fill='%23EBC0AE'/%3E%3Ccircle cx='32' cy='27' r='1.8' fill='%23EBC0AE'/%3E%3Ctext x='36' y='12' font-size='8' fill='%23A1978B' font-family='sans-serif'%3Ez%3C/text%3E%3Ctext x='40' y='7' font-size='6' fill='%23A1978B' font-family='sans-serif'%3Ez%3C/text%3E%3C/svg%3E") center/contain no-repeat}
+.hint{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:6px}
 
 /* step cards */
-.steps{display:flex;flex-direction:column;gap:10px}
-.step{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);
-      border-radius:var(--r);padding:13px 14px;cursor:pointer;text-align:left;width:100%;font-family:var(--f)}
-.step .no{flex:0 0 40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;
-          font-family:var(--m);font-size:17px;font-weight:600}
+.steps{display:flex;flex-direction:column;gap:8px}
+.step{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);
+      border-radius:var(--r);padding:12px 14px;cursor:pointer;text-align:left;width:100%;font-family:var(--f);color:var(--ink)}
+.step:active{background:var(--soft)}
+.step .no{flex:0 0 44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative}
+.step .no .ic{width:23px;height:23px}
+.step .no i{position:absolute;right:-3px;bottom:-3px;font-style:normal;font-family:var(--m);font-size:9.5px;font-weight:600;
+            background:var(--card);border:1px solid var(--line);border-radius:99px;padding:0 5px;line-height:15px;color:var(--ink2)}
 .step .tx{flex:1;min-width:0}
-.step .tx b{display:block;font-size:15px;font-weight:600}
-.step .tx small{display:block;font-size:11.5px;color:var(--muted);line-height:1.4}
-.step .ar{color:var(--muted);font-size:19px}
+.step .tx b{display:block;font-size:14.5px;font-weight:500}
+.step .tx small{display:block;font-size:11.5px;color:var(--muted);line-height:1.45}
+.step .ar{color:var(--muted);font-size:18px}
+.fork{display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.14em;color:var(--muted);margin:2px 4px}
+.fork::before,.fork::after{content:"";flex:1;height:1px;background:var(--line)}
+.route{border-left:1px dashed var(--line);margin-left:22px;padding-left:12px;display:flex;flex-direction:column;gap:8px}
 
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
 .row:last-child{border-bottom:0}
 .row .t{font-weight:500;font-size:13.5px}
 .row .s{font-size:11px;color:var(--muted)}
-.row .r{text-align:right;font-family:var(--m);font-size:13.5px;font-weight:600;white-space:nowrap}
+.row .r{text-align:right;font-family:var(--m);font-size:13.5px;font-weight:500;white-space:nowrap}
+.row .lead{display:flex;align-items:center;gap:10px;min-width:0}
 .pos{color:var(--ok)}.neg{color:var(--bad)}.amb{color:var(--warn)}
 
-.life{height:6px;border-radius:4px;background:#EDEAF3;margin-top:7px;overflow:hidden}
+.life{height:4px;border-radius:4px;background:var(--soft);margin-top:7px;overflow:hidden}
 .life span{display:block;height:100%;border-radius:4px}
 .life-lab{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-top:3px}
 
-label{display:block;font-size:12px;font-weight:500;color:var(--ink2);margin:11px 0 4px}
+label{display:block;font-size:12px;font-weight:400;color:var(--ink2);margin:12px 0 4px}
 input,select,textarea,button{font-family:var(--f);font-size:15px}
-input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;
-                      background:#FCFBFE;color:var(--ink);appearance:none}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;
+                      background:#FCFAF6;color:var(--ink);appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5' fill='none' stroke='%23A1978B' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+       background-repeat:no-repeat;background-position:right 11px center;background-size:12px;padding-right:30px}
 input[type=number]{font-family:var(--m)}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--s6d);outline-offset:1px;border-color:transparent;background:#fff}
-input:disabled{background:#F2F0F6;color:var(--muted)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 9px}
+input:focus,select:focus,textarea:focus{outline:1.5px solid var(--ink2);outline-offset:1px;border-color:transparent;background:#fff}
+input:disabled{background:var(--soft);color:var(--muted)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
 .g3{display:grid;grid-template-columns:1fr 1fr auto;gap:0 8px;align-items:end}
-.btn{width:100%;padding:14px;border:0;border-radius:14px;font-weight:600;font-size:15.5px;margin-top:17px;cursor:pointer;font-family:var(--f)}
-.b1{background:var(--s1);color:var(--s1d)}.b2{background:var(--s2);color:var(--s2d)}
-.b3{background:var(--s3);color:var(--s3d)}.b4{background:var(--s4);color:var(--s4d)}
-.b5{background:var(--s5);color:var(--s5d)}.b6{background:var(--s6);color:var(--s6d)}
-.btn.ghost{background:#fff;color:var(--ink2);border:1px solid var(--line);margin-top:9px;font-weight:500}
+.btn{width:100%;padding:14px;border:0;border-radius:10px;font-weight:500;font-size:15px;margin-top:18px;cursor:pointer;font-family:var(--f);
+     display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.02em}
+.btn:active{filter:brightness(.96)}
+.btn:disabled{opacity:.55}
+.b1{background:var(--s1d);color:#FFFBF3}.b1b{background:var(--s1bd);color:#FBFCF4}.b2{background:var(--s2d);color:#F8FBF4}
+.b3{background:var(--s3d);color:#FFF8F1}.b4{background:var(--s4d);color:#FAFAF7}
+.b5{background:var(--s5d);color:#FFF6F3}.b6{background:var(--s6d);color:#FFFBF4}
+.btn.ghost{background:var(--card);color:var(--ink2);border:1px solid var(--line);margin-top:9px;font-weight:400}
 .btn.sm{padding:11px 15px;font-size:13.5px;margin:0;width:auto}
 
-.prev{background:#FAF9FC;border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:15px;font-size:12.5px}
+.prev{background:#FBF8F2;border:1px dashed var(--line);border-radius:10px;padding:12px;margin-top:16px;font-size:12.5px}
 .pr{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
-.pr b{font-family:var(--m);white-space:nowrap}
+.pr b{font-family:var(--m);white-space:nowrap;font-weight:500}
 .pr.hi{border-top:1px solid var(--line);margin-top:6px;padding-top:7px}
+.verdict{display:flex;gap:10px;align-items:flex-start;border-radius:9px;padding:10px 11px;margin-top:9px;font-size:12px;line-height:1.55}
+.verdict svg{flex:0 0 38px;width:38px;height:38px}
+.verdict.good{background:#E6EDDD;color:#3F5A33}.verdict.meh{background:#F4E9D2;color:#6E511A}.verdict.info{background:var(--soft);color:var(--ink2)}
 
 /* roast level rows */
-.lv{border:1px solid var(--line);border-radius:13px;padding:10px 11px;margin-top:9px;background:#FCFBFE}
-.lv .h{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;font-weight:600}
-.lv .y{font-family:var(--m);font-size:12px;font-weight:600}
+.lv{border:1px solid var(--line);border-radius:10px;padding:10px 11px;margin-top:9px;background:#FCFAF6}
+.lv .h{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;font-weight:500}
+.lv .h>span:first-child{display:flex;align-items:center;gap:7px}
+.lv .y{font-family:var(--m);font-size:12px;font-weight:500}
 .lv label{margin:7px 0 3px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:0 0 auto}
 
-nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:rgba(255,255,255,.94);
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:rgba(255,253,249,.96);
     backdrop-filter:blur(10px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:30}
-nav button{flex:1;border:0;background:none;padding:9px 2px 10px;color:var(--muted);font-size:10.5px;font-weight:500;
-           cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--f)}
-nav button.on{color:var(--s6d)}
-nav svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+nav button{flex:1;border:0;background:none;padding:9px 2px 10px;color:var(--muted);font-size:10.5px;font-weight:400;
+           cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--f);position:relative}
+nav button.on{color:var(--ink)}
+nav button.on::before{content:"";position:absolute;top:0;left:32%;right:32%;height:2px;background:var(--ink);border-radius:0 0 2px 2px}
+nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 
-.seg{display:flex;gap:6px;background:#EEEBF4;border-radius:12px;padding:4px}
-.seg button{flex:1;border:0;background:none;border-radius:9px;padding:8px 4px;font-size:13px;font-weight:500;
+.seg{display:flex;gap:4px;background:var(--soft);border-radius:10px;padding:3px}
+.seg button{flex:1;border:0;background:none;border-radius:8px;padding:8px 4px;font-size:13px;font-weight:400;
             color:var(--ink2);cursor:pointer;font-family:var(--f)}
-.seg button.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(69,61,82,.09)}
-.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:10px}
-.chips button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 13px;font-size:12.5px;
-              color:var(--ink2);white-space:nowrap;cursor:pointer;font-family:var(--f)}
-.chips button.on{background:var(--s6);color:var(--s6d);border-color:var(--s6);font-weight:600}
-.toast{position:fixed;left:14px;right:14px;bottom:calc(88px + env(safe-area-inset-bottom));background:var(--ink);color:#fff;
-       padding:13px 15px;border-radius:14px;font-size:13.5px;z-index:60;opacity:0;transform:translateY(8px);
-       transition:.24s;pointer-events:none;box-shadow:0 6px 20px rgba(69,61,82,.2)}
+.seg button.on{background:var(--card);color:var(--ink);font-weight:500;box-shadow:0 0 0 1px var(--line)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 13px;font-size:12.5px;
+              color:var(--ink2);white-space:nowrap;cursor:pointer;font-family:var(--f);display:inline-flex;align-items:center;gap:5px}
+.chips button.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.toast{position:fixed;left:16px;right:16px;bottom:calc(90px + env(safe-area-inset-bottom));background:var(--ink);color:var(--cream);
+       padding:13px 15px;border-radius:10px;font-size:13.5px;z-index:60;opacity:0;transform:translateY(8px);
+       transition:.24s;pointer-events:none}
 .toast.show{opacity:1;transform:none}
 .toast.err{background:var(--bad)}.toast.warn{background:var(--warn)}
 .offline{background:var(--s1);color:var(--s1d);text-align:center;font-size:12px;padding:6px;font-weight:500}
 table{width:100%;border-collapse:collapse;font-size:12.5px}
-th{text-align:left;font-size:10.5px;color:var(--muted);font-weight:600;padding:6px 3px;border-bottom:1px solid var(--line)}
+th{text-align:left;font-size:10.5px;color:var(--muted);font-weight:500;padding:6px 3px;border-bottom:1px solid var(--line)}
 td{padding:8px 3px;border-bottom:1px solid var(--line);vertical-align:top}
 td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
 .doc{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
@@ -139,58 +179,99 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
 .doc .dx{flex:1;min-width:0}
 .doc .dx b{display:block;font-size:13.5px;font-weight:500}
 .doc .dx small{display:block;font-size:11px;color:var(--muted)}
-.doc .da{font-family:var(--m);font-size:13px;font-weight:600;white-space:nowrap}
+.doc .da{font-family:var(--m);font-size:13px;font-weight:500;white-space:nowrap}
 .doc .ops{display:flex;gap:5px;flex:0 0 auto}
-.doc .op{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:#fff;
-         cursor:pointer;font-size:14px;line-height:1;color:var(--ink2);padding:0}
+.doc .op{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);
+         cursor:pointer;line-height:1;color:var(--ink2);padding:0;display:inline-flex;align-items:center;justify-content:center}
+.doc .op .ic{width:16px;height:16px}
 .doc .op.del{color:var(--bad)}
+.doc .op.on{color:var(--ok);border-color:#CFDCC4}
 .doc.off{opacity:.5}
 .doc.off .dx b{text-decoration:line-through}
-.editbar{background:var(--s6);color:var(--s6d);border-radius:12px;padding:10px 12px;font-size:12.5px;
+.editbar{background:var(--s6);color:var(--s6d);border-radius:10px;padding:10px 12px;font-size:12.5px;
          font-weight:500;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:9px}
-.editbar button{border:0;background:rgba(255,255,255,.7);color:var(--s6d);border-radius:8px;
-                padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--f)}
-.cart{border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-top:11px}
+.editbar button{border:0;background:rgba(255,255,255,.75);color:var(--s6d);border-radius:8px;
+                padding:5px 10px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--f)}
+.cart{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:11px}
 .ci{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:10px 12px;border-bottom:1px solid var(--line)}
 .ci:last-child{border-bottom:0}
 .x{border:0;background:none;color:var(--bad);font-size:20px;line-height:1;padding:0 3px;cursor:pointer}
 
+/* สต๊อก: ไอคอนตามประเภท + โหลแสดงระดับของที่เหลือ */
+.pcard{display:flex;align-items:center;gap:12px;cursor:pointer}
+.jar{width:30px;height:36px;flex:0 0 auto}
+.pcard .mid{flex:1;min-width:0}
+
 /* ── แผนภูมิ ── */
 .chart{width:100%;height:auto;display:block;overflow:visible}
 .ch-lg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:9px;font-size:11.5px;color:var(--ink2)}
-.ch-lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.ch-lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
 .ch-note{font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.5}
 .ch-empty{color:var(--muted);font-size:12.5px;text-align:center;padding:22px 0}
 .gtxt{font-family:var(--f);font-size:9.5px;fill:var(--muted)}
 .gval{font-family:var(--m);font-size:10px;fill:var(--ink2)}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
+<!-- ══ ชุดไอคอนเส้นธีมกาแฟ ใช้ด้วย <svg class="ic"><use href="#i-ชื่อ"/></svg> ══ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-bean" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="6.2" ry="8.8" transform="rotate(32 12 12)"/><path d="M8.3 17.4c3-1.9 1.3-5.5 3.6-8 1.1-1.2 2.3-1.6 3.4-2.9"/></symbol>
+    <symbol id="i-sack" viewBox="0 0 24 24"><path d="M7.5 7.5h9l2 12a1.5 1.5 0 0 1-1.5 1.5H7a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M8 7.5 7 4.5c2 .8 3.3-.6 5-.6s3 1.4 5 .6l-1 3"/><path d="M9.5 13.5c1.6.9 3.4.9 5 0"/></symbol>
+    <symbol id="i-greenbag" viewBox="0 0 24 24"><path d="M7.5 7.5h9l2 12a1.5 1.5 0 0 1-1.5 1.5H7a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M8 7.5 7 4.5c2 .8 3.3-.6 5-.6s3 1.4 5 .6l-1 3"/><ellipse cx="12" cy="15" rx="2.3" ry="3.2" transform="rotate(30 12 15)"/><path d="M10.9 17.1c1-.8.4-2.2 1.3-3 .4-.4.8-.6 1.1-1"/></symbol>
+    <symbol id="i-mill" viewBox="0 0 24 24"><path d="M6 11h12l-1.4 9.2a1 1 0 0 1-1 .8H8.4a1 1 0 0 1-1-.8z"/><path d="M8 11c0-2.2 1.8-4 4-4s4 1.8 4 4"/><path d="M12 7V4h4.5"/><circle cx="17" cy="4" r="1"/><path d="M9.5 15h5"/></symbol>
+    <symbol id="i-roast" viewBox="0 0 24 24"><path d="M12 21.2c-3.9 0-6.4-2.5-6.4-5.9 0-3.8 3.6-5.6 3.2-9.8 2.8 1.5 4.2 3.8 4.3 5.9.9-.8 1.4-1.9 1.4-3.3 2 1.7 3.9 4.3 3.9 7.2 0 3.4-2.5 5.9-6.4 5.9z"/><ellipse cx="12" cy="16.3" rx="2" ry="2.8" transform="rotate(30 12 16.3)"/></symbol>
+    <symbol id="i-pouch" viewBox="0 0 24 24"><path d="M7 3.5h10l1.2 3.5v13a1 1 0 0 1-1 1H6.8a1 1 0 0 1-1-1V7z"/><path d="M5.8 7h12.4"/><circle cx="12" cy="13" r="2.2"/><path d="M9 18h6"/></symbol>
+    <symbol id="i-cup" viewBox="0 0 24 24"><path d="M4.5 9.5h12v4.5a5.5 5.5 0 0 1-5.5 5.5h-1A5.5 5.5 0 0 1 4.5 14z"/><path d="M16.5 11h1.3a2.6 2.6 0 0 1 0 5.2h-1.8"/><path d="M8 3.8c-.7 1 .7 1.8 0 3M11.5 3.8c-.7 1 .7 1.8 0 3"/><path d="M3.5 21h14"/></symbol>
+    <symbol id="i-togo" viewBox="0 0 24 24"><path d="M6.3 8h11.4l-1.4 13H7.7z"/><path d="M5.5 8h13l-.6-2.8H6.1z"/><path d="M8 3.5h8l.6 1.7"/><path d="M6.9 13h10.2"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M6.5 20v-6M11 20V9M15.5 20v-4M20 20V6"/><path d="M5 10.5 10.5 6l4.5 3.5 5-5"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M9.5 21v-5.5a2.5 2.5 0 0 1 5 0V21"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="1.5"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h3.5"/><ellipse cx="16" cy="16.5" rx="1.3" ry="1.9" transform="rotate(30 16 16.5)"/></symbol>
+    <symbol id="i-jar" viewBox="0 0 24 24"><path d="M7 7h10v1.5a2 2 0 0 1 1 1.8V19a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-8.7a2 2 0 0 1 1-1.8z"/><rect x="6.5" y="3.5" width="11" height="3.5" rx="1"/><ellipse cx="10.5" cy="15.5" rx="1.3" ry="1.8" transform="rotate(30 10.5 15.5)"/><ellipse cx="14" cy="13.5" rx="1.3" ry="1.8" transform="rotate(-20 14 13.5)"/></symbol>
+    <symbol id="i-scale" viewBox="0 0 24 24"><path d="M5 20h14l-1.5-8.5h-11z"/><path d="M12 11.5V9"/><path d="M8 9h8a4 4 0 0 0-8 0"/><path d="M12 14.5v2.5"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12.5" r="8"/><path d="M12 8v4.5l3 2"/><path d="M9.5 3h5"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14-.5 9-6 14-14 14z"/><path d="M5 19 13 11"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="M3.5 8 12 4l8.5 4v8.5L12 20.5l-8.5-4z"/><path d="M3.5 8 12 12l8.5-4M12 12v8.5"/><path d="m7.8 6 8.5 4"/></symbol>
+    <symbol id="i-clip" viewBox="0 0 24 24"><path d="m19 11.5-7 7a4.5 4.5 0 0 1-6.4-6.4l7.5-7.5a3 3 0 0 1 4.2 4.2l-7.3 7.3a1.5 1.5 0 0 1-2.1-2.1l6.6-6.6"/></symbol>
+    <symbol id="i-photo" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="1.5"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3.5h12v17l-2-1.3-2 1.3-2-1.3-2 1.3-2-1.3-2 1.3z"/><path d="M9 8h6M9 11.5h6M9 15h3.5"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6.5 3.5h7.5l4 4v13h-11.5z"/><path d="M14 3.5v4h4"/><path d="M9.5 13h5M9.5 16.5h5"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4.5 19.5 5.3 16 15.5 5.8a2 2 0 0 1 2.8 2.8L8 18.8z"/><path d="m14 7.3 2.8 2.8"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15"/><path d="M9.5 7V4.5h5V7"/><path d="M6.5 7l.9 12.5a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7"/><path d="M10.3 11v5.5M13.7 11v5.5"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></symbol>
+    <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M10 7.5v9M10 7.5h3a2 2 0 0 1 0 4h-3h3.5a2.2 2.2 0 0 1 0 4.5H10M11.5 6v1.5M11.5 16v1.5"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3.5c.6 4.3 2.2 6 6.5 6.5-4.3.6-5.9 2.2-6.5 6.5-.6-4.3-2.2-5.9-6.5-6.5 4.3-.5 5.9-2.2 6.5-6.5z"/><path d="M18.5 16.5c.2 1.4.7 1.9 2 2-1.3.2-1.8.7-2 2-.2-1.3-.7-1.8-2-2 1.3-.1 1.8-.6 2-2z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  </defs>
+</svg>
 
 <div id="offBar" class="offline" style="display:none">ออฟไลน์ — รายการจะส่งเมื่อกลับมาออนไลน์</div>
 
 <!-- ══ หน้าหลัก ══ -->
 <section id="s-home" class="screen on">
-  <div class="top"><h2>เม่อะ เต เต</h2><button class="link" onclick="go('set')">ตั้งค่า</button></div>
+  <div class="top"><div class="brand">เม่อะ เต เต<small>coffee farm · udon thani</small></div><button class="back" title="ตั้งค่า" onclick="go('set')"><svg class="ic sm"><use href="#i-gear"/></svg></button></div>
   <div class="hero">
-    <div class="eyebrow">มูลค่าสต๊อกทั้งหมด</div>
-    <div class="big num" id="hVal">—</div>
-    <div class="sub" id="hSub">กำลังโหลด…</div>
+    <div class="mascot" id="hMascot"></div>
+    <div style="padding-right:88px">
+      <div class="eyebrow">มูลค่าสต๊อกทั้งหมด</div>
+      <div class="big num"><span id="hVal">—</span><small>บาท</small></div>
+      <div class="sub" id="hSub">กำลังโหลด…</div>
+    </div>
     <div class="hrow">
-      <div class="hcell"><div class="k">รายได้เดือนนี้</div><div class="v num" id="hRev">—</div></div>
-      <div class="hcell"><div class="k">กำไรสุทธิ</div><div class="v num" id="hPro">—</div></div>
+      <div class="hcell"><div class="k"><svg class="ic sm"><use href="#i-coin"/></svg>รายได้เดือนนี้</div><div class="v num" id="hRev">—</div></div>
+      <div class="hcell"><div class="k"><svg class="ic sm"><use href="#i-cup"/></svg>กำไรสุทธิ</div><div class="v num" id="hPro">—</div></div>
     </div>
   </div>
   <div class="wrap">
     <div class="card">
-      <h3>เส้นทางน้ำหนักและต้นทุน <span class="pill" id="chTag">—</span></h3>
+      <h3><span class="ttl"><svg class="ic"><use href="#i-scale"/></svg>เส้นทางน้ำหนักและต้นทุน</span> <span class="pill" id="chTag">—</span></h3>
       <div id="chain"></div>
       <div class="hint" id="chHint"></div>
     </div>
-    <div class="card"><h3>ล็อตใกล้หมดอายุ <span class="pill w" id="cExp">0</span></h3><div id="expList"></div></div>
-    <div class="card"><h3>ต่ำกว่าจุดสั่งซื้อ <span class="pill b" id="cLow">0</span></h3><div id="lowList"></div></div>
-    <div class="card"><h3>บันทึกล่าสุด</h3><div id="recList"></div></div>
+    <div class="card"><h3><span class="ttl"><svg class="ic"><use href="#i-clock"/></svg>ล็อตใกล้หมดอายุ</span> <span class="pill w" id="cExp">0</span></h3><div id="expList"></div></div>
+    <div class="card"><h3><span class="ttl"><svg class="ic"><use href="#i-jar"/></svg>ต่ำกว่าจุดสั่งซื้อ</span> <span class="pill b" id="cLow">0</span></h3><div id="lowList"></div></div>
+    <div class="card"><h3><span class="ttl"><svg class="ic"><use href="#i-note"/></svg>บันทึกล่าสุด</span></h3><div id="recList"></div></div>
   </div>
 </section>
 
@@ -199,17 +280,22 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
   <div class="top"><h2>บันทึกรายการ</h2></div>
   <div class="wrap">
     <div class="steps">
-      <button class="step" onclick="go('f1')"><span class="no" style="background:var(--s1);color:var(--s1d)">1</span>
+      <div class="fork">เริ่มจากกะลา</div>
+      <button class="step" onclick="go('f1')"><span class="no" style="background:var(--s1);color:var(--s1d)"><svg class="ic"><use href="#i-sack"/></svg><i>1</i></span>
         <span class="tx"><b>ซื้อกาแฟกะลา</b><small>วันที่ · จำนวน · ราคา/kg · ค่าขนส่ง</small></span><span class="ar">›</span></button>
-      <button class="step" onclick="go('f2')"><span class="no" style="background:var(--s2);color:var(--s2d)">2</span>
+      <button class="step" onclick="go('f2')"><span class="no" style="background:var(--s2);color:var(--s2d)"><svg class="ic"><use href="#i-mill"/></svg><i>2</i></span>
         <span class="tx"><b>ผลิตสารเขียว</b><small>ตัดเบิกกะลา → ได้สารเขียว · ค่าสี · ค่าส่ง</small></span><span class="ar">›</span></button>
-      <button class="step" onclick="go('f3')"><span class="no" style="background:var(--s3);color:var(--s3d)">3</span>
+      <div class="fork">หรือ ซื้อสารเขียวสำเร็จ</div>
+      <button class="step" onclick="go('fg')"><span class="no" style="background:var(--s1b);color:var(--s1bd)"><svg class="ic"><use href="#i-greenbag"/></svg><i>1B</i></span>
+        <span class="tx"><b>ซื้อสารเขียว</b><small>ข้ามขั้น 1–2 · เทียบราคากับการสีเองให้อัตโนมัติ</small></span><span class="ar">›</span></button>
+      <div class="fork">จากนั้น</div>
+      <button class="step" onclick="go('f3')"><span class="no" style="background:var(--s3);color:var(--s3d)"><svg class="ic"><use href="#i-roast"/></svg><i>3</i></span>
         <span class="tx"><b>ผลิตเมล็ดคั่ว</b><small>ตัดเบิกสารเขียวยอดเดียว → แยกผลผลิตรายระดับ</small></span><span class="ar">›</span></button>
-      <button class="step" onclick="go('f4')"><span class="no" style="background:var(--s4);color:var(--s4d)">4</span>
+      <button class="step" onclick="go('f4')"><span class="no" style="background:var(--s4);color:var(--s4d)"><svg class="ic"><use href="#i-pouch"/></svg><i>4</i></span>
         <span class="tx"><b>ซื้อวัสดุอุปกรณ์</b><small>ซอง · สติ๊กเกอร์ · กล่อง · เทปกาว</small></span><span class="ar">›</span></button>
-      <button class="step" onclick="go('f5')"><span class="no" style="background:var(--s5);color:var(--s5d)">5</span>
+      <button class="step" onclick="go('f5')"><span class="no" style="background:var(--s5);color:var(--s5d)"><svg class="ic"><use href="#i-togo"/></svg><i>5</i></span>
         <span class="tx"><b>ขายเมล็ดคั่ว</b><small>แยกระดับและขนาด 250 / 500 / 1000g</small></span><span class="ar">›</span></button>
-      <button class="step" onclick="go('sum')"><span class="no" style="background:var(--s6);color:var(--s6d)">6</span>
+      <button class="step" onclick="go('sum')"><span class="no" style="background:var(--s6);color:var(--s6d)"><svg class="ic"><use href="#i-chart"/></svg><i>6</i></span>
         <span class="tx"><b>สรุปต้นทุน-กำไร</b><small>ต่อซอง · ต่อวัน · ต่อเดือน · ต่อปี</small></span><span class="ar">›</span></button>
     </div>
     <button class="btn ghost" onclick="openDocs('buyParchment')">ดู แก้ไข หรือลบรายการที่บันทึกไว้</button>
@@ -232,7 +318,35 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
     <label for="a1Sup">ผู้ขาย / เกษตรกร</label><input id="a1Sup">
     <label for="a1Note">หมายเหตุ</label><input id="a1Note">
     <div class="prev" id="v1">กรอกจำนวนและราคา</div>
-    <button class="btn b1" onclick="save1()">บันทึกซื้อกะลา</button>
+    <button class="btn b1" onclick="save1()"><svg class="ic"><use href="#i-sack"/></svg>บันทึกซื้อกะลา</button>
+  </div></div>
+</section>
+
+<!-- ══ 1B ซื้อสารเขียว ══ -->
+<section id="s-fg" class="screen">
+  <div class="top"><button class="back" onclick="cancelEdit();go('rec')">‹</button><h2 style="flex:1">1B · ซื้อสารเขียว</h2><button class="link" onclick="openDocs('buyGreen')">รายการที่บันทึก</button></div><div class="wrap" style="padding-bottom:0"><div class="editbar" id="eb_fg" style="display:none"><span id="ebt_fg"></span><button onclick="cancelEdit()">ยกเลิกการแก้ไข</button></div></div>
+  <div class="wrap"><div class="card">
+    <div class="hint">ใช้เมื่อไม่ได้เริ่มจากกะลา — สารเขียวที่ซื้อเข้าคลังเดียวกับที่สีเอง ต้นทุนถัวเฉลี่ยรวมกัน แล้วนำไปคั่ว (ขั้น 3) หรือขายเป็น kg ต่อได้เลย</div>
+    <div id="agCodeBox" style="display:none"><label for="agCode">เก็บเข้าสินค้า</label><select id="agCode" onchange="pG()"></select></div>
+    <div class="g2">
+      <div><label for="agDate">วันที่</label><input id="agDate" type="date"></div>
+      <div><label for="agQty">จำนวน (kg)</label><input id="agQty" type="number" inputmode="decimal" step="any" oninput="pG()"></div>
+    </div>
+    <div class="g2">
+      <div><label for="agPrice">ราคา/kg</label><input id="agPrice" type="number" inputmode="decimal" step="any" oninput="pG()"></div>
+      <div><label for="agFr">ค่าขนส่ง</label><input id="agFr" type="number" inputmode="decimal" step="any" value="0" oninput="pG()"></div>
+    </div>
+    <div class="g2">
+      <div><label for="agOther">ค่าใช้จ่ายอื่น</label><input id="agOther" type="number" inputmode="decimal" step="any" value="0" placeholder="ค่าคัด ค่ากระสอบ" oninput="pG()"></div>
+      <div><label for="agSup">ผู้ขาย</label><input id="agSup"></div>
+    </div>
+    <div class="g2">
+      <div><label for="agOrigin">แหล่งปลูก / สายพันธุ์</label><input id="agOrigin" placeholder="เช่น ดอยช้าง · คาติมอร์"></div>
+      <div><label for="agGrade">เกรด / โพรเซส</label><input id="agGrade" placeholder="เช่น Washed · AA"></div>
+    </div>
+    <label for="agNote">หมายเหตุ</label><input id="agNote">
+    <div class="prev" id="vG">กรอกจำนวนและราคา/kg</div>
+    <button class="btn b1b" onclick="saveG()"><svg class="ic"><use href="#i-greenbag"/></svg>บันทึกซื้อสารเขียว</button>
   </div></div>
 </section>
 
@@ -252,7 +366,7 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
     </div>
     <label for="a2Ven">โรงสี</label><input id="a2Ven">
     <div class="prev" id="v2">กรอกน้ำหนักเข้าและออก</div>
-    <button class="btn b2" onclick="save2()">บันทึกผลิตสารเขียว</button>
+    <button class="btn b2" onclick="save2()"><svg class="ic"><use href="#i-mill"/></svg>บันทึกผลิตสารเขียว</button>
   </div></div>
 </section>
 
@@ -273,7 +387,7 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
     </div>
     <label for="a3Ven">ผู้คั่ว</label><input id="a3Ven">
     <div class="prev" id="v3">กรอกน้ำหนักอย่างน้อยหนึ่งระดับ</div>
-    <button class="btn b3" onclick="save3()">บันทึกผลิตเมล็ดคั่ว</button>
+    <button class="btn b3" onclick="save3()"><svg class="ic"><use href="#i-roast"/></svg>บันทึกผลิตเมล็ดคั่ว</button>
   </div></div>
 </section>
 
@@ -292,7 +406,7 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
     </div>
     <label for="a4Sup">ผู้ขาย</label><input id="a4Sup">
     <div class="prev" id="v4">เลือกวัสดุและกรอกจำนวน</div>
-    <button class="btn b4" onclick="save4()">บันทึกซื้อวัสดุ</button>
+    <button class="btn b4" onclick="save4()"><svg class="ic"><use href="#i-pouch"/></svg>บันทึกซื้อวัสดุ</button>
     <button class="btn ghost" onclick="go('spec')">ตั้งค่าซองกับสติ๊กเกอร์ของแต่ละขนาด</button>
   </div></div>
 </section>
@@ -344,7 +458,7 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
       </div>
       <label for="a5Cust">ลูกค้า</label><input id="a5Cust">
       <div class="prev" id="v5">เพิ่มรายการสินค้าก่อน</div>
-      <button class="btn b5" onclick="save5()">บันทึกการขาย</button>
+      <button class="btn b5" onclick="save5()"><svg class="ic"><use href="#i-togo"/></svg>บันทึกการขาย</button>
       <button class="btn ghost" id="btnRcpLast" style="display:none" onclick="proofMenu(LASTSALE,'')">แนบหลักฐานการรับเงินของบิลที่เพิ่งบันทึก</button>
     </div>
   </div>
@@ -369,7 +483,7 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
     <div class="card"><h3>กำไรตามช่องทาง</h3><div id="chChan"></div></div>
     <div class="card"><h3>มูลค่าสต๊อกแยกประเภท</h3><div id="chStock"></div></div>
     <div class="card"><h3>ต้นทุนต่อซอง <span class="pill" id="pbTag">—</span></h3>
-      <div class="hint">ไล่ตั้งแต่กาแฟกะลา ผ่านค่าสี ค่าคั่ว จนถึงซองและสติ๊กเกอร์ · คำนวณจากต้นทุนเฉลี่ยปัจจุบันและ yield จริง</div>
+      <div class="hint">ไล่ตั้งแต่กาแฟกะลา (หรือสารเขียวที่ซื้อสำเร็จ) ผ่านค่าสี ค่าคั่ว จนถึงซองและสติ๊กเกอร์ · คำนวณจากต้นทุนเฉลี่ยปัจจุบันและ yield จริง</div>
       <div class="chips" id="pbChips" style="margin-top:10px"></div>
       <div id="perBag"></div>
     </div>
@@ -530,7 +644,7 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
   <div class="wrap">
     <input id="rcpSearch" placeholder="ค้นหาเลขที่ใบเสร็จหรือชื่อลูกค้า" oninput="renderRcpList()" style="margin-bottom:11px">
     <div class="card"><div id="rcpList"><div class="empty">กำลังโหลด…</div></div></div>
-    <div class="hint">กด 📄 เพื่อเปิดไฟล์ที่เก็บใน Google Drive · กด 🧾 เพื่อแก้ไขและออกใหม่</div>
+    <div class="hint">กดไอคอนเอกสารเพื่อเปิดไฟล์ที่เก็บใน Google Drive · กดไอคอนใบเสร็จเพื่อแก้ไขและออกใหม่</div>
   </div>
 </section>
 
@@ -553,17 +667,17 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
 </section>
 
 <nav>
-  <button class="on" data-t="home" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>หน้าหลัก</button>
-  <button data-t="rec" onclick="go('rec')"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>บันทึก</button>
-  <button data-t="stock" onclick="go('stock')"><svg viewBox="0 0 24 24"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg>สต๊อก</button>
-  <button data-t="sum" onclick="go('sum')"><svg viewBox="0 0 24 24"><path d="M4 20V10m5 10V4m5 16v-7m5 7V8"/></svg>สรุป</button>
+  <button class="on" data-t="home" onclick="go('home')"><svg><use href="#i-home"/></svg>หน้าหลัก</button>
+  <button data-t="rec" onclick="go('rec')"><svg><use href="#i-note"/></svg>บันทึก</button>
+  <button data-t="stock" onclick="go('stock')"><svg><use href="#i-jar"/></svg>สต๊อก</button>
+  <button data-t="sum" onclick="go('sum')"><svg><use href="#i-chart"/></svg>สรุป</button>
 </nav>
 
 <input type="file" id="proofFile" accept="image/*,application/pdf" style="display:none" onchange="onProofPicked(this)">
 <div class="toast" id="toast"></div>
 
 <script>
-var APPVER='2026.09.10-กู้รหัส';   /* แก้เลขนี้ทุกครั้งที่แก้ไฟล์ จะได้รู้ว่าเครื่องโหลดตัวใหม่แล้วหรือยัง */
+var APPVER='2026.09.23-ซื้อสารเขียว';   /* แก้เลขนี้ทุกครั้งที่แก้ไฟล์ จะได้รู้ว่าเครื่องโหลดตัวใหม่แล้วหรือยัง */
 var CFG=JSON.parse(localStorage.getItem('mttCfg')||'{}');
 var DATA=JSON.parse(localStorage.getItem('mttData')||'null');
 var BOX=JSON.parse(localStorage.getItem('mttBox')||'[]');
@@ -578,6 +692,88 @@ var P=function(c){return (DATA?DATA.products:[]).filter(function(x){return x.cod
 var T=function(t){return (DATA?DATA.products:[]).filter(function(x){return x.active&&x.type===t;});};
 var pr=function(k,v,c){return '<div class="pr '+(c||'')+'"><span>'+k+'</span><b>'+v+'</b></div>';};
 var row=function(t,s,r,c){return '<div class="row"><div><div class="t">'+esc(t)+'</div><div class="s">'+esc(s)+'</div></div><div class="r '+(c||'')+'">'+r+'</div></div>';};
+
+
+/* ══════════ ไอคอนและตัวละครกาแฟที่เปลี่ยนตามข้อมูล ══════════ */
+function ic(n,c){ return '<svg class="ic'+(c?' '+c:'')+'" aria-hidden="true"><use href="#i-'+n+'"/></svg>'; }
+var KINDIC={buyParchment:'sack',buyGreen:'greenbag',mill:'mill',roast:'roast',buyMaterial:'pouch',sell:'togo',issue:'trash'};
+var KINDCOL={buyParchment:'s1',buyGreen:'s1b',mill:'s2',roast:'s3',buyMaterial:'s4',sell:'s5',issue:'s6'};
+var TYPEIC={'กาแฟกะลา':'sack','สารเขียว':'bean','เมล็ดคั่ว':'roast','วัสดุอุปกรณ์':'pouch'};
+var TYPECOL={'กาแฟกะลา':'s1','สารเขียว':'s2','เมล็ดคั่ว':'s3','วัสดุอุปกรณ์':'s4'};
+var ROASTCOL=['#C9A57A','#A5754F','#7A4F35','#4B3122'];   /* อ่อน → เข้ม */
+function badge(n,col,sz){
+  return '<span class="ib" style="background:var(--'+col+');color:var(--'+col+'d)'+(sz?';width:'+sz+'px;height:'+sz+'px':'')+'">'+ic(n,'sm')+'</span>';
+}
+function rowI(lead,t,s,r,c){
+  return '<div class="row"><div class="lead">'+lead+'<div style="min-width:0"><div class="t">'+esc(t)+'</div><div class="s">'+esc(s)+'</div></div></div>'+
+    '<div class="r '+(c||'')+'">'+r+'</div></div>';
+}
+/* ใบหน้าเล็ก ๆ ใช้ร่วมกันทุกตัวละคร: happy / ok / hmm / sad / sleep */
+function face_(cx,cy,mood,gap){
+  gap=gap||7;
+  var ink='#3B332C', halo=' stroke="#FFF8EE" stroke-width="2.4" paint-order="stroke"';
+  var L=cx-gap, R=cx+gap, e='', m='';
+  if(mood==='sleep'||mood==='happy'){
+    var up=mood==='happy'?-1.6:1.4;
+    e='<path d="M'+(L-2)+' '+cy+' q2 '+up+' 4 0M'+(R-2)+' '+cy+' q2 '+up+' 4 0" fill="none" stroke="'+ink+'" stroke-width="1.5" stroke-linecap="round"/>';
+  } else {
+    e='<circle cx="'+L+'" cy="'+cy+'" r="1.6" fill="'+ink+'"'+halo+'/><circle cx="'+R+'" cy="'+cy+'" r="1.6" fill="'+ink+'"'+halo+'/>';
+  }
+  var my=cy+4.5;
+  if(mood==='happy') m='<path d="M'+(cx-3)+' '+my+' q3 3.2 6 0" fill="none" stroke="'+ink+'" stroke-width="1.5" stroke-linecap="round"/>';
+  else if(mood==='ok') m='<path d="M'+(cx-2.4)+' '+my+' q2.4 2 4.8 0" fill="none" stroke="'+ink+'" stroke-width="1.4" stroke-linecap="round"/>';
+  else if(mood==='sad') m='<path d="M'+(cx-2.6)+' '+(my+1.6)+' q2.6 -2.4 5.2 0" fill="none" stroke="'+ink+'" stroke-width="1.4" stroke-linecap="round"/>';
+  else if(mood==='hmm') m='<path d="M'+(cx-2.2)+' '+(my+.6)+' h4.4" stroke="'+ink+'" stroke-width="1.4" stroke-linecap="round"/>';
+  else m='<ellipse cx="'+cx+'" cy="'+(my+.4)+'" rx="1.6" ry="1.1" fill="none" stroke="'+ink+'" stroke-width="1.2"/>';
+  var bl='<circle cx="'+(L-3.5)+'" cy="'+(cy+3.5)+'" r="2" fill="#EBC0AE" opacity=".9"/><circle cx="'+(R+3.5)+'" cy="'+(cy+3.5)+'" r="2" fill="#EBC0AE" opacity=".9"/>';
+  return bl+e+m;
+}
+/* แก้วกาแฟหน้าหลัก: ระดับกาแฟในแก้ว = อัตรากำไรเดือนนี้เทียบเป้า, หน้าตาเปลี่ยนตามผลกำไร */
+function mascot(rev,profit,target){
+  var has=rev>0, mg=has?profit/rev*100:0, tg=target||40;
+  var lvl=has?Math.max(.08,Math.min(1,mg/(tg*1.25))):0.06;
+  var mood=!has?'sleep':(mg<0?'sad':(mg>=tg?'happy':(mg>=tg/2?'ok':'hmm')));
+  var top=54-lvl*30;
+  var body='M12 24h36v16a14 14 0 0 1-14 14h-8a14 14 0 0 1-14-14z';
+  var steam=(has&&mg>0)?'<g fill="none" stroke="#C9BBA9" stroke-width="1.6" stroke-linecap="round">'+
+      '<path d="M24 19c-2.5-2.5 2.5-4.5 0-7.5"><animate attributeName="opacity" values=".2;1;.2" dur="2.6s" repeatCount="indefinite"/></path>'+
+      '<path d="M32 19c-2.5-2.5 2.5-4.5 0-7.5"><animate attributeName="opacity" values="1;.2;1" dur="2.6s" repeatCount="indefinite"/></path>'+
+      '<path d="M40 19c-2.5-2.5 2.5-4.5 0-7.5"><animate attributeName="opacity" values=".4;.9;.4" dur="3s" repeatCount="indefinite"/></path></g>':'';
+  var zz=!has?'<text x="46" y="16" font-size="9" fill="#A1978B" font-family="sans-serif">z</text><text x="52" y="9" font-size="7" fill="#A1978B" font-family="sans-serif">z</text>':'';
+  var spark=(mood==='happy')?'<path d="M54 22c.4 2.6 1.3 3.5 3.9 3.9-2.6.4-3.5 1.3-3.9 3.9-.4-2.6-1.3-3.5-3.9-3.9 2.6-.4 3.5-1.3 3.9-3.9z" fill="#E5C77F"/>':'';
+  var svg='<svg viewBox="0 0 64 64" role="img" aria-label="แก้วกาแฟแสดงอัตรากำไร">'+
+    '<defs><clipPath id="mcClip"><path d="'+body+'"/></clipPath></defs>'+
+    '<ellipse cx="30" cy="57" rx="24" ry="3.4" fill="#EEE8DF"/>'+
+    steam+zz+spark+
+    '<path d="M47 29h3.5a6 6 0 0 1 0 12H46" fill="none" stroke="#8C7B6B" stroke-width="2"/>'+
+    '<path d="'+body+'" fill="#FFFDF9"/>'+
+    '<g clip-path="url(#mcClip)"><rect x="10" y="'+top.toFixed(1)+'" width="40" height="40" fill="'+(mood==='sad'?'#B98C74':'#8A5A3C')+'"/>'+
+    '<path d="M10 '+top.toFixed(1)+' q5 -2 10 0 t10 0 t10 0 t10 0" fill="#A87752" opacity=".7"/></g>'+
+    '<path d="'+body+'" fill="none" stroke="#8C7B6B" stroke-width="2"/>'+
+    face_(30,36,mood,6.5)+
+    '</svg>';
+  var say=!has?'เดือนนี้ยังไม่มีขาย':(mg<0?'ขาดทุน '+f(mg)+'%':(mood==='happy'?'กำไร '+f(mg)+'% ถึงเป้าแล้ว':'กำไร '+f(mg)+'% · เป้า '+f(tg)+'%'));
+  return svg+'<div class="say">'+say+'</div>';
+}
+/* เมล็ดยิ้มเล็ก ๆ ใช้ในกล่องเทียบราคา */
+function beanFace(mood){
+  return '<svg viewBox="0 0 40 40"><ellipse cx="20" cy="21" rx="12" ry="15" transform="rotate(-18 20 21)" fill="#FFFDF9" stroke="currentColor" stroke-width="1.5"/>'+
+    '<path d="M16.5 7.5c3.6 4.6-1.8 9.2 1.8 14.7s.9 9.2-.9 11.9" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".35" stroke-linecap="round"/>'+
+    face_(20,21,mood,5.5)+'</svg>';
+}
+/* โหลเมล็ดกาแฟ: ระดับในโหล = คงเหลือเทียบจุดสั่งซื้อ × 3, ใกล้หมดโหลจะทำหน้ากังวล */
+function jar(p){
+  var col=TYPECOL[p.type]||'s4';
+  var lvl=p.reorder>0?Math.min(1,p.qty/(p.reorder*3)):(p.qty>0?.65:0);
+  var low=p.reorder>0&&p.qty<=p.reorder;
+  var hh=Math.max(0,Math.min(21,21*lvl));
+  var mood=p.qty<=0?'sad':(low?'hmm':(lvl>=.6?'happy':'ok'));
+  return '<svg class="jar" viewBox="0 0 30 36" role="img" aria-label="ระดับคงเหลือ">'+
+    '<rect x="7.5" y="2" width="15" height="5" rx="1.5" fill="var(--'+col+')" stroke="var(--'+col+'d)" stroke-width="1.2"/>'+
+    '<rect x="4.5" y="8" width="21" height="26" rx="5" fill="#FFFDF9" stroke="var(--'+col+'d)" stroke-width="1.2"/>'+
+    (hh>0?'<rect x="6.5" y="'+(32-hh).toFixed(1)+'" width="17" height="'+hh.toFixed(1)+'" rx="3" fill="'+(low?'var(--bad)':'var(--'+col+'d)')+'" opacity=".28"/>':'')+
+    face_(15,17,mood,4.2)+'</svg>';
+}
 
 /* ── api ── */
 function newId(){ return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9); }
@@ -683,6 +879,7 @@ function renderHome(){
   $('hSub').textContent=t.skuCount+' รายการ · '+t.monthOrders+' ออร์เดอร์เดือนนี้ · '+DATA.today;
   $('hRev').textContent=f(t.monthRevenue);
   $('hPro').textContent=f(t.monthProfit);
+  $('hMascot').innerHTML=mascot(t.monthRevenue,t.monthProfit,DATA.settings.targetMargin);
   renderChain();
 
   var days=DATA.settings.expiryDays;
@@ -691,8 +888,8 @@ function renderHome(){
     var left=dleft(l.expiry),pct=Math.max(5,Math.min(100,Math.round((1-left/days)*100)));
     var col=left<=days/3?'var(--bad)':'var(--warn)';
     return '<div style="padding:10px 0;border-bottom:1px solid var(--line)">'+
-      '<div style="display:flex;justify-content:space-between;gap:8px"><div><div class="t" style="font-weight:500;font-size:13.5px">'+esc(l.name)+'</div>'+
-      '<div class="s" style="font-size:11px;color:var(--muted)">ล็อต '+esc(l.lotNo)+' · '+esc(l.source||'')+'</div></div>'+
+      '<div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div class="lead" style="display:flex;gap:10px;align-items:center">'+badge(TYPEIC[(P(l.code)||{}).type]||'bean',TYPECOL[(P(l.code)||{}).type]||'s2',30)+'<div><div class="t" style="font-weight:500;font-size:13.5px">'+esc(l.name)+'</div>'+
+      '<div class="s" style="font-size:11px;color:var(--muted)">ล็อต '+esc(l.lotNo)+' · '+esc(l.source||'')+'</div></div></div>'+
       '<div class="num" style="font-weight:600">'+f4(l.qty)+'</div></div>'+
       '<div class="life"><span style="width:'+pct+'%;background:'+col+'"></span></div>'+
       '<div class="life-lab"><span>'+(left<0?'หมดอายุแล้ว '+Math.abs(left)+' วัน':'เหลือ '+left+' วัน ('+l.expiry+')')+'</span>'+
@@ -701,14 +898,15 @@ function renderHome(){
 
   $('cLow').textContent=DATA.lowStock.length;
   $('lowList').innerHTML=DATA.lowStock.length?DATA.lowStock.map(function(p){
-    return row(p.name,'จุดสั่งซื้อ '+f(p.reorder)+' '+(p.unit||''),f4(p.qty)+' '+(p.unit||''),'neg');
+    return rowI(jar(p),p.name,'จุดสั่งซื้อ '+f(p.reorder)+' '+(p.unit||''),f4(p.qty)+' '+(p.unit||''),'neg');
   }).join(''):'<div class="empty">ทุกรายการอยู่เหนือจุดสั่งซื้อ</div>';
 
   $('recList').innerHTML=DATA.recent.length?DATA.recent.slice(0,8).map(function(r){
-    var nm=['','ซื้อกะลา','ผลิตสารเขียว','ผลิตเมล็ดคั่ว','ซื้อวัสดุ','ขาย'][r.step];
-    var right=r.step===5?f(r.amt):f(r.amt);
-    return row(r.name, r.date+' · ขั้น '+r.step+' '+nm+' · '+r.doc+(r.yieldPct?' · yield '+f(r.yieldPct)+'%':''),
-      right, r.step===5?'pos':'');
+    var k=r.kind||['','buyParchment','mill','roast','buyMaterial','sell'][r.step];
+    var nm=k==='buyGreen'?'ซื้อสารเขียว':['','ซื้อกะลา','ผลิตสารเขียว','ผลิตเมล็ดคั่ว','ซื้อวัสดุ','ขาย'][r.step];
+    var code=k==='buyGreen'?'1B':r.step;
+    return rowI(badge(KINDIC[k]||'bean',KINDCOL[k]||'s6',32),r.name, r.date+' · ขั้น '+code+' '+nm+' · '+r.doc+(r.yieldPct?' · yield '+f(r.yieldPct)+'%':''),
+      f(r.amt), r.step===5?'pos':'');
   }).join(''):'<div class="empty">ยังไม่มีรายการ</div>';
 }
 function dleft(d){return Math.round((new Date(d+'T00:00:00')-new Date(iso()+'T00:00:00'))/86400000);}
@@ -719,21 +917,26 @@ function renderChain(){
   var beans=T('เมล็ดคั่ว');
   var bean=beans.filter(function(b){return b.avgCost>0;}).sort(function(a,b){return b.qty-a.qty;})[0]||beans[0];
   var st=[
-    {n:'กาแฟกะลา',s:'ซื้อเข้า',w:1,c:pc?pc.avgCost:0,q:pc?pc.qty:0,col:'var(--s1)'},
-    {n:'สารเขียว',s:'หลังสี เหลือ '+f(y.mill)+'%',w:y.mill/100,c:gb?gb.avgCost:0,q:gb?gb.qty:0,col:'var(--s2)'},
-    {n:bean?bean.name:'เมล็ดคั่ว',s:'หลังคั่ว เหลือ '+f(y.roast)+'%',w:y.mill*y.roast/10000,c:bean?bean.avgCost:0,q:bean?bean.qty:0,col:'var(--s3)'}
+    {n:'กาแฟกะลา',s:'ซื้อเข้า',w:1,c:pc?pc.avgCost:0,q:pc?pc.qty:0,col:'var(--s1)',i:'sack',k:'s1'},
+    {n:'สารเขียว',s:'หลังสี เหลือ '+f(y.mill)+'%',w:y.mill/100,c:gb?gb.avgCost:0,q:gb?gb.qty:0,col:'var(--s2)',i:'bean',k:'s2'},
+    {n:bean?bean.name:'เมล็ดคั่ว',s:'หลังคั่ว เหลือ '+f(y.roast)+'%',w:y.mill*y.roast/10000,c:bean?bean.avgCost:0,q:bean?bean.qty:0,col:'var(--s3)',i:'roast',k:'s3'}
   ];
   $('chain').innerHTML=st.map(function(x){
-    return '<div style="display:flex;align-items:center;gap:11px;padding:8px 0">'+
-      '<div style="flex:0 0 84px;height:28px;background:#EFEDF5;border-radius:7px;overflow:hidden">'+
-      '<div style="width:'+Math.max(9,Math.round(x.w*100))+'%;height:100%;background:'+x.col+';border-radius:7px"></div></div>'+
+    return '<div style="display:flex;align-items:center;gap:11px;padding:8px 0">'+badge(x.i,x.k,34)+
+      '<div style="flex:0 0 64px;height:6px;background:var(--soft);border-radius:6px;overflow:hidden">'+
+      '<div style="width:'+Math.max(9,Math.round(x.w*100))+'%;height:100%;background:var(--'+x.k+'d);opacity:.55;border-radius:6px"></div></div>'+
       '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500">'+esc(x.n)+'</div>'+
       '<div style="font-size:10.5px;color:var(--muted)">'+x.s+'</div></div>'+
       '<div style="text-align:right;white-space:nowrap"><div class="num" style="font-size:13.5px;font-weight:600">'+(x.c>0?f(x.c):'—')+'</div>'+
       '<div style="font-size:10px;color:var(--muted)">บาท/kg · เหลือ '+f4(x.q)+'</div></div></div>';
   }).join('');
   $('chTag').textContent=y.hasActual?'จาก '+y.batches+' รอบจริง':'ค่ามาตรฐาน';
-  $('chHint').textContent=y.parchmentPerRoastedKg>0?'ต้องใช้กาแฟกะลาราว '+f(y.parchmentPerRoastedKg)+' kg เพื่อให้ได้เมล็ดคั่ว 1 kg':'';
+  var gc=DATA.greenCompare, extra='';
+  if(gc&&gc.boughtKg>0){
+    extra=' · สารเขียวซื้อสำเร็จสะสม '+f4(gc.boughtKg)+' kg เฉลี่ย '+f(gc.boughtAvg)+' บ./kg'+
+      (gc.hasMill?' (สีเอง '+f(gc.millCostPerKg)+' บ./kg)':'');
+  }
+  $('chHint').textContent=(y.parchmentPerRoastedKg>0?'ต้องใช้กาแฟกะลาราว '+f(y.parchmentPerRoastedKg)+' kg เพื่อให้ได้เมล็ดคั่ว 1 kg':'')+extra;
 }
 
 /* ── selects ── */
@@ -742,7 +945,8 @@ function fillSel(){
   if(!DATA) return;
   var mats=T('วัสดุอุปกรณ์'), beans=T('เมล็ดคั่ว');
   var set=function(id,l){var k=$(id).value;$(id).innerHTML=opt(l);if(k)$(id).value=k;};
-  set('a4Code',mats); set('a5Roast',beans); set('a5Green',T('สารเขียว'));
+  set('a4Code',mats); set('a5Roast',beans); set('a5Green',T('สารเขียว')); set('agCode',T('สารเขียว'));
+  $('agCodeBox').style.display=T('สารเขียว').length>1?'block':'none';
   set('oCode',DATA.products.filter(function(p){return p.active;}));
   set('spPouch',mats); set('spStick',mats);
   if($('a5Roast')){
@@ -776,7 +980,7 @@ function fillSel(){
   $('sizeSeg').innerHTML=(DATA.sizes||[250,500,1000]).map(function(s){
     return '<button class="'+(SIZE===s?'on':'')+'" onclick="SIZE='+s+';fill5();fillSel()">'+s+'g</button>';
   }).join('');
-  ['a1Date','a2Date','a3Date','a4Date','a5Date','oDate'].forEach(function(i){if(!$(i).value)$(i).value=iso();});
+  ['a1Date','agDate','a2Date','a3Date','a4Date','a5Date','oDate'].forEach(function(i){if(!$(i).value)$(i).value=iso();});
   renderLv();
 }
 
@@ -841,7 +1045,7 @@ function openReceipt(docNo){
     $('btnMakeRcp').disabled = noProof;
     $('btnMakeRcp').textContent = noProof ? 'ต้องแนบหลักฐานก่อน'
       : (d.issued ? 'บันทึกการแก้ไขและสร้างใหม่' : 'สร้างใบเสร็จ');
-    if(noProof) $('rIssued').innerHTML='<span style="color:var(--bad)">ยังไม่ได้แนบหลักฐานการรับเงินของบิลนี้ — กลับไปกดปุ่ม 📎 ในรายการที่บันทึกเพื่อแนบก่อน</span>';
+    if(noProof) $('rIssued').innerHTML='<span style="color:var(--bad)">ยังไม่ได้แนบหลักฐานการรับเงินของบิลนี้ — กลับไปกดปุ่มคลิปหนีบกระดาษในรายการที่บันทึกเพื่อแนบก่อน</span>';
     rPrev(); go('rcp');
   }).catch(function(e){ toast(e.message,'err'); });
 }
@@ -894,8 +1098,8 @@ function renderRcpList(){
       '<small>'+r.date+' · '+esc(r.customer||'')+(r.deposit>0?' · หักมัดจำ '+f(r.deposit):'')+'</small></div>'+
       '<div class="da">'+f(r.total)+'</div>'+
       '<div class="ops">'+
-       (r.url?'<button class="op" title="เปิดไฟล์" onclick="window.open(\''+esc(r.url)+'\',\'_blank\')">📄</button>':'')+
-       (r.docNo?'<button class="op" title="แก้ไขใบเสร็จ" onclick="openReceipt(\''+esc(r.docNo)+'\')">🧾</button>':'')+
+       (r.url?'<button class="op" title="เปิดไฟล์" onclick="window.open(\''+esc(r.url)+'\',\'_blank\')">'+ic('file')+'</button>':'')+
+       (r.docNo?'<button class="op" title="แก้ไขใบเสร็จ" onclick="openReceipt(\''+esc(r.docNo)+'\')">'+ic('receipt')+'</button>':'')+
       '</div></div>';
   }).join(''):'<div class="empty">ยังไม่มีใบเสร็จที่ออก</div>';
 }
@@ -1051,10 +1255,10 @@ function receiptHTML(no,dateIso,cust,dep,depRef,copies,recvName){
   
   '<style>'+
   '*{box-sizing:border-box}'+
-  'body{font-family:Tahoma,"Segoe UI","Leelawadee UI",sans-serif;font-size:11.5px;margin:0;background:#eceaf2;color:#000}'+
+  'body{font-family:Tahoma,"Segoe UI","Leelawadee UI",sans-serif;font-size:11.5px;margin:0;background:#F5F1EA;color:#000}'+
   '.bar{position:sticky;top:0;display:flex;gap:8px;padding:10px;background:#fff;border-bottom:1px solid #ddd;z-index:9}'+
-  '.bar button{flex:1;padding:12px;border:0;border-radius:10px;background:#6F6486;color:#fff;font-size:14px;font-weight:bold;font-family:inherit;cursor:pointer}'+
-  '.bar button.g{background:#fff;color:#6F6486;border:1px solid #ccc}'+
+  '.bar button{flex:1;padding:12px;border:0;border-radius:10px;background:#4A3F35;color:#fff;font-size:14px;font-weight:bold;font-family:inherit;cursor:pointer}'+
+  '.bar button.g{background:#fff;color:#4A3F35;border:1px solid #ccc}'+
   '.sheet{background:#fff;width:200mm;min-height:288mm;margin:12px auto;padding:11mm 10mm;border:1px solid #000;position:relative}'+
   '.mark{position:absolute;right:10mm;top:8mm;font-size:10.5px}'+
   '.logo{position:absolute;left:12mm;top:10mm;width:80px;height:80px;object-fit:contain;border-radius:50%}'+
@@ -1131,9 +1335,9 @@ function bahtTH(amount){
 
 /* ══════════ รายการที่บันทึก · แก้ไข · ลบ ══════════ */
 var DOCKIND='buyParchment', EDIT=null;
-var KINDLABEL={buyParchment:'1 ซื้อกะลา',mill:'2 ผลิตสารเขียว',roast:'3 ผลิตเมล็ดคั่ว',
+var KINDLABEL={buyParchment:'1 ซื้อกะลา',buyGreen:'1B ซื้อสารเขียว',mill:'2 ผลิตสารเขียว',roast:'3 ผลิตเมล็ดคั่ว',
                buyMaterial:'4 ซื้อวัสดุ',sell:'5 ขาย',issue:'ตัดจ่าย'};
-var KINDFORM={buyParchment:'f1',mill:'f2',roast:'f3',buyMaterial:'f4',sell:'f5',issue:'other'};
+var KINDFORM={buyParchment:'f1',buyGreen:'fg',mill:'f2',roast:'f3',buyMaterial:'f4',sell:'f5',issue:'other'};
 
 function openDocs(kind){ DOCKIND=kind||DOCKIND; go('docs'); loadDocs(); }
 function backFromDocs(){ go(EDIT?KINDFORM[EDIT.kind]:'rec'); }
@@ -1141,7 +1345,7 @@ function backFromDocs(){ go(EDIT?KINDFORM[EDIT.kind]:'rec'); }
 function loadDocs(){
   $('docTitle').textContent='รายการ '+KINDLABEL[DOCKIND];
   $('docKinds').innerHTML=Object.keys(KINDLABEL).map(function(k){
-    return '<button class="'+(DOCKIND===k?'on':'')+'" onclick="DOCKIND=\''+k+'\';loadDocs()">'+KINDLABEL[k]+'</button>';
+    return '<button class="'+(DOCKIND===k?'on':'')+'" onclick="DOCKIND=\''+k+'\';loadDocs()">'+ic(KINDIC[k]||'bean','sm')+KINDLABEL[k]+'</button>';
   }).join('');
   $('docList').innerHTML='<div class="empty">กำลังโหลด…</div>';
   api('listDocs',{kind:DOCKIND,limit:40}).then(function(r){
@@ -1154,12 +1358,12 @@ function loadDocs(){
         '<div class="da">'+f(d.amt)+'</div>'+
         (d.cancelled?'':'<div class="ops">'+
           (DOCKIND==='sell'?
-            '<button class="op" title="'+(d.proofUrl?'ดู/เปลี่ยนหลักฐานการรับเงิน':'แนบหลักฐานการรับเงิน')+'" onclick="proofMenu(\''+esc(d.doc)+'\',\''+esc(d.proofUrl||'')+'\')">'+(d.proofUrl?'🖼':'📎')+'</button>'+
-            (d.receiptUrl?'<button class="op" title="เปิดไฟล์ใบเสร็จ" onclick="window.open(\''+esc(d.receiptUrl)+'\',\'_blank\')">📄</button>':'')+
-            (d.proofUrl?'<button class="op" title="'+(d.receiptNo?'แก้ไขใบเสร็จ '+esc(d.receiptNo):'ออกใบเสร็จ')+'" onclick="openReceipt(\''+esc(d.doc)+'\')">🧾</button>':'')
+            '<button class="op'+(d.proofUrl?' on':'')+'" title="'+(d.proofUrl?'ดู/เปลี่ยนหลักฐานการรับเงิน':'แนบหลักฐานการรับเงิน')+'" onclick="proofMenu(\''+esc(d.doc)+'\',\''+esc(d.proofUrl||'')+'\')">'+(d.proofUrl?ic('photo'):ic('clip'))+'</button>'+
+            (d.receiptUrl?'<button class="op" title="เปิดไฟล์ใบเสร็จ" onclick="window.open(\''+esc(d.receiptUrl)+'\',\'_blank\')">'+ic('file')+'</button>':'')+
+            (d.proofUrl?'<button class="op" title="'+(d.receiptNo?'แก้ไขใบเสร็จ '+esc(d.receiptNo):'ออกใบเสร็จ')+'" onclick="openReceipt(\''+esc(d.doc)+'\')">'+ic('receipt')+'</button>':'')
           :'')+
-          '<button class="op" title="แก้ไข" onclick="startEdit(\''+esc(d.doc)+'\')">✎</button>'+
-          '<button class="op del" title="ลบ" onclick="askDelete(\''+esc(d.doc)+'\',\''+esc(d.title)+'\')">🗑</button>'+
+          '<button class="op" title="แก้ไข" onclick="startEdit(\''+esc(d.doc)+'\')">'+ic('edit')+'</button>'+
+          '<button class="op del" title="ลบ" onclick="askDelete(\''+esc(d.doc)+'\',\''+esc(d.title)+'\')">'+ic('trash')+'</button>'+
         '</div>')+'</div>';
     }).join(''):'<div class="empty">ยังไม่มีรายการ</div>';
   }).catch(function(e){ $('docList').innerHTML='<div class="empty">'+esc(e.message)+'</div>'; });
@@ -1179,7 +1383,7 @@ function startEdit(doc){
     EDIT={kind:DOCKIND,docNo:doc};
     fillForm(DOCKIND,d);
     var fid=KINDFORM[DOCKIND];
-    ['f1','f2','f3','f4','f5'].forEach(function(x){ if($('eb_'+x)) $('eb_'+x).style.display='none'; });
+    ['f1','fg','f2','f3','f4','f5'].forEach(function(x){ if($('eb_'+x)) $('eb_'+x).style.display='none'; });
     if($('eb_'+fid)){ $('eb_'+fid).style.display='flex'; $('ebt_'+fid).textContent='กำลังแก้ไข '+doc; }
     go(fid);
     toast('แก้ตัวเลขแล้วกดบันทึกได้เลย');
@@ -1199,6 +1403,14 @@ function fillForm(kind,d){
     $('a1Date').value=d.date; $('a1Qty').value=d.qty; $('a1Price').value=d.unitPrice;
     $('a1Fr').value=d.freight; $('a1Sup').value=d.supplier||''; $('a1Note').value=d.note||'';
     p1();
+  } else if(kind==='buyGreen'){
+    fillSel();
+    if(d.code) $('agCode').value=d.code;
+    $('agDate').value=d.date; $('agQty').value=d.qty; $('agPrice').value=d.unitPrice;
+    $('agFr').value=d.freight; $('agOther').value=d.otherCost||0;
+    $('agSup').value=d.supplier||''; $('agOrigin').value=d.origin||''; $('agGrade').value=d.grade||'';
+    $('agNote').value=d.note||'';
+    pG();
   } else if(kind==='mill'){
     $('a2Date').value=d.date; $('a2In').value=d.qtyIn; $('a2Out').value=d.qtyOut;
     $('a2Rate').value=d.millRate; $('a2Fr').value=d.freight; $('a2Ven').value=d.vendor||'';
@@ -1292,6 +1504,51 @@ function save1(){
     'บันทึกซื้อกะลาแล้ว',function(){['a1Qty','a1Price','a1Note'].forEach(function(i){$(i).value='';});$('a1Fr').value='0';p1();});
 }
 
+/* ── 1B ซื้อสารเขียว ── */
+function greenProd(){ return P($('agCode').value)||T('สารเขียว')[0]; }
+function pG(){
+  var q=+$('agQty').value||0, pz=+$('agPrice').value||0, fr=+$('agFr').value||0, ot=+$('agOther').value||0;
+  var gb=greenProd();
+  if(q<=0||pz<=0){$('vG').textContent='กรอกจำนวนและราคา/kg';return;}
+  var tot=q*pz+fr+ot, unit=tot/q;
+  var h=pr('ค่าสารเขียว '+f4(q)+' kg × '+f(pz),f(q*pz))+
+    (fr?pr('ค่าขนส่ง',f(fr)):'')+(ot?pr('ค่าใช้จ่ายอื่น',f(ot)):'')+
+    pr('ต้นทุนรวม',f(tot),'hi')+
+    pr('<b style="font-weight:500">ต้นทุนจริง/kg</b>','<b style="color:var(--s1bd)">'+f(unit)+'</b>');
+  if(gb){
+    h+=pr('ต้นทุนเฉลี่ยเดิม',f(gb.avgCost)+' · เหลือ '+f4(gb.qty)+' kg');
+    h+=pr('<b style="font-weight:500">ต้นทุนเฉลี่ยใหม่</b>','<b>'+f((gb.qty*gb.avgCost+tot)/(gb.qty+q))+'</b>');
+    h+=pr('คงเหลือหลังรับ',f4(gb.qty+q)+' kg');
+  }
+  var yr=(DATA&&DATA.yields&&DATA.yields.roast)||84;
+  h+=pr('คั่วแล้วจะได้ราว',f4(q*yr/100)+' kg')+pr('ค่าสารเขียวต่อ 1 kg คั่ว',f(unit/(yr/100)));
+  var gc=DATA&&DATA.greenCompare;
+  if(gc&&gc.hasMill){
+    var d=unit-gc.millCostPerKg, be=Math.max(0,(unit-gc.millFeePerKg)*gc.yieldMill/100), good=d<=0;
+    h+='<div class="verdict '+(good?'good':'meh')+'">'+beanFace(good?'happy':'hmm')+'<div>'+
+      '<b>'+(good?'ถูกกว่าสีเอง ':'แพงกว่าสีเอง ')+f(Math.abs(d))+' บ./kg</b> ('+(d>=0?'+':'−')+f(Math.abs(d*q))+' บาททั้งล็อต)<br>'+
+      'สีเองเฉลี่ย '+f(gc.millCostPerKg)+' บ./kg · ค่าสี+ค่าส่ง '+f(gc.millFeePerKg)+' บ./kg · yield '+f(gc.yieldMill)+'%<br>'+
+      'ถ้าซื้อกะลาได้ต่ำกว่า <b>'+f(be)+' บ./kg</b> การสีเองจะคุ้มกว่า</div></div>';
+  } else {
+    h+='<div class="verdict info">'+beanFace('ok')+'<div>ยังไม่มีประวัติการสีเอง จึงยังเทียบไม่ได้ — เมื่อบันทึกขั้น 2 แล้ว ระบบจะบอกว่าซื้อสำเร็จหรือสีเองคุ้มกว่า</div></div>';
+  }
+  $('vG').innerHTML=h;
+}
+function saveG(){
+  var q=+$('agQty').value||0, pz=+$('agPrice').value||0;
+  if(q<=0) return toast('กรอกจำนวน','err');
+  if(pz<=0) return toast('กรอกราคา/kg','err');
+  var gb=greenProd();
+  submit('buyGreen',{code:gb?gb.code:'',qty:q,unitPrice:pz,freight:+$('agFr').value||0,otherCost:+$('agOther').value||0,
+    date:$('agDate').value||iso(),supplier:$('agSup').value.trim(),origin:$('agOrigin').value.trim(),
+    grade:$('agGrade').value.trim(),note:$('agNote').value.trim(),user:CFG.user||''},
+    'บันทึกซื้อสารเขียวแล้ว',function(r){
+      if(r&&r.tip) setTimeout(function(){ toast(r.tip, r.diffPerKg>0?'warn':''); },3400);
+      ['agQty','agPrice','agNote'].forEach(function(i){$(i).value='';});
+      $('agFr').value='0'; $('agOther').value='0'; pG();
+    });
+}
+
 /* ── 2 ── */
 function p2(){
   var qi=+$('a2In').value||0, qo=+$('a2Out').value||0;
@@ -1339,7 +1596,7 @@ function renderLv(){
   if(!DATA) return;
   $('lvBox').innerHTML=levelList().map(function(l,i){
     return '<div class="lv"><div class="h">'+
-      '<span>'+esc(l.name||l.roast)+' <span style="font-weight:400;color:var(--muted);font-size:12px">'+esc(l.roast)+'</span></span>'+
+      '<span><svg class="ic sm" style="color:'+ROASTCOL[Math.min(i,3)]+';fill:'+ROASTCOL[Math.min(i,3)]+'33"><use href="#i-bean"/></svg>'+esc(l.name||l.roast)+' <span style="font-weight:400;color:var(--muted);font-size:12px">'+esc(l.roast)+'</span></span>'+
       '<span class="y" id="y'+i+'"></span></div>'+
       '<label for="lo'+i+'">เมล็ดคั่วที่ได้ (kg) · มาตรฐาน '+f(stdOf(l.roast))+'%'+
       (l.exists?' · เหลือ '+f4(l.qty)+' kg':' · <span style="color:var(--warn)">จะสร้างรายการให้อัตโนมัติ</span>')+'</label>'+
@@ -1577,7 +1834,7 @@ function save5(){
     }),
     packItems:items,shipCharged:+$('a5ShipIn').value||0,shipPaid:+$('a5ShipOut').value||0,
     customer:$('a5Cust').value.trim(),channel:$('a5Chan').value,date:$('a5Date').value||iso(),user:CFG.user||''},
-    'บันทึกการขายแล้ว',function(){
+    'บันทึกการขายแล้ว',function(r){
       if(r&&r.docNo){ LASTSALE=r.docNo; $('btnRcpLast').style.display='block'; }
       CART=[];renderCart();$('a5Cust').value='';$('a5ShipIn').value='0';$('a5ShipOut').value='0';
       $('a5Bubble').value='0';$('a5Tape').value='0';p5();
@@ -1586,8 +1843,8 @@ function save5(){
 
 
 /* ══════════ แผนภูมิ วาดด้วย SVG เอง ไม่พึ่งไลบรารีภายนอก เพื่อให้ใช้ออฟไลน์ได้ ══════════ */
-var CH={bean:'#C9A227',pouch:'#7FA96B',box:'#E39A6B',ship:'#C25A5A',profit:'#6F8FCB',
-        mill:'#5F8552',roast:'#B86F44',rev:'#C0C6E8',line:'#75609E',bar:'#A99BC4'};
+var CH={bean:'#B08D5B',pouch:'#8FA07A',box:'#CDB08F',ship:'#A8453A',profit:'#4A3F35',
+        mill:'#6F8A5E',roast:'#8A5A3C',rev:'#E0D4C3',line:'#4A3F35',bar:'#C4AF95',green:'#8C9A63'};
 
 function svg_(vb,inner){ return '<svg class="chart" viewBox="'+vb+'" xmlns="http://www.w3.org/2000/svg" role="img">'+inner+'</svg>'; }
 function esc2(t){ return esc(t); }
@@ -1628,7 +1885,7 @@ function drawSplit(s){
     var w=p.v/tot*W;
     seg+='<rect x="'+x.toFixed(1)+'" y="0" width="'+Math.max(0.6,w).toFixed(1)+'" height="30" fill="'+p.c+'"/>';
     var pct=p.v/tot*100;
-    if(pct>=9) lab+='<text class="gval" x="'+(x+w/2).toFixed(1)+'" y="20" text-anchor="middle" fill="#fff">'+pct.toFixed(0)+'%</text>';
+    if(pct>=9) lab+='<text class="gval" x="'+(x+w/2).toFixed(1)+'" y="20" text-anchor="middle" style="fill:#FFFBF4">'+pct.toFixed(0)+'%</text>';
     x+=w;
   });
   el.innerHTML=svg_('0 0 '+W+' '+H,'<g>'+seg+lab+'</g>')+
@@ -1655,7 +1912,7 @@ function drawTrend(tr,mode){
 
   var g='';
   [top,(top+bot)/2,bot].forEach(function(v){
-    g+='<line x1="'+L+'" y1="'+y(v).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(v).toFixed(1)+'" stroke="#E7E3EF" stroke-width="1"/>'+
+    g+='<line x1="'+L+'" y1="'+y(v).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(v).toFixed(1)+'" stroke="#ECE5DA" stroke-width="1"/>'+
        '<text class="gtxt" x="'+(L-4)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+short_(v)+'</text>';
   });
 
@@ -1669,7 +1926,7 @@ function drawTrend(tr,mode){
     if(i%step===0||i===tr.length-1)
       lbl+='<text class="gtxt" x="'+(L+i*bw+bw/2).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle">'+esc(p.label)+'</text>';
   });
-  if(bot<0) g+='<line x1="'+L+'" y1="'+y(0).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(0).toFixed(1)+'" stroke="#C9C2D8" stroke-width="1"/>';
+  if(bot<0) g+='<line x1="'+L+'" y1="'+y(0).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(0).toFixed(1)+'" stroke="#D3C8B8" stroke-width="1"/>';
 
   var line='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+CH.line+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
   var dots=tr.length<=20?tr.map(function(p,i){
@@ -1719,7 +1976,7 @@ function drawYield(b){
 
   var g='';
   [hi,(hi+lo)/2,lo].forEach(function(v){
-    g+='<line x1="'+L+'" y1="'+y(v).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(v).toFixed(1)+'" stroke="#E7E3EF"/>'+
+    g+='<line x1="'+L+'" y1="'+y(v).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(v).toFixed(1)+'" stroke="#ECE5DA"/>'+
        '<text class="gtxt" x="'+(L-4)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v.toFixed(0)+'%</text>';
   });
 
@@ -1734,7 +1991,7 @@ function drawYield(b){
     pts.forEach(function(p){
       var off=Math.abs(p.v-std)>5;
       g+='<circle cx="'+x(p.i).toFixed(1)+'" cy="'+y(p.v).toFixed(1)+'" r="'+(off?3.6:2.6)+
-        '" fill="'+(off?'#C25A5A':col)+'"/>';
+        '" fill="'+(off?'#A8453A':col)+'"/>';
     });
   });
   g+='<text class="gtxt" x="'+L+'" y="'+(H-6)+'">'+esc(b[0].date.slice(5))+'</text>'+
@@ -1742,7 +1999,7 @@ function drawYield(b){
 
   var bad=b.filter(function(p){return Math.abs(p.yieldPct-p.std)>5;}).length;
   el.innerHTML=svg_('0 0 '+W+' '+H,g)+
-    lg_([{c:CH.mill,t:'สี'},{c:CH.roast,t:'คั่ว'},{c:'#C25A5A',t:'ต่างจากมาตรฐานเกิน 5 จุด'}])+
+    lg_([{c:CH.mill,t:'สี'},{c:CH.roast,t:'คั่ว'},{c:'#A8453A',t:'ต่างจากมาตรฐานเกิน 5 จุด'}])+
     '<div class="ch-note">เส้นประคือ Yield มาตรฐาน · '+b.length+' รอบล่าสุด'+
     (bad?' · <span style="color:var(--bad)">มี '+bad+' รอบที่ผิดปกติ</span>':' · ทุกรอบอยู่ในเกณฑ์')+'</div>';
 }
@@ -1762,7 +2019,7 @@ function drawChan(ch){
        '<text class="gtxt" x="0" y="'+(yy+27)+'" opacity=".7">'+c.orders+' บิล</text>'+
        '<rect x="'+LW+'" y="'+yy+'" width="'+Math.max(1.5,w1).toFixed(1)+'" height="13" rx="2.5" fill="'+CH.rev+'"/>'+
        '<text class="gval" x="'+(LW+w1+5).toFixed(1)+'" y="'+(yy+11)+'">'+short_(c.revenue)+'</text>'+
-       '<rect x="'+LW+'" y="'+(yy+16)+'" width="'+Math.max(1.5,w2).toFixed(1)+'" height="13" rx="2.5" fill="'+(c.profit>=0?CH.line:'#C25A5A')+'"/>'+
+       '<rect x="'+LW+'" y="'+(yy+16)+'" width="'+Math.max(1.5,w2).toFixed(1)+'" height="13" rx="2.5" fill="'+(c.profit>=0?CH.line:'#A8453A')+'"/>'+
        '<text class="gval" x="'+(LW+w2+5).toFixed(1)+'" y="'+(yy+27)+'">'+short_(c.profit)+'</text>';
   });
   el.innerHTML=svg_('0 0 '+W+' '+H,g)+lg_([{c:CH.rev,t:'รายได้'},{c:CH.line,t:'กำไรสุทธิ'}]);
@@ -1834,6 +2091,8 @@ function loadSum(){
     h+=pr('ส่วนต่างค่าส่ง','<span style="color:'+(s.shipGap<0?'var(--bad)':'var(--ok)')+'">'+(s.shipGap>=0?'+':'')+f(s.shipGap)+'</span>')+
       pr('ออร์เดอร์ / เฉลี่ยต่อบิล',s.orders+' / '+f(s.avgOrder))+
       pr('ซื้อกะลา',f4(s.buyParchmentKg)+' kg · '+f(s.buyParchment))+
+      (s.buyGreen>0?pr('ซื้อสารเขียว',f4(s.buyGreenKg)+' kg · '+f(s.buyGreen))+
+        pr('สารเขียว/kg ซื้อ vs สีเอง',f(s.buyGreenPerKg)+' / '+(s.millCostPerKg>0?f(s.millCostPerKg):'—')):'')+
       pr('ซื้อวัสดุ',f(s.buyMaterial))+
       pr('ค่าสี + ค่าส่งสารเขียว',f(s.millFee))+
       pr('ค่าแรง + ค่าเช่าเครื่องคั่ว',f(s.roastFee))+
@@ -1863,7 +2122,7 @@ function renderPerBag(pb){
   var roasts=[];
   pb.rows.forEach(function(r){if(roasts.indexOf(r.roast)<0)roasts.push(r.roast);});
   if(!PBROAST||roasts.indexOf(PBROAST)<0) PBROAST=roasts[0];
-  $('pbTag').textContent='yield '+f(pb.yieldMill)+'% / '+f(pb.yieldRoast)+'%';
+  $('pbTag').textContent='yield '+f(pb.yieldMill)+'% / '+f(pb.yieldRoast)+'%'+(pb.greenBoughtPct>0?' · ซื้อสำเร็จ '+f(pb.greenBoughtPct)+'%':'');
   $('pbChips').innerHTML=roasts.map(function(r){
     return '<button class="'+(PBROAST===r?'on':'')+'" onclick="PBROAST=\''+esc(r)+'\';renderPerBag(LASTPB)">'+esc(r)+'</button>';
   }).join('');
@@ -1871,13 +2130,15 @@ function renderPerBag(pb){
   var rows=pb.rows.filter(function(r){return r.roast===PBROAST;});
   $('perBag').innerHTML='<table><tr><th>ส่วนประกอบ</th>'+
     rows.map(function(r){return '<th style="text-align:right">'+r.size+'g</th>';}).join('')+'</tr>'+
-    [['กาแฟกะลา','parch'],['ค่าสี + ค่าส่ง','mill'],['ค่าแรง + ค่าเช่าคั่ว','roastFee'],['ซองกาแฟ','pouch'],['สติ๊กเกอร์','sticker']]
+    [['กาแฟกะลา','parch'],['ค่าสี + ค่าส่ง','mill']].concat(rows.some(function(r){return r.buyGreen>0;})?[['สารเขียวซื้อสำเร็จ','buyGreen']]:[])
+      .concat([['ค่าแรง + ค่าเช่าคั่ว','roastFee'],['ซองกาแฟ','pouch'],['สติ๊กเกอร์','sticker']])
       .map(function(k){
         return '<tr><td>'+k[0]+'</td>'+rows.map(function(r){return '<td class="n">'+f(r[k[1]])+'</td>';}).join('')+'</tr>';
       }).join('')+
     '<tr><td><b>ต้นทุนรวม/ซอง</b></td>'+rows.map(function(r){return '<td class="n"><b>'+f(r.total)+'</b></td>';}).join('')+'</tr>'+
     '<tr><td>ราคาแนะนำ ('+f(pb.target)+'%)</td>'+rows.map(function(r){return '<td class="n" style="color:var(--s6d)">'+f(r.suggest)+'</td>';}).join('')+'</tr>'+
     '<tr><td>ใช้กะลา (kg)</td>'+rows.map(function(r){return '<td class="n">'+f4(r.parchKg)+'</td>';}).join('')+'</tr>'+
+    (rows[0]&&rows[0].greenKg!=null?'<tr><td>ใช้สารเขียว (kg)</td>'+rows.map(function(r){return '<td class="n">'+f4(r.greenKg)+'</td>';}).join('')+'</tr>':'')+
     '</table>';
 }
 var LASTPB=null;
@@ -1888,7 +2149,7 @@ function renderProducts(){
   var q=($('pSearch').value||'').toLowerCase();
   var types=[''].concat(DATA.settings.types);
   $('typeChips').innerHTML=types.map(function(c){
-    return '<button class="'+(TF===c?'on':'')+'" onclick="TF=\''+esc(c)+'\';renderProducts()">'+(c||'ทั้งหมด')+'</button>';
+    return '<button class="'+(TF===c?'on':'')+'" onclick="TF=\''+esc(c)+'\';renderProducts()">'+(c?ic(TYPEIC[c]||'box','sm'):'')+(c||'ทั้งหมด')+'</button>';
   }).join('');
   var list=DATA.products.filter(function(p){
     if(TF&&p.type!==TF) return false;
@@ -1897,10 +2158,10 @@ function renderProducts(){
   });
   $('pList').innerHTML=list.length?list.map(function(p){
     var low=p.reorder>0&&p.qty<=p.reorder;
-    return '<div class="card" style="padding:12px" onclick="openDet(\''+esc(p.code)+'\')">'+
-      '<div class="row" style="padding:0;border:0"><div><div class="t">'+esc(p.name)+(low?' <span class="pill b">ต่ำ</span>':'')+'</div>'+
-      '<div class="s">'+esc(p.type)+' · ทุน '+f(p.avgCost)+(p.price>0?' · ขาย '+f(p.price):'')+'</div></div>'+
-      '<div class="r '+(low?'neg':'')+'">'+f4(p.qty)+'<div class="s" style="font-family:var(--f);font-weight:400">'+esc(p.unit||'')+'</div></div></div></div>';
+    return '<div class="card pcard" style="padding:12px" onclick="openDet(\''+esc(p.code)+'\')">'+jar(p)+
+      '<div class="mid"><div class="t" style="font-weight:500;font-size:13.5px">'+esc(p.name)+(low?' <span class="pill b">ใกล้หมด</span>':'')+'</div>'+
+      '<div class="s" style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px">'+ic(TYPEIC[p.type]||'box','sm')+esc(p.type)+' · ทุน '+f(p.avgCost)+(p.price>0?' · ขาย '+f(p.price):'')+'</div></div>'+
+      '<div class="num" style="text-align:right;font-size:13.5px;font-weight:500;'+(low?'color:var(--bad)':'')+'">'+f4(p.qty)+'<div style="font-family:var(--f);font-weight:400;font-size:11px;color:var(--muted)">'+esc(p.unit||'')+'</div></div></div>';
   }).join(''):'<div class="empty">ไม่พบสินค้า</div>';
 }
 function openDet(code){
@@ -1917,7 +2178,8 @@ function openDet(code){
   go('det');
   api('productDetail',{code:code}).then(function(d){
     $('dMoves').innerHTML=d.moves.length?d.moves.map(function(m){
-      return row(m.label,m.date+' · '+m.doc+(m.unit?' · @'+f(m.unit):''),(m.kind==='in'?'+':'−')+f4(m.qty),m.kind==='in'?'pos':'neg');
+      var mk={'ซื้อกะลา':'buyParchment','ซื้อสารเขียว':'buyGreen','ผลิตสารเขียว':'mill','ตัดเบิกไปสี':'mill','ผลิตเมล็ดคั่ว':'roast','ซื้อวัสดุ':'buyMaterial','ขาย':'sell'}[m.label]||'issue';
+      return rowI(badge(KINDIC[mk],KINDCOL[mk],30),m.label,m.date+' · '+m.doc+(m.unit?' · @'+f(m.unit):''),(m.kind==='in'?'+':'−')+f4(m.qty),m.kind==='in'?'pos':'neg');
     }).join(''):'<div class="empty">ยังไม่มีรายการ</div>';
   }).catch(function(){$('dMoves').innerHTML='<div class="empty">ดึงข้อมูลไม่สำเร็จ</div>';});
 }
@@ -2034,14 +2296,14 @@ window.addEventListener('online',online);window.addEventListener('offline',onlin
 (function init(){
   $('cUrl').value=CFG.url||'';$('cUser').value=CFG.user||'';
   showVer();
-  ['a1Date','a2Date','a3Date','a4Date','a5Date','oDate'].forEach(function(i){$(i).value=iso();});
+  ['a1Date','agDate','a2Date','a3Date','a4Date','a5Date','oDate'].forEach(function(i){$(i).value=iso();});
   $('sumKey').value=iso().slice(0,7);
   online();
   if(DATA){renderHome();fillSel();renderProducts();}
   /* ทางลัดจากไอคอนแอป เช่น ?go=f5 ให้เปิดหน้านั้นเลย */
   var qs=(location.search||'').match(/[?&]go=([a-z0-9]+)/i);
   var want=qs?qs[1]:'';
-  var okScreens={home:1,rec:1,stock:1,sum:1,f1:1,f2:1,f3:1,f4:1,f5:1,other:1,set:1};
+  var okScreens={home:1,rec:1,stock:1,sum:1,f1:1,fg:1,f2:1,f3:1,f4:1,f5:1,other:1,set:1};
   if(CFG.url){ refresh(); if(want&&okScreens[want]) go(want); }
   else go('set');
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
