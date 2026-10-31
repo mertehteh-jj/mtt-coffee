@@ -201,6 +201,14 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
 .pcard{display:flex;align-items:center;gap:12px;cursor:pointer}
 .jar{width:30px;height:36px;flex:0 0 auto}
 .art{flex:0 0 auto;display:block}
+.bxr{display:grid;grid-template-columns:34px 1fr auto 26px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
+.bxr:last-child{border-bottom:0}
+.bxr select{padding:9px 28px 9px 10px;font-size:13.5px}
+.qst{display:flex;align-items:center;border:1px solid var(--line);border-radius:9px;background:#FCFAF6;overflow:hidden}
+.qst button{border:0;background:none;width:28px;height:38px;font-size:17px;color:var(--ink2);cursor:pointer;padding:0}
+.qst input{width:38px;border:0;border-radius:0;padding:8px 0;text-align:center;background:transparent}
+.qst input:focus{outline:0}
+.boxnone{font-size:12.5px;color:var(--muted);padding:9px 12px;border:1px dashed var(--line);border-radius:9px;text-align:center}
 .ci .lead{display:flex;align-items:center;gap:9px;min-width:0}
 .pcard .mid{flex:1;min-width:0}
 
@@ -441,15 +449,14 @@ td.n{text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
     </div>
     <div class="card">
       <h3>บรรจุส่งและค่าส่ง</h3>
-      <div class="g2">
-        <div><label for="a5BoxCode">ขนาดกล่องพัสดุ</label><select id="a5BoxCode" onchange="boxToggle();p5()"></select></div>
-        <div><label for="a5Box">จำนวนกล่อง (ใบ)</label><input id="a5Box" type="number" inputmode="numeric" step="1" value="1" oninput="p5()"></div>
-      </div>
+      <label>กล่องพัสดุ <span style="color:var(--muted)">· ใช้หลายขนาดในบิลเดียวได้</span></label>
+      <div id="boxRows"></div>
+      <button class="btn ghost" style="margin-top:8px" onclick="addBoxRow()"><svg class="ic sm"><use href="#i-box"/></svg>เพิ่มกล่องอีกขนาด</button>
       <div class="g2">
         <div><label for="a5Bubble">บับเบิ้ลกันกระแทก (เมตร)</label><input id="a5Bubble" type="number" inputmode="decimal" step="any" value="0" oninput="p5()"></div>
         <div><label for="a5Tape">เทปกาว (ม้วน)</label><input id="a5Tape" type="number" inputmode="decimal" step="any" value="0" oninput="p5()"></div>
       </div>
-      <button class="btn ghost" style="margin-top:9px" onclick="go('new');prefillBox()">+ เพิ่มขนาดกล่อง</button>
+      <button class="btn ghost" style="margin-top:9px" onclick="go('new');prefillBox()">+ สร้างขนาดกล่องใหม่ในสต๊อก</button>
       <div class="g2">
         <div><label for="a5ShipIn">ค่าส่งที่เก็บลูกค้า</label><input id="a5ShipIn" type="number" inputmode="decimal" step="any" value="0" oninput="p5()"></div>
         <div><label for="a5ShipOut">ค่าส่งที่จ่ายจริง</label><input id="a5ShipOut" type="number" inputmode="decimal" step="any" value="0" oninput="p5()"></div>
@@ -1034,22 +1041,7 @@ function fillSel(){
     }).join('');
     if(kb) $('a5Roast').value=kb;
   }
-  var boxes=boxList();
-  if($('a5BoxCode')){
-    var keep=$('a5BoxCode').value;
-    var noBox='<option value="">— ไม่ใช้กล่อง —</option>';
-    $('a5BoxCode').innerHTML=noBox+(boxes.length
-      ? boxes.map(function(p){
-          var lb=String(p.name).replace(/^กล่องพัสดุ\s*/,'');
-          return '<option value="'+esc(p.code)+'">'+esc(lb)+
-            (p.avgCost>0?' · '+f(p.avgCost)+' บ.':' · ยังไม่มีต้นทุน')+
-            ' · เหลือ '+f4(p.qty)+'</option>';
-        }).join('')
-      : '');
-    if(keep==='') $('a5BoxCode').value='';
-    else if(keep&&boxes.some(function(p){return p.code===keep;})) $('a5BoxCode').value=keep;
-    boxToggle();
-  }
+  if($('boxRows')) renderBoxes();
   $('a5Chan').innerHTML=DATA.settings.channels.map(function(c){return '<option>'+esc(c)+'</option>';}).join('');
   $('oType').innerHTML=DATA.settings.issueTypes.map(function(c){return '<option>'+esc(c)+'</option>';}).join('');
   $('nType').innerHTML=DATA.settings.types.map(function(c){return '<option>'+esc(c)+'</option>';}).join('');
@@ -1516,15 +1508,15 @@ function fillForm(kind,d){
     $('a5Date').value=d.date; $('a5Cust').value=d.customer||'';
     if(d.channel) $('a5Chan').value=d.channel;
     $('a5ShipIn').value=d.shipCharged; $('a5ShipOut').value=d.shipPaid;
-    $('a5Box').value=0; $('a5Tape').value=0; $('a5Bubble').value=0;
-    if($('a5BoxCode')) $('a5BoxCode').value='';
+    $('a5Tape').value=0; $('a5Bubble').value=0;
+    BOXES=[];
     var tc=tapeProd(), uc=bubbleProd();
     (d.packItems||[]).forEach(function(it){
-      if(isBoxCode(it.code)){ $('a5BoxCode').value=it.code; $('a5Box').value=it.qty; }
+      if(isBoxCode(it.code)){ BOXES.push({code:it.code,qty:it.qty}); }
       else if(tc&&it.code===tc.code) $('a5Tape').value=it.qty;
       else if(uc&&it.code===uc.code) $('a5Bubble').value=it.qty;
     });
-    boxToggle();
+    renderBoxes();
     CART=(d.lines||[]).map(function(l){
       var p=null;
       if(l.kind==='ซอง'){ T('เมล็ดคั่ว').forEach(function(b){ if((b.roast||b.name)===l.roast) p=b; }); }
@@ -1819,28 +1811,60 @@ function renderCart(){
 }
 function boxList(){ return T('วัสดุอุปกรณ์').filter(function(p){return /กล่อง/.test(p.name);}); }
 function isBoxCode(c){ return boxList().some(function(p){return p.code===c;}); }
-function boxProd(){
-  var el=$('a5BoxCode');
-  if(el) return el.value?(P(el.value)||null):null;   /* ค่าว่าง = ไม่ใช้กล่อง */
-  return boxList()[0]||P('MT-BOX');
+/* ══ กล่องพัสดุหลายขนาดต่อ 1 บิล ══
+   BOXES = [{code, qty}] · ว่าง = ไม่ใช้กล่อง                                   */
+var BOXES=[];
+function boxLabel(p){
+  return String(p.name).replace(/^กล่องพัสดุ\s*/,'').replace(/\s*\(.*$/,'')+
+    (p.avgCost>0?' · '+f(p.avgCost)+' บ.':' · ไม่มีทุน')+' · เหลือ '+f4(p.qty);
 }
-function boxToggle(){
-  var el=$('a5BoxCode'), q=$('a5Box');
-  if(!el||!q) return;
-  var none=!el.value;
-  q.disabled=none;
-  if(none) q.value=0;
-  else if(+q.value===0) q.value=1;
+function renderBoxes(){
+  var el=$('boxRows'); if(!el) return;
+  var all=boxList();
+  BOXES=BOXES.filter(function(b){ return !DATA||!b.code||P(b.code); });
+  if(!BOXES.length){ el.innerHTML='<div class="boxnone">ไม่ใช้กล่อง</div>'; p5(); return; }
+  el.innerHTML=BOXES.map(function(b,i){
+    var p=P(b.code);
+    return '<div class="bxr">'+(p?itemArt(p,34,true):'<span></span>')+
+      '<select aria-label="ขนาดกล่องแถวที่ '+(i+1)+'" onchange="setBox('+i+',\'code\',this.value)">'+
+        all.map(function(x){return '<option value="'+esc(x.code)+'"'+(x.code===b.code?' selected':'')+'>'+esc(boxLabel(x))+'</option>';}).join('')+
+      '</select>'+
+      '<div class="qst"><button type="button" aria-label="ลด" onclick="stepBox('+i+',-1)">−</button>'+
+        '<input type="number" inputmode="numeric" step="1" min="1" value="'+b.qty+'" aria-label="จำนวนกล่อง" oninput="setBox('+i+',\'qty\',this.value,true)">'+
+        '<button type="button" aria-label="เพิ่ม" onclick="stepBox('+i+',1)">+</button></div>'+
+      '<button class="x" aria-label="ลบกล่องนี้" onclick="delBoxRow('+i+')">×</button></div>';
+  }).join('');
+  p5();
+}
+function addBoxRow(){
+  var all=boxList();
+  if(!all.length) return toast('ยังไม่มีกล่องพัสดุในสต๊อก — กด "สร้างขนาดกล่องใหม่ในสต๊อก" ก่อน','err');
+  var used=BOXES.map(function(b){return b.code;});
+  var pick=all.filter(function(p){return used.indexOf(p.code)<0;})[0]||all[0];
+  BOXES.push({code:pick.code,qty:1}); renderBoxes();
+}
+function delBoxRow(i){ BOXES.splice(i,1); renderBoxes(); }
+function setBox(i,k,v,quiet){
+  if(!BOXES[i]) return;
+  BOXES[i][k]=k==='qty'?Math.max(0,+v||0):v;
+  if(quiet) p5(); else renderBoxes();      /* พิมพ์จำนวนอยู่ไม่วาดใหม่ เคอร์เซอร์จะได้ไม่หลุด */
+}
+function stepBox(i,d){ if(!BOXES[i]) return; BOXES[i].qty=Math.max(1,(+BOXES[i].qty||0)+d); renderBoxes(); }
+/* รวมกล่องขนาดเดียวกันเป็นรายการเดียว */
+function boxItems(){
+  var m={},o=[];
+  BOXES.forEach(function(b){ if(!b.code||!(b.qty>0)) return; if(!m[b.code]){m[b.code]={code:b.code,qty:0};o.push(m[b.code]);} m[b.code].qty+=+b.qty; });
+  return o;
 }
 function chanChange(){
   /* นัดรับ = รับของเอง ตั้งค่าเริ่มต้นเป็นไม่ใช้กล่องและไม่มีค่าส่ง ปรับเองได้ */
   if($('a5Chan').value==='นัดรับ'){
-    $('a5BoxCode').value=''; $('a5Tape').value='0'; $('a5Bubble').value='0';
+    BOXES=[]; $('a5Tape').value='0'; $('a5Bubble').value='0';
     $('a5ShipIn').value='0'; $('a5ShipOut').value='0';
-  } else if(!$('a5BoxCode').value && boxList().length){
-    $('a5BoxCode').value=boxList()[0].code;
+  } else if(!BOXES.length && boxList().length){
+    BOXES=[{code:boxList()[0].code,qty:1}];
   }
-  boxToggle(); p5();
+  renderBoxes();
 }
 function prefillBox(){ $('nType').value='วัสดุอุปกรณ์'; $('nUnit').value='ใบ'; $('nName').value='กล่องพัสดุ '; nTypeChange(); }
 function tapeProd(){ return P('MT-TAPE')||T('วัสดุอุปกรณ์').filter(function(p){return /เทป/.test(p.name);})[0]; }
@@ -1849,22 +1873,27 @@ function p5(){
   if(!CART.length){$('v5').textContent='เพิ่มรายการสินค้าก่อน';return;}
   var goods=0,cogs=0;
   CART.forEach(function(l){goods+=l.qty*l.price;cogs+=l.qty*l.cost;});
-  var box=boxProd(),tape=tapeProd(),bub=bubbleProd();
-  var nb=+$('a5Box').value||0,nt=+$('a5Tape').value||0,nu=+$('a5Bubble').value||0;
-  var bc=(box?box.avgCost*nb:0)+(tape?tape.avgCost*nt:0)+(bub?bub.avgCost*nu:0);
+  var BX=boxItems(),tape=tapeProd(),bub=bubbleProd();
+  var nt=+$('a5Tape').value||0,nu=+$('a5Bubble').value||0;
+  var nb=0,boxCost=0;
+  BX.forEach(function(b){ var p=P(b.code); nb+=b.qty; if(p) boxCost+=p.avgCost*b.qty; });
+  var bc=boxCost+(tape?tape.avgCost*nt:0)+(bub?bub.avgCost*nu:0);
   var si=+$('a5ShipIn').value||0,so=+$('a5ShipOut').value||0;
   var rev=goods+si,cost=cogs+bc+so,pf=rev-cost;
   /* เตือนเมื่อวัสดุมีจำนวนแต่ยังไม่มีต้นทุน (ยังไม่ได้บันทึกซื้อในขั้นที่ 4) */
   var zero=[];
-  if(box&&nb>0&&box.avgCost<=0) zero.push(box.name+' ยังไม่มีต้นทุน');
+  BX.forEach(function(b){ var p=P(b.code); if(p&&p.avgCost<=0) zero.push(String(p.name).replace(/\s*\(.*$/,'')+' ยังไม่มีต้นทุน'); });
   if(nt>0){ if(!tape) zero.push('ไม่พบสินค้าเทปกาวในระบบ'); else if(tape.avgCost<=0) zero.push('เทปกาวยังไม่มีต้นทุน'); }
   if(nu>0){ if(!bub) zero.push('ไม่พบบับเบิ้ลกันกระแทกในระบบ'); else if(bub.avgCost<=0) zero.push('บับเบิ้ลกันกระแทกยังไม่มีต้นทุน'); }
   var boxLine=pr('กล่อง + บับเบิ้ล + เทป', f(bc));
   if(zero.length) boxLine=pr('กล่อง + บับเบิ้ล + เทป','<span style="color:var(--warn)">'+f(bc)+' ⚠</span>');
   $('v5').innerHTML=pr('มูลค่าสินค้า',f(goods))+pr('ต้นทุนสินค้า (เมล็ด+ซอง+สติ๊กเกอร์)',f(cogs))+
     boxLine+
-    (box&&nb>0
-      ? pr(esc(box.name)+' × '+f(nb),(box.avgCost>0?f(box.avgCost)+' /ใบ · เหลือ '+f4(box.qty)+' ใบ':'ยังไม่มีต้นทุน'))
+    (nb>0
+      ? pr('กล่องพัสดุ '+f(nb)+' ใบ'+(BX.length>1?' ('+BX.length+' ขนาด)':''),f(boxCost))+
+        BX.map(function(b){ var p=P(b.code); if(!p) return '';
+          return pr('<span style="color:var(--muted)">· '+esc(String(p.name).replace(/^กล่องพัสดุ\s*/,'').replace(/\s*\(.*$/,''))+' × '+f(b.qty)+'</span>',
+            '<span style="color:var(--muted)">'+(p.avgCost>0?f(p.avgCost*b.qty)+(p.qty<b.qty?' · <span style="color:var(--bad)">เหลือ '+f4(p.qty)+'</span>':''):'ยังไม่มีต้นทุน')+'</span>'); }).join('')
       : pr('กล่องพัสดุ','<span style="color:var(--muted)">ไม่ใช้กล่อง</span>'))+
     (bub&&nu>0?pr('บับเบิ้ล '+f(nu)+' เมตร',(bub.avgCost>0?f(bub.avgCost*nu)+' · '+f(bub.avgCost)+'/ม. · เหลือ '+f4(bub.qty):'ยังไม่มีต้นทุน')):'')+
     pr('ค่าส่ง เก็บ '+f(si)+' / จ่าย '+f(so),'<span style="color:'+(si-so<0?'var(--bad)':'var(--ok)')+'">'+(si-so>=0?'+':'')+f(si-so)+'</span>')+
@@ -1896,13 +1925,16 @@ function save5(){
     },2500);
     return;
   }
-  var box=boxProd(),tape=tapeProd(),bub=bubbleProd();
-  var nb=+$('a5Box').value||0, nt=+$('a5Tape').value||0, nu=+$('a5Bubble').value||0;
-  if((box&&nb>0&&box.avgCost<=0) || (nt>0&&tape&&tape.avgCost<=0) || (nu>0&&bub&&bub.avgCost<=0)){
-    if(!confirm((box&&box.avgCost<=0?box.name:'เทปกาว')+' ยังไม่มีต้นทุน (ยังไม่ได้บันทึกซื้อในขั้นที่ 4)\n\nบันทึกต่อโดยคิดเป็น 0 บาทหรือไม่?')) return;
+  var BX=boxItems(),tape=tapeProd(),bub=bubbleProd();
+  var nt=+$('a5Tape').value||0, nu=+$('a5Bubble').value||0;
+  var noCost=[];
+  BX.forEach(function(b){ var p=P(b.code); if(p&&p.avgCost<=0) noCost.push(p.name); });
+  if(nt>0&&tape&&tape.avgCost<=0) noCost.push(tape.name);
+  if(nu>0&&bub&&bub.avgCost<=0) noCost.push(bub.name);
+  if(noCost.length){
+    if(!confirm(noCost.join(', ')+' ยังไม่มีต้นทุน (ยังไม่ได้บันทึกซื้อในขั้นที่ 4)\n\nบันทึกต่อโดยคิดเป็น 0 บาทหรือไม่?')) return;
   }
-  var items=[];
-  if(nb>0&&box) items.push({code:box.code,qty:nb});
+  var items=BX.slice();
   if(nt>0&&tape) items.push({code:tape.code,qty:nt});
   if(nu>0&&bub) items.push({code:bub.code,qty:nu});
   submit('sell',{lines:CART.map(function(l){
