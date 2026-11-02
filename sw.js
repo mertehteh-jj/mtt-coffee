@@ -1,5 +1,5 @@
 /* เปลี่ยนเลขนี้ทุกครั้งที่แก้ index.html เพื่อบังคับให้เครื่องที่ติดตั้งไว้โหลดของใหม่ */
-const CACHE = 'mtt-v23';   // 2026.10.31 กล่องหลายขนาดต่อบิล
+const CACHE = 'mtt-v24';   // 2026.11.02 แก้ข้อความระดับคั่ว
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
